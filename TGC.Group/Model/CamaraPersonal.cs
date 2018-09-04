@@ -156,29 +156,29 @@ namespace TGC.Group.Model
         public override void UpdateCamera(float elapsedTime)
         {
             var moveVector = TGCVector3.Empty;
-            ////Forward
-            //if (Input.keyDown(Key.W))
-            //{
-            //    moveVector += new TGCVector3(0, 0, -1) * MovementSpeed;
-            //}
+            //Forward
+            if (Input.keyDown(Key.W))
+            {
+                moveVector += new TGCVector3(0, 0, -1) * MovementSpeed;
+            }
 
-            ////Backward
-            //if (Input.keyDown(Key.S))
-            //{
-            //    moveVector += new TGCVector3(0, 0, 1) * MovementSpeed;
-            //}
+            //Backward
+            if (Input.keyDown(Key.S))
+            {
+                moveVector += new TGCVector3(0, 0, 1) * MovementSpeed;
+            }
 
-            ////Strafe right
-            //if (Input.keyDown(Key.D))
-            //{
-            //    moveVector += new TGCVector3(-1, 0, 0) * MovementSpeed;
-            //}
+            //Strafe right
+            if (Input.keyDown(Key.D))
+            {
+                moveVector += new TGCVector3(-1, 0, 0) * MovementSpeed;
+            }
 
-            ////Strafe left
-            //if (Input.keyDown(Key.A))
-            //{
-            //    moveVector += new TGCVector3(1, 0, 0) * MovementSpeed;
-            //}
+            //Strafe left
+            if (Input.keyDown(Key.A))
+            {
+                moveVector += new TGCVector3(1, 0, 0) * MovementSpeed;
+            }
 
             //Jump
             if (Input.keyDown(Key.Space))
