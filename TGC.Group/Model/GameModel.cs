@@ -9,6 +9,7 @@ using Microsoft.DirectX.Direct3D;
 using TGC.Core.SceneLoader;
 using TGC.Core.Camara;
 using TGC.Group.Model.GameObjects;
+using TGC.Group.Model.Gui;
 using TGC.Group.Model.GameObjects.BulletObjects;
 using System.Collections.Generic;
 using System;
@@ -37,7 +38,10 @@ namespace TGC.Group.Model
         }
 
         List<GameObject> gameObjects = new List<GameObject>() { new Skybox(), new Terreno(), new Agua() };
-
+        private PhysicsGame physicWorld = new PhysicsGame(); // este va a tener solo objetos colisionables
+        //private Bullet prueba = new Bullet();
+        private Gui.Gui gui = new Gui.Gui();
+        private Escenario escenario = new Escenario();
 
         public static float time = 0.0f;
         public static string mediaDir;
@@ -63,7 +67,12 @@ namespace TGC.Group.Model
             #region inicializarRendereables
 
             gameObjects.ForEach(g => g.Init());
-
+            physicWorld.Init();
+          //  physicWorld.addBulletObject(new Vida());
+          //  physicWorld.addBulletObject(new Zombie());
+            // prueba.Init();
+            gui.Init();
+            escenario.Init();
             #endregion
 
             Camara = new CamaraPersonal(new TGCVector3(1500f, 450f, 1500f), Input);
@@ -75,6 +84,8 @@ namespace TGC.Group.Model
             time += 0.003f;
 
             gameObjects.ForEach(g => g.Update());
+            physicWorld.Update();
+            //prueba.Update();
 
             PostUpdate();
         }
@@ -82,16 +93,23 @@ namespace TGC.Group.Model
         public override void Render()
         {
             PreRender();
-
+            
             gameObjects.ForEach(g => g.Render());
-
+            escenario.Render();
+            physicWorld.Render();
+            // prueba.Render();
+            
+            gui.Render();
             PostRender();
         }
 
         public override void Dispose()
         {
             gameObjects.ForEach(g => g.Dispose());
-
+            physicWorld.Dispose();
+            //prueba.Dispose();
+            gui.Dispose();
+            escenario.Dispose();
         }
 
     }

@@ -27,7 +27,7 @@ namespace TGC.Group.Model.GameObjects
 
             #region configurarObjeto
             terrain.loadTexture(GameModel.mediaDir + "texturas\\terrain\\TerrainTexture1.jpg");
-            terrain.loadHeightmap(GameModel.mediaDir + "texturas\\terrain\\Heightmap3.jpg", 255f, 1.5f, new TGCVector3(0, 3, 0));
+            terrain.loadHeightmap(GameModel.mediaDir + "texturas\\terrain\\Heightmap3.jpg", 255f, 1.5f, new TGCVector3(0, -100, 0));
             terrain.Effect = efecto;
             terrain.Technique = "RenderScene";
 

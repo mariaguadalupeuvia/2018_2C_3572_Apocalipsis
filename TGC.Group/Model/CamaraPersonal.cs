@@ -8,7 +8,7 @@ using TGC.Core.Mathematica;
 
 namespace TGC.Group.Model
 {
-    class CamaraPersonal : TgcCamera
+    class CamaraPersonal : TgcCamera //por ahora no tiene ningun cambio. mas adelante tendra que adaptarse al piso cuando se mueve.
     {
         /// <summary>
         ///  Centro del mouse 2D para ocultarlo
