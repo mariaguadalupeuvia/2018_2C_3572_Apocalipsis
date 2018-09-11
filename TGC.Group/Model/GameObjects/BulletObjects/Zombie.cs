@@ -32,7 +32,7 @@ namespace TGC.Group.Model.GameObjects.BulletObjects
 
             #region configurarObjeto
 
-            zombie = new TgcSceneLoader().loadSceneFromFile(GameModel.mediaDir + "modelos\\zombie-TgcScene.xml").Meshes[0];
+            zombie = new TgcSceneLoader().loadSceneFromFile(GameModel.mediaDir + "modelos\\ZombieZero-TgcScene.xml").Meshes[0];
             zombie.Scale = new TGCVector3(10.5f, 10.5f, 10.5f);
             zombie.Effect = efecto;
             zombie.Technique = "RenderScene";

@@ -37,7 +37,9 @@ namespace TGC.Group.Model
             Description = Game.Default.Description;
         }
 
-        List<GameObject> gameObjects = new List<GameObject>() { new Skybox(), new Terreno(), new Agua() };
+        List<GameObject> gameObjects = new List<GameObject>() { new Skybox(), new Terreno() };
+        GameObject agua = new Agua(); //los objetos transparentes se renderean arriba de todo
+
         private PhysicsGame physicWorld = new PhysicsGame(); // este va a tener solo objetos colisionables
         //private Bullet prueba = new Bullet();
         private Gui.Gui gui = new Gui.Gui();
@@ -73,6 +75,7 @@ namespace TGC.Group.Model
             // prueba.Init();
             gui.Init();
             escenario.Init();
+            agua.Init();
             #endregion
 
             Camara = new CamaraPersonal(new TGCVector3(1500f, 450f, 1500f), Input);
@@ -86,6 +89,7 @@ namespace TGC.Group.Model
             gameObjects.ForEach(g => g.Update());
             physicWorld.Update();
             //prueba.Update();
+            agua.Update();
 
             PostUpdate();
         }
@@ -98,7 +102,7 @@ namespace TGC.Group.Model
             escenario.Render();
             physicWorld.Render();
             // prueba.Render();
-            
+            agua.Render();
             gui.Render();
             PostRender();
         }
@@ -108,6 +112,7 @@ namespace TGC.Group.Model
             gameObjects.ForEach(g => g.Dispose());
             physicWorld.Dispose();
             //prueba.Dispose();
+            agua.Dispose();
             gui.Dispose();
             escenario.Dispose();
         }
