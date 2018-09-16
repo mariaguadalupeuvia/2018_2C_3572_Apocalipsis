@@ -54,7 +54,7 @@ namespace TGC.Group.Model
             dynamicsWorld.AddRigidBody(floorBody);
 
             //Cargamos objetos de render del framework.
-            var floorTexture = TgcTexture.createTexture(D3DDevice.Instance.Device, GameModel.mediaDir + "texturas\\terrain\\TerrainTexture2.jpg");
+            var floorTexture = TgcTexture.createTexture(D3DDevice.Instance.Device, GameModel.mediaDir + "modelos\\Textures\\Canionero.jpg");
             floorMesh = new TgcPlane(new TGCVector3(0, 500, 0), new TGCVector3(400, 0f, 400), TgcPlane.Orientations.XZplane, floorTexture);
             #endregion
 
@@ -94,7 +94,7 @@ namespace TGC.Group.Model
 
             #endregion
 
-            callback = new MyContactResultCallback(dispatcher, dynamicsWorld, boxBody);
+            callback = new MyContactResultCallback(dispatcher, dynamicsWorld, floorBody);// boxBody);
         }
 
         public void Update()

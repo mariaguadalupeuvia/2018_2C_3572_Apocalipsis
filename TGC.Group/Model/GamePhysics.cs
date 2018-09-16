@@ -9,19 +9,21 @@ using TGC.Core.Textures;
 
 namespace TGC.Group.Model
 {
-    public class PhysicsGame
+    public class GamePhysics
     {
+        #region variables
         protected DiscreteDynamicsWorld dynamicsWorld;
         protected CollisionDispatcher dispatcher;
         protected DefaultCollisionConfiguration collisionConfiguration;
         protected SequentialImpulseConstraintSolver constraintSolver;
         protected BroadphaseInterface overlappingPairCache;
 
-
-        protected List<BulletObject> bulletObjects = new List<BulletObject>();
+        public List<BulletObject> bulletObjects = new List<BulletObject>();
+        public List<BulletObject> desactivados = new List<BulletObject>();
 
         private TgcPlane floorMesh;
-        private RigidBody floorBody;
+        public RigidBody floorBody;
+        #endregion
 
         public void Init()
         {
@@ -55,6 +57,7 @@ namespace TGC.Group.Model
             #endregion
         }
 
+        #region agregarYQuitarObjetosDeLista
         public void addBulletObject(BulletObject objeto)
         {
             bulletObjects.Add(objeto);
@@ -65,14 +68,21 @@ namespace TGC.Group.Model
         {
             bulletObjects.Remove(objeto);
             dynamicsWorld.RemoveRigidBody(objeto.body);
+            objeto.Dispose();
         }
+
+        private void removerDesactivados()
+        {
+            desactivados.ForEach(d => removeBulletObject(d));
+            desactivados.Clear();
+        }
+        #endregion
 
         public void Update()
         {
-           // bulletObjects.ForEach(b => dynamicsWorld.ContactTest(b.body, b.callback));
+            bulletObjects.ForEach(b => dynamicsWorld.ContactTest(b.body, b.callback));
+            removerDesactivados();//Al colisionar los disparos mueren
             dynamicsWorld.StepSimulation(1 / 60f, 10);
-            bulletObjects.ForEach(b => b.Update()); //actualiza la posicion del mesh rendereable
-
         }
 
         public void Render()
@@ -83,6 +93,7 @@ namespace TGC.Group.Model
 
         public void Dispose()
         {
+            #region dispose
             dynamicsWorld.Dispose();
             dispatcher.Dispose();
             collisionConfiguration.Dispose();
@@ -90,8 +101,8 @@ namespace TGC.Group.Model
             overlappingPairCache.Dispose();
 
             bulletObjects.ForEach(b => b.Dispose());
-
             floorMesh.Dispose();
+            #endregion
         }
     }
 

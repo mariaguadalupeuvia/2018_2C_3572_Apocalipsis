@@ -10,6 +10,7 @@ using TGC.Core.Mathematica;
 using TGC.Core.Textures;
 using TGC.Group.Model.GameObjects.BulletObjects;
 using Microsoft.DirectX.Direct3D;
+using BulletSharp.Math;
 
 namespace TGC.Group.Model
 {
@@ -17,16 +18,32 @@ namespace TGC.Group.Model
     {
         public RigidBody body { get; set; }
         public ContactResultCallback callback { get; set; }
+        protected GamePhysics physicWorld;
 
         float radio = 10;
-        TGCVector3 origen = new TGCVector3(0, 600, 0);
-        float masa = 1f;
+        float masa = 0.1f;
 
         public override void Init()
         {
+           
         }
 
-        public void crearBody()
+        public void crearBody(TGCVector3 origen)//este lo usan los zombies
+        {
+            var ballShape = new SphereShape(radio);
+            var ballTransform = TGCMatrix.Identity;
+            ballTransform.Origin = origen;
+
+            var ballMotionState = new DefaultMotionState(ballTransform.ToBsMatrix);
+            var ballLocalInertia = ballShape.CalculateLocalInertia(masa);
+            var ballInfo = new RigidBodyConstructionInfo(masa, ballMotionState, ballShape, ballLocalInertia);
+
+            body = new RigidBody(ballInfo);
+            callback = new CollisionCallback(this, physicWorld);
+
+        }
+
+        public void crearBody(TGCVector3 origen, TGCVector3 director)//este es para los disparos
         {
             var ballShape = new SphereShape(radio);
             var ballTransform = TGCMatrix.Identity;
@@ -41,9 +58,12 @@ namespace TGC.Group.Model
             var ballInfo = new RigidBodyConstructionInfo(masa, ballMotionState, ballShape, ballLocalInertia);
            
             body = new RigidBody(ballInfo);
-           // body.ApplyImpulse(new TGCVector3(100, 200, 0).ToBsVector, new TGCVector3(0, 0, 0).ToBsVector);
-            callback = new CollisionCallback(this);
-
+            var dir = director.ToBsVector;// new TGCVector3(100, 100, 1).ToBsVector;
+            dir.Normalize();
+            body.LinearVelocity = dir * 75;
+           // body.LinearFactor = TGCVector3.One.ToBsVector;
+            body.ApplyImpulse(dir , new TGCVector3(0, 0, 0).ToBsVector);
+            callback = new CollisionCallback(this, physicWorld);
         }
 
         public override void Dispose()
@@ -54,8 +74,8 @@ namespace TGC.Group.Model
 
         public override void Update()
         {
-            Console.WriteLine("Update no implementado");
-            throw new NotImplementedException();
+            //Console.WriteLine("Update no implementado");
+            //throw new NotImplementedException();
         }
     }
 }

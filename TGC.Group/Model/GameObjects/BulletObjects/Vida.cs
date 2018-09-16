@@ -24,7 +24,7 @@ namespace TGC.Group.Model.GameObjects.BulletObjects
 
         public Vida( )
         {
-             crearBody();
+             crearBody(new TGCVector3(1300f, 360f, 1500f));
 
             #region configurarEfecto
             efecto = TgcShaders.loadEffect(GameModel.shadersDir + "shaderPlanta.fx");
@@ -44,7 +44,8 @@ namespace TGC.Group.Model.GameObjects.BulletObjects
             //vida = new TGCSphere(1, texture.Clone(), TGCVector3.Empty);
             ////Tgc no crea el vertex buffer hasta invocar a update values.
             //vida.updateValues();
-            objeto = vida;
+           
+            objetos.Add(vida);
             #endregion
         }
 

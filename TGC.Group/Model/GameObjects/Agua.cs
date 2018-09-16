@@ -33,7 +33,7 @@ namespace TGC.Group.Model.GameObjects
             agua.Effect = efecto;
             agua.Technique = "RenderScene";
 
-            objeto = agua;
+            objetos.Add(agua);
             #endregion
         }
 

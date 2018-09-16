@@ -23,7 +23,7 @@ namespace TGC.Group.Model.GameObjects.BulletObjects
 
         public Caja()
             {
-                crearBody();
+                crearBody(new TGCVector3(1300f, 360f, 1500f));
                 var d3dDevice = D3DDevice.Instance.Device;
 
                 #region configurarEfecto

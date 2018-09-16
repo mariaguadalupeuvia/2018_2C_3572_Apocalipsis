@@ -8,24 +8,24 @@ using TGC.Core.SceneLoader;
 
 namespace TGC.Group.Model
 {
-    public abstract class GameObject : IRenderObject
+    public abstract class GameObject //: IRenderObject
     {
         protected Effect efecto;
-        protected IRenderObject objeto;
+        protected List<IRenderObject> objetos = new List<IRenderObject>();
 
-        bool IRenderObject.AlphaBlendEnable { get => false; set => objeto.AlphaBlendEnable = value; }
+       // bool IRenderObject.AlphaBlendEnable { get => false; set => objeto.AlphaBlendEnable = value; }
 
         public abstract void Init();
         public abstract void Update();
 
         public virtual void Render()
         {
-            objeto.Render();
+            objetos.ForEach(m => m.Render());
         }
 
         public virtual void Dispose()
         {
-            objeto.Dispose();
+            objetos.ForEach(m => m.Dispose());
         }
     }
 }

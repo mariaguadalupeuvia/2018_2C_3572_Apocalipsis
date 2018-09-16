@@ -7,11 +7,13 @@ namespace TGC.Group.Model.GameObjects.BulletObjects
 {
     public class CollisionCallback : ContactResultCallback
     {
-        private BulletObject bulletObject;
+        private BulletObject bulletObject;//este seria una bala o disparo
+        GamePhysics physicsWorld;
 
-        public CollisionCallback(BulletObject objeto)
+        public CollisionCallback(BulletObject objeto, GamePhysics world)
         {
             bulletObject = objeto;
+            physicsWorld = world;
         }
 
         public override float AddSingleResult(ManifoldPoint cp,
@@ -20,12 +22,14 @@ namespace TGC.Group.Model.GameObjects.BulletObjects
         {
             if (cp.Distance < 0.0f)
             {
-                if (bulletObject.body == colObj1Wrap.CollisionObject)
+                if (physicsWorld.floorBody == colObj1Wrap.CollisionObject)
                 {
-                    Console.WriteLine("Colisione");
-                    //bulletObject.Dispose();
+                    Console.WriteLine("Colisione con floor!!!");
+                    //si choqué con el piso me despido de este mundo 
+                    physicsWorld.desactivados.Add(bulletObject);
                 }
             }
+
             return 0;
         }
 

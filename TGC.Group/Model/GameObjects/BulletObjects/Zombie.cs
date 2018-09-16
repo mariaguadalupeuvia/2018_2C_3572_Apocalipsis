@@ -17,15 +17,18 @@ using TGC.Core.Textures;
 
 namespace TGC.Group.Model.GameObjects.BulletObjects
 {
-    class Zombie : BulletObject  //por ahora esta para pruebas
+    class Zombie : BulletObject  
     {
         TgcMesh zombie;
-        //TGCSphere zombie;
+        TgcMesh globo;
 
         public Zombie()
         {
-            crearBody();
+           crearBody(new TGCVector3(500f, 200f, 1500f));
+        }
 
+        public override void Init()
+        {
             #region configurarEfecto
             efecto = TgcShaders.loadEffect(GameModel.shadersDir + "shaderPlanta.fx");
             #endregion
@@ -33,41 +36,25 @@ namespace TGC.Group.Model.GameObjects.BulletObjects
             #region configurarObjeto
 
             zombie = new TgcSceneLoader().loadSceneFromFile(GameModel.mediaDir + "modelos\\ZombieZero-TgcScene.xml").Meshes[0];
-            zombie.Scale = new TGCVector3(10.5f, 10.5f, 10.5f);
+            zombie.Scale = new TGCVector3(100.5f, 100.5f, 100.5f);
             zombie.Effect = efecto;
             zombie.Technique = "RenderScene";
             zombie.RotateY(90);
-            //zombie.Transform = new TGCMatrix(body.InterpolationWorldTransform);
-            //zombie.UpdateMeshTransform();
 
-            //var d3dDevice = D3DDevice.Instance.Device;
-            //Texture texture = TextureLoader.FromFile(d3dDevice, GameModel.mediaDir + "modelos\\Textures\\vida.jpg");
-            //efecto.SetValue("texDiffuseMap", texture);
-
-            //zombie = new TGCSphere(1, texture.Clone(), TGCVector3.Empty);
-            ////Tgc no crea el vertex buffer hasta invocar a update values.
-            //zombie.updateValues();
-            objeto = zombie;
+            objetos.Add(zombie);
             #endregion
-        }
 
-        public override void Init()
-        {
+            globo = new TgcSceneLoader().loadSceneFromFile(GameModel.mediaDir + "modelos\\GLOBO-TgcScene.xml").Meshes[0];
+            globo.Scale = new TGCVector3(100.5f, 100.5f, 100.5f);
+            globo.Effect = efecto;
+            globo.Technique = "RenderScene";
+            objetos.Add(globo);
         }
 
         public override void Update()
         {
 
-           // zombie.Transform = TGCMatrix.Scaling(10, 10, 10) * new TGCMatrix(body.InterpolationWorldTransform);
-           // //  zombie.Transform = TGCMatrix.Scaling(10, 10, 10) * new TGCMatrix(body.InterpolationWorldTransform);
-           // zombie.UpdateMeshTransform();
-           // // zombie.updateValues();
-           //// Console.WriteLine("posicion en y:" + zombie.Transform.ToString());// zombie.Position.Y);
         }
 
-        public override void Render()
-        {
-            zombie.Render();
-        }
     }
 }

@@ -22,6 +22,7 @@ namespace TGC.Group.Model
     ///     ejecute el nuevo ejemplo deben cambiar el modelo que instancia GameForm <see cref="Form.GameForm.InitGraphics()" />
     ///     line 97.
     /// </summary>
+     
     public class GameModel : TgcExample
     {
         /// <summary>
@@ -37,17 +38,24 @@ namespace TGC.Group.Model
             Description = Game.Default.Description;
         }
 
+        #region variables
         List<GameObject> gameObjects = new List<GameObject>() { new Skybox(), new Terreno() };
         GameObject agua = new Agua(); //los objetos transparentes se renderean arriba de todo
 
-        private PhysicsGame physicWorld = new PhysicsGame(); // este va a tener solo objetos colisionables
+        private GamePhysics physicWorld = new GamePhysics(); // este va a tener solo objetos colisionables
         //private Bullet prueba = new Bullet();
         private Gui.Gui gui = new Gui.Gui();
         private Escenario escenario = new Escenario();
+        private Planta planta = new Planta();
+
+       
 
         public static float time = 0.0f;
         public static string mediaDir;
         public static string shadersDir;
+
+        private Picking picker = new Picking();
+        #endregion
 
         public override void Init()
         {
@@ -70,12 +78,15 @@ namespace TGC.Group.Model
 
             gameObjects.ForEach(g => g.Init());
             physicWorld.Init();
-          //  physicWorld.addBulletObject(new Vida());
-          //  physicWorld.addBulletObject(new Zombie());
+            // physicWorld.addBulletObject(new Vida());
+            //  physicWorld.addBulletObject(new Zombie());
             // prueba.Init();
             gui.Init();
             escenario.Init();
             agua.Init();
+            planta.Init(physicWorld);
+            picker.Init(Input);
+
             #endregion
 
             Camara = new CamaraPersonal(new TGCVector3(1500f, 450f, 1500f), Input);
@@ -84,37 +95,50 @@ namespace TGC.Group.Model
         public override void Update()
         {
             PreUpdate();
-            time += 0.003f;
 
+            #region update
+            time += 0.003f;
             gameObjects.ForEach(g => g.Update());
             physicWorld.Update();
-            //prueba.Update();
+            escenario.Update();
+           // prueba.Update();
+            planta.update(Input);
             agua.Update();
-
+            #endregion
+           
             PostUpdate();
         }
 
         public override void Render()
         {
             PreRender();
-            
+
+            #region render
             gameObjects.ForEach(g => g.Render());
-            escenario.Render();
             physicWorld.Render();
-            // prueba.Render();
+            escenario.Render();
+            //prueba.Render();
+            planta.Render();
             agua.Render();
+            picker.Render(Input);
             gui.Render();
+            #endregion
+
             PostRender();
         }
 
         public override void Dispose()
         {
+            #region dispose
             gameObjects.ForEach(g => g.Dispose());
             physicWorld.Dispose();
             //prueba.Dispose();
             agua.Dispose();
+            planta.Dispose();
             gui.Dispose();
+            picker.Dispose();
             escenario.Dispose();
+            #endregion
         }
 
     }

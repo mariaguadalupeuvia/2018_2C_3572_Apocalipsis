@@ -1,4 +1,5 @@
-﻿using Microsoft.DirectX.DirectInput;
+﻿using Microsoft.DirectX;
+using Microsoft.DirectX.DirectInput;
 using System.Drawing;
 using System.Windows.Forms;
 using TGC.Core.Camara;
@@ -10,9 +11,7 @@ namespace TGC.Group.Model
 {
     class CamaraPersonal : TgcCamera //por ahora no tiene ningun cambio. mas adelante tendra que adaptarse al piso cuando se mueve.
     {
-        /// <summary>
-        ///  Centro del mouse 2D para ocultarlo
-        /// </summary>
+
         private readonly Point mouseCenter;
 
         /// <summary>
@@ -61,6 +60,38 @@ namespace TGC.Group.Model
             this.updownRot = -FastMath.PI / 10.0f;
             this.cameraRotation = TGCMatrix.RotationX(updownRot) * TGCMatrix.RotationY(leftrightRot);
         }
+
+        // public void caminar()
+        //{
+        //    TGCVector3 normal = normalEnPuntoXZ(this.Position.X, this.Position.Z);
+        //    float Y = Terreno.alturaEnPunto(this.Position.X, this.Position.Z);
+
+        //    this.Position = new TGCVector3(this.Position.X, Y - 10, this.Position.Z);             
+        //    leftrightRot = FastMath.Atan2(-normal.X * FastMath.Cos(this.rotation.Y), normal.Y) + FastMath.Atan2(normal.Z * FastMath.Sin(this.rotation.Y), normal.Y);
+        //    updownRot = FastMath.Atan2(normal.Z * FastMath.Cos(this.rotation.Y), normal.Y) + FastMath.Atan2(normal.X * FastMath.Sin(this.rotation.Y), normal.Y); 
+
+        //    this.cameraRotation = TGCMatrix.RotationX(updownRot) * TGCMatrix.RotationZ(leftrightRot);
+        //}
+
+        //public TGCVector3 normalEnPuntoXZ(float X, float Z)
+        //{
+        //    //se toman alturas a deltas de distancia sobre el punto...
+        //    float delta = 2f;
+        //    float alturaN = Terreno.alturaEnPunto(X, Z + delta);
+        //    float alturaS = Terreno.alturaEnPunto(X, Z - delta);
+        //    float alturaE = Terreno.alturaEnPunto(X + delta, Z);
+        //    float alturaO = Terreno.alturaEnPunto(X - delta, Z);
+
+        //    TGCVector3 vector1 = new TGCVector3(delta * 2, alturaE - alturaO, 0);
+        //    TGCVector3 vector2 = new TGCVector3(0, alturaN - alturaS, delta * 2);
+
+        //    return TGCVector3.Cross(vector2, vector1);
+        //}
+
+
+
+
+
 
         /// <summary>
         ///     Constructor de la camara a partir de un TgcD3dInput y un positionEye. Los atributos mouseCenter a partir del centro del a pantalla, RotationSpeed 1.0f,

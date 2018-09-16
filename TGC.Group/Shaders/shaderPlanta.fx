@@ -115,7 +115,7 @@ VS_OUTPUT vs_main(VS_INPUT Input)
 
 	Output.fogfactor = saturate(Output.Position.z);
 
-	Input.Texcoord.y = Input.Texcoord.y + cos(_Time);
+	//Input.Texcoord.y = Input.Texcoord.y + cos(_Time);
 	Output.Texcoord = Input.Texcoord;
 	Output.Norm = normalize(mul(Input.Normal, matWorld));
 
@@ -157,7 +157,49 @@ float4 ps_main(float3 Texcoord: TEXCOORD0, float3 N : TEXCOORD1, float3 Pos : TE
 
 	   return RGBColor;
 }
+float4 ps_blend(float3 Texcoord: TEXCOORD0, float3 N : TEXCOORD1, float3 Pos : TEXCOORD2, float3 Pos2 : TEXCOORD3, float3 WorldPosition : TEXCOORD4, float3 WorldNormal : TEXCOORD5, float3 Tangent : TEXCOORD6, float3 Binormal : TEXCOORD7, float fogfactor : FOG) : COLOR0
+{
+		// Calculate the normal, including the information in the bump map
+		   float3 bump = BumpConstant * (tex2D(bumpSampler, Texcoord) - (0.5, 0.5, 0.5));
+		   float3 bumpNormal = N + (bump.x * Tangent + bump.y * Binormal);
+		   bumpNormal = normalize(bumpNormal);
+		   N = bumpNormal;
 
+		   float ld = 0;		// luz difusa
+		   float le = 0;		// luz specular
+
+		   // calcula la luz diffusa
+		   float3 LD = normalize(fvLightPosition - float3(Pos.x,Pos.y,Pos.z));
+		   ld += saturate(dot(N, LD))*k_ld;
+
+		   // calcula la reflexion specular
+		   float3 D = normalize(float3(Pos.x,Pos.y,Pos.z) - fvEyePosition);
+		   float ks = saturate(dot(reflect(LD,N), D));
+		   ks = pow(ks,fSpecularPower);
+		   le += ks * k_ls;
+
+		   //calcular los factores de fog y alpha blending que actuan en profundidad
+		   fogfactor = saturate((5000.0f - Pos2.z) / (fogStart)); // (fogEnd - z) /(fogEnd - fogStart)
+		   float blendfactor = saturate((5000.0f - Pos2.z) / (blendStart));
+
+		   float4 RGBColor = 0;
+
+		   if ((Pos.y > 290) && (Pos.y < 590))
+		   {
+			   Texcoord.x += Texcoord.x + _Time * 5;
+			   RGBColor.a = 0.5;
+		   }
+		   else
+		   {
+			   RGBColor.a = blendfactor;
+		   }
+
+		   float4 fvBaseColor = tex2D(diffuseMap, Texcoord);
+		   fvBaseColor = (fvBaseColor *  fogfactor) + (fogColor * (1.0 - fogfactor));
+		   RGBColor.rgb = saturate(fvBaseColor*(saturate(k_la + ld)) + le);
+		 
+		   return RGBColor;
+}
 technique RenderScene
 {
 	pass Pass_0
@@ -169,6 +211,21 @@ technique RenderScene
 	  //  ZEnable = false;
 		VertexShader = compile vs_3_0 vs_main();
 		PixelShader = compile ps_2_0 ps_main();
+
+	}
+}
+
+technique RenderSceneBlend
+{
+	pass Pass_0
+	{
+		AlphaBlendEnable = TRUE;
+		DestBlend = INVSRCALPHA;
+		SrcBlend = SRCALPHA;
+		//CullMode = Ccw;//Cw;//None;
+	  //  ZEnable = false;
+		VertexShader = compile vs_3_0 vs_main();
+		PixelShader = compile ps_2_0 ps_blend();
 
 	}
 }
