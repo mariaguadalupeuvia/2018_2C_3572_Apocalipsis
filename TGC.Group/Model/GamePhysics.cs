@@ -52,8 +52,8 @@ namespace TGC.Group.Model
             dynamicsWorld.AddRigidBody(floorBody);
 
             //Cargamos objetos de render del framework.
-            var floorTexture = TgcTexture.createTexture(d3dDevice, GameModel.mediaDir + "texturas\\terrain\\TerrainTexture1.jpg");
-            floorMesh = new TgcPlane(new TGCVector3(0, 0, 0), new TGCVector3(400, 0f, 400), TgcPlane.Orientations.XZplane, floorTexture);
+            //var floorTexture = TgcTexture.createTexture(d3dDevice, GameModel.mediaDir + "texturas\\terrain\\TerrainTexture1.jpg");
+            //floorMesh = new TgcPlane(new TGCVector3(0, 0, 0), new TGCVector3(400, 0f, 400), TgcPlane.Orientations.XZplane, floorTexture);
             #endregion
         }
 
@@ -81,6 +81,7 @@ namespace TGC.Group.Model
         public void Update()
         {
             bulletObjects.ForEach(b => dynamicsWorld.ContactTest(b.body, b.callback));
+            bulletObjects.ForEach(b => b.Update());
             removerDesactivados();//Al colisionar los disparos mueren
             dynamicsWorld.StepSimulation(1 / 60f, 10);
         }
@@ -88,7 +89,7 @@ namespace TGC.Group.Model
         public void Render()
         {
             bulletObjects.ForEach(b => b.Render());
-            floorMesh.Render();
+           // floorMesh.Render();
         }
 
         public void Dispose()
@@ -101,7 +102,7 @@ namespace TGC.Group.Model
             overlappingPairCache.Dispose();
 
             bulletObjects.ForEach(b => b.Dispose());
-            floorMesh.Dispose();
+            //floorMesh.Dispose();
             #endregion
         }
     }

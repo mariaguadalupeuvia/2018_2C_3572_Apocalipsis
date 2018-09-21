@@ -1,4 +1,5 @@
 ﻿using BulletSharp;
+using BulletSharp.Math;
 using Microsoft.DirectX.Direct3D;
 using Microsoft.DirectX.DirectInput;
 using System;
@@ -21,40 +22,50 @@ namespace TGC.Group.Model.GameObjects.BulletObjects
     {
         TgcMesh zombie;
         TgcMesh globo;
+        float posicionZ = 3200;
 
-        public Zombie()
+        public Zombie(TGCVector3 posicion, GamePhysics world)
         {
-           crearBody(new TGCVector3(500f, 200f, 1500f));
-        }
+            physicWorld = world;
+            crearBody(posicion);// new TGCVector3(500f, 200f, 1500f));
 
-        public override void Init()
-        {
             #region configurarEfecto
             efecto = TgcShaders.loadEffect(GameModel.shadersDir + "shaderPlanta.fx");
             #endregion
 
             #region configurarObjeto
-
-            zombie = new TgcSceneLoader().loadSceneFromFile(GameModel.mediaDir + "modelos\\ZombieZero-TgcScene.xml").Meshes[0];
-            zombie.Scale = new TGCVector3(100.5f, 100.5f, 100.5f);
+            zombie = new TgcSceneLoader().loadSceneFromFile(GameModel.mediaDir + "modelos\\Zombie7-TgcScene.xml").Meshes[0];
+            zombie.Scale = new TGCVector3(55.5f, 55.5f, 55.5f);
+            zombie.Position = posicion;//new TGCVector3(800f, 200f, 1200f);
             zombie.Effect = efecto;
             zombie.Technique = "RenderScene";
-            zombie.RotateY(90);
 
             objetos.Add(zombie);
-            #endregion
-
+           
             globo = new TgcSceneLoader().loadSceneFromFile(GameModel.mediaDir + "modelos\\GLOBO-TgcScene.xml").Meshes[0];
-            globo.Scale = new TGCVector3(100.5f, 100.5f, 100.5f);
+            globo.Scale = new TGCVector3(60.5f, 60.5f, 60.5f);
+            globo.Position = new TGCVector3(posicion.X, posicion.Y + 200, posicion.Z);
             globo.Effect = efecto;
             globo.Technique = "RenderScene";
+
             objetos.Add(globo);
+            #endregion
         }
 
         public override void Update()
         {
-
+             body.Translate(new Vector3(0, 0, -10));
         }
 
+        public override void Render()
+        {
+            zombie.Position = new TGCVector3(body.InterpolationWorldTransform.M41, body.InterpolationWorldTransform.M42, body.InterpolationWorldTransform.M43);
+            globo.Position = new TGCVector3( body.InterpolationWorldTransform.M41, body.InterpolationWorldTransform.M42 + 200, body.InterpolationWorldTransform.M43);
+
+            //zombie.Transform = new TGCMatrix(body.InterpolationWorldTransform);
+            //globo.Transform = new TGCMatrix(body.InterpolationWorldTransform);
+            base.Render();
+          //  Console.WriteLine("zombie t: " + body.InterpolationWorldTransform);
+        }
     }
 }

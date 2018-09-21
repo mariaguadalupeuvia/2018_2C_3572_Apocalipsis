@@ -42,7 +42,7 @@ namespace TGC.Group.Model.GameObjects
         public void Render()
         {
             plataforma.Render();
-            plataforma.BoundingBox.Render();
+           // plataforma.BoundingBox.Render();
         }
 
         public void Dispose()

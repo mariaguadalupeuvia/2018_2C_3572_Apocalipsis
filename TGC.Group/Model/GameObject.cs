@@ -8,12 +8,10 @@ using TGC.Core.SceneLoader;
 
 namespace TGC.Group.Model
 {
-    public abstract class GameObject //: IRenderObject
+    public abstract class GameObject 
     {
         protected Effect efecto;
         protected List<IRenderObject> objetos = new List<IRenderObject>();
-
-       // bool IRenderObject.AlphaBlendEnable { get => false; set => objeto.AlphaBlendEnable = value; }
 
         public abstract void Init();
         public abstract void Update();

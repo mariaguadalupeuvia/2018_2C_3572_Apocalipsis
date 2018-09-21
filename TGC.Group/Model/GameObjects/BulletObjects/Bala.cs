@@ -1,4 +1,5 @@
 ﻿using BulletSharp;
+using BulletSharp.Math;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -31,28 +32,21 @@ namespace TGC.Group.Model.GameObjects.BulletObjects
             this.canion = canion;
         }
 
-        public void init()
+        public void init(string textura)
         {
             var d3dDevice = D3DDevice.Instance.Device;
 
-            //#region configurarEfecto
-            //efecto = TgcShaders.loadEffect(GameModel.shadersDir + "shaderPlanta.fx");
-            //#endregion
-
             #region configurarObjeto
 
-            var texture = TgcTexture.createTexture(D3DDevice.Instance.Device, GameModel.mediaDir + "modelos\\Textures\\Canionero.jpg");
+            var texture = TgcTexture.createTexture(D3DDevice.Instance.Device, GameModel.mediaDir + "modelos\\Textures\\" + textura + ".jpg");
             esfera = new TGCSphere(1, texture.Clone(), TGCVector3.Empty);
             esfera.Scale = new TGCVector3(40.5f, 40.5f, 40.5f);
             esfera.Position = canion.Position;
             esfera.Rotation = canion.Rotation;
-            //esfera.Effect = efecto;
-            //esfera.Technique = "RenderScene";
-            
-            //Tgc no crea el vertex buffer hasta invocar a update values.
             esfera.updateValues();
           
             objetos.Add(esfera);
+            
             #endregion
         }
 
@@ -72,7 +66,13 @@ namespace TGC.Group.Model.GameObjects.BulletObjects
 
         public void render()
         {
-            esfera.Transform = TGCMatrix.Scaling(10, 10, 10) * new TGCMatrix(body.InterpolationWorldTransform);
+            try //el body muere antes al collisionar y tira exception
+            {
+                body.Translate(new Vector3(7, 0, 7));
+                esfera.Transform = TGCMatrix.Scaling(10, 10, 10) * new TGCMatrix(body.InterpolationWorldTransform);
+            }
+            catch { }
+            
             esfera.Render();
         }
 

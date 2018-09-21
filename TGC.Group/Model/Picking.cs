@@ -10,26 +10,45 @@ using TGC.Core.Input;
 using TGC.Core.Mathematica;
 using TGC.Core.SceneLoader;
 using TGC.Group.Model.GameObjects;
+using Microsoft.DirectX.Direct3D;
+using TGC.Core.Shaders;
+using TGC.Core.Direct3D;
 
 namespace TGC.Group.Model
 {
     public class Picking
     {
         #region variables
-        List<Plataforma> pickingObjects;
+        List<Plataforma> pickingObjects = new List<Plataforma>();
         private TGCVector3 collisionPoint;
         private TGCBox collisionPointMesh;
         private TgcPickingRay pickingRay;
         private bool selected;
         private TgcMesh selectedMesh;
+        TgcMesh isla;
         #endregion
+
+        private void crearTableroPicking(int filas, int columnas)
+        {
+            int i, j;
+            int x = 100, y = 400, z = 1500;
+
+            for ( i = 0; i< filas; i++)
+            {
+                for ( j = 0; j < columnas; j++)
+                {
+                    pickingObjects.Add(new Plataforma(new TGCVector3(x, y, z)));
+                    z += 100;
+                }
+                x += 100;
+                z = 1500;
+            }
+        }
 
         public void Init(TgcD3dInput Input)
         {
-            pickingObjects = new List<Plataforma>() { new Plataforma(new TGCVector3(800f, 320f, 550f)),
-                                                      new Plataforma(new TGCVector3(700f, 320f, 550f)),
-                                                      new Plataforma(new TGCVector3(600f, 320f, 550f)),
-                                                      new Plataforma(new TGCVector3(500f, 320f, 550f))};
+            crearTableroPicking(5,9);
+            crearIsla();
             pickingRay = new TgcPickingRay(Input);
 
             //Crear caja para marcar en que lugar hubo colision
@@ -38,12 +57,24 @@ namespace TGC.Group.Model
             selected = false;
         }
 
-        public void Update()
+        private void crearIsla()
         {
+            #region configurarEfecto
+            //var d3dDevice = D3DDevice.Instance.Device;
+            //Texture bumpMap = TextureLoader.FromFile(d3dDevice, GameModel.mediaDir + "texturas\\terrain\\NormalMapMar.png");
+            Effect efecto = TgcShaders.loadEffect(GameModel.shadersDir + "shaderPlanta.fx");
+            //efecto.SetValue("NormalMap", bumpMap);
+            #endregion
             
+            isla = new TgcSceneLoader().loadSceneFromFile(GameModel.mediaDir + "modelos\\Isla-TgcScene.xml").Meshes[0];
+            isla.Scale = new TGCVector3(500.5f, 300.5f, 800.5f);
+            isla.Effect = efecto;
+            isla.Technique = "RenderScene";
+            isla.Position = new TGCVector3(400, 340f, 1800f);
+            isla.RotateZ(3.1f);
         }
 
-        public void Render(TgcD3dInput Input)
+        public TGCVector3 Update(TgcD3dInput Input)
         {
             #region chequeoDeColision
 
@@ -69,6 +100,19 @@ namespace TGC.Group.Model
             }
             #endregion
 
+            if (selectedMesh != null )
+            {
+                return selectedMesh.Position;
+            }
+            else
+            {
+                return new TGCVector3(100, 320, 500);
+            }
+            
+        }
+
+        public void Render()
+        {
             #region renderizado
             pickingObjects.ForEach(p => p.Render());
 
@@ -83,11 +127,14 @@ namespace TGC.Group.Model
                 collisionPointMesh.Render();
             }
             #endregion
+
+            isla.Render();
         }
 
         public void Dispose()
         {
             pickingObjects.ForEach(p => p.Dispose());
+            isla.Dispose();
         }
     }
 }

@@ -1,4 +1,3 @@
-
 using TGC.Core.Direct3D;
 using TGC.Core.Example;
 using TGC.Core.Mathematica;
@@ -13,6 +12,7 @@ using TGC.Group.Model.Gui;
 using TGC.Group.Model.GameObjects.BulletObjects;
 using System.Collections.Generic;
 using System;
+using Microsoft.DirectX.DirectInput;
 
 namespace TGC.Group.Model
 {
@@ -39,22 +39,20 @@ namespace TGC.Group.Model
         }
 
         #region variables
-        List<GameObject> gameObjects = new List<GameObject>() { new Skybox(), new Terreno() };
+        List<GameObject> gameObjects = new List<GameObject>() { new Skybox(), new Terreno() , new Escenario()};
         GameObject agua = new Agua(); //los objetos transparentes se renderean arriba de todo
 
         private GamePhysics physicWorld = new GamePhysics(); // este va a tener solo objetos colisionables
         //private Bullet prueba = new Bullet();
         private Gui.Gui gui = new Gui.Gui();
-        private Escenario escenario = new Escenario();
-        private Planta planta = new Planta();
-
-       
+      //  private Escenario escenario = new Escenario();
+        public GameLogic logica = new GameLogic();
 
         public static float time = 0.0f;
         public static string mediaDir;
         public static string shadersDir;
 
-        private Picking picker = new Picking();
+        
         #endregion
 
         public override void Init()
@@ -78,20 +76,18 @@ namespace TGC.Group.Model
 
             gameObjects.ForEach(g => g.Init());
             physicWorld.Init();
-            // physicWorld.addBulletObject(new Vida());
-            //  physicWorld.addBulletObject(new Zombie());
-            // prueba.Init();
+           // physicWorld.addBulletObject(new Caja(physicWorld));
+            //prueba.Init();
             gui.Init();
-            escenario.Init();
+         //   escenario.Init();
             agua.Init();
-            planta.Init(physicWorld);
-            picker.Init(Input);
+            logica.Init(physicWorld, Input);
 
             #endregion
 
             Camara = new CamaraPersonal(new TGCVector3(1500f, 450f, 1500f), Input);
         }
-    
+
         public override void Update()
         {
             PreUpdate();
@@ -100,12 +96,12 @@ namespace TGC.Group.Model
             time += 0.003f;
             gameObjects.ForEach(g => g.Update());
             physicWorld.Update();
-            escenario.Update();
+           // escenario.Update();
            // prueba.Update();
-            planta.update(Input);
             agua.Update();
+            logica.Update(Input);
             #endregion
-           
+
             PostUpdate();
         }
 
@@ -116,11 +112,11 @@ namespace TGC.Group.Model
             #region render
             gameObjects.ForEach(g => g.Render());
             physicWorld.Render();
-            escenario.Render();
+           // escenario.Render();
             //prueba.Render();
-            planta.Render();
+            logica.Render();
             agua.Render();
-            picker.Render(Input);
+            
             gui.Render();
             #endregion
 
@@ -134,10 +130,9 @@ namespace TGC.Group.Model
             physicWorld.Dispose();
             //prueba.Dispose();
             agua.Dispose();
-            planta.Dispose();
+            logica.Dispose();
             gui.Dispose();
-            picker.Dispose();
-            escenario.Dispose();
+          //  escenario.Dispose();
             #endregion
         }
 

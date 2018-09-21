@@ -14,7 +14,7 @@ namespace TGC.Group.Model.GameObjects
     public class Terreno : GameObject
     {
         TgcSimpleTerrain terrain = new TgcSimpleTerrain();
-        public static float t;
+       // public static float t;
 
         public override void Init()
         {
@@ -32,24 +32,13 @@ namespace TGC.Group.Model.GameObjects
             terrain.Effect = efecto;
             terrain.Technique = "RenderScene";
 
- 
             objetos.Add(terrain);
             #endregion
-
-            //float y = alturaEnPunto(12,12);
         }
 
         public override void Update()
         {
            
         }
-
-        //public float alturaEnPunto(int x, int z)
-        //{
-        //    int[,] mat = terrain.HeightmapData;
-
-        //    Console.WriteLine(mat[x,z].ToString());
-        //    return 0.0f;
-        //}
     }
 }

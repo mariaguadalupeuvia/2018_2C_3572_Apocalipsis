@@ -14,50 +14,28 @@ using TGC.Group.Model.GameObjects.BulletObjects;
 
 namespace TGC.Group.Model.GameObjects
 {
-    public class Planta
+    public abstract class Planta
     {
-        private Canion canion;
-        private TgcMesh planta;
+        protected int nivelResistencia;
+        protected int costoEnSoles;
         protected Microsoft.DirectX.Direct3D.Effect efecto;
+        protected GamePhysics physicWorld;
 
         public void Init(GamePhysics physicWorld)
         {
-            var d3dDevice = D3DDevice.Instance.Device;
+            this.physicWorld = physicWorld;
 
             #region configurarEfecto
             efecto = TgcShaders.loadEffect(GameModel.shadersDir + "shaderPlanta.fx");
             #endregion
-
-            #region configurarObjetos
-
-            canion = new Canion();
-            canion.Init(physicWorld);
-
-            planta = new TgcSceneLoader().loadSceneFromFile(GameModel.mediaDir + "modelos\\PLANTA-TgcScene.xml").Meshes[0];
-            planta.Scale = new TGCVector3(35.5f, 35.5f, 35.5f);
-            planta.Position = new TGCVector3(500f, 200f, 1500f);
-
-            planta.Effect = efecto;
-            planta.Technique = "RenderScene";
-
-            #endregion
         }
 
-        public void update(TgcD3dInput Input)
-        {
-            canion.update(Input);
-        }
+        public abstract void cambiarTecnicaShader(string tecnica);
 
-        public void Render()
-        {
-            planta.Render();
-            canion.Render();
-        }
+        public abstract void Update(TgcD3dInput Input);
+        public abstract void Render();
+        public abstract void Dispose();
+        public abstract int getCostoEnSoles();
 
-        public void Dispose()
-        {
-            canion.Dispose();
-            planta.Dispose();
-        }
     }
 }

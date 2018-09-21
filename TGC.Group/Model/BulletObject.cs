@@ -25,7 +25,6 @@ namespace TGC.Group.Model
 
         public override void Init()
         {
-           
         }
 
         public void crearBody(TGCVector3 origen)//este lo usan los zombies
@@ -40,8 +39,28 @@ namespace TGC.Group.Model
 
             body = new RigidBody(ballInfo);
             callback = new CollisionCallback(this, physicWorld);
-
         }
+
+        //public void crearBodyZombie(TGCVector3 origen)//este lo usan los zombies
+        //{
+        //    var ballShape = new SphereShape(radio);
+        //    var ballTransform = TGCMatrix.Identity;
+        //    ballTransform.Origin = origen;
+
+        //    var ballMotionState = new DefaultMotionState(ballTransform.ToBsMatrix);
+        //    var ballLocalInertia = ballShape.CalculateLocalInertia(masa);
+        //    var ballInfo = new RigidBodyConstructionInfo(masa, ballMotionState, ballShape, ballLocalInertia);
+           
+        //    body = new RigidBody(ballInfo);
+
+        //    var dir = new TGCVector3(0, 0, 1).ToBsVector;
+        //    //dir.Normalize();
+        //    //body.LinearVelocity = dir * 75;
+        //    //body.LinearFactor = TGCVector3.One.ToBsVector;
+        //    //body.ApplyImpulse(dir, origen.ToBsVector);
+
+        //    callback = new CollisionCallback(this, physicWorld);
+        //}
 
         public void crearBody(TGCVector3 origen, TGCVector3 director)//este es para los disparos
         {
@@ -49,19 +68,16 @@ namespace TGC.Group.Model
             var ballTransform = TGCMatrix.Identity;
             ballTransform.Origin = origen;
 
-            //var ballTransform = TGCMatrix.RotationYawPitchRoll(MathUtil.SIMD_HALF_PI, MathUtil.SIMD_QUARTER_PI, MathUtil.SIMD_2_PI).ToBsMatrix;
-            //ballTransform.Origin = new TGCVector3(0, 600, 0).ToBsVector;
-
             var ballMotionState = new DefaultMotionState(ballTransform.ToBsMatrix);
-            //Podriamos no calcular la inercia para que no rote, pero es correcto que rote tambien.
             var ballLocalInertia = ballShape.CalculateLocalInertia(masa);
             var ballInfo = new RigidBodyConstructionInfo(masa, ballMotionState, ballShape, ballLocalInertia);
            
             body = new RigidBody(ballInfo);
-            var dir = director.ToBsVector;// new TGCVector3(100, 100, 1).ToBsVector;
+
+            var dir = director.ToBsVector;//new TGCVector3(100, 100, 1).ToBsVector;
             dir.Normalize();
             body.LinearVelocity = dir * 75;
-           // body.LinearFactor = TGCVector3.One.ToBsVector;
+            //body.LinearFactor = TGCVector3.One.ToBsVector;
             body.ApplyImpulse(dir , new TGCVector3(0, 0, 0).ToBsVector);
             callback = new CollisionCallback(this, physicWorld);
         }
@@ -74,8 +90,9 @@ namespace TGC.Group.Model
 
         public override void Update()
         {
-            //Console.WriteLine("Update no implementado");
-            //throw new NotImplementedException();
+           // Console.WriteLine("Update no implementado");
         }
+
+        
     }
 }

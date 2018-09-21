@@ -99,6 +99,7 @@
     <Compile Include="Model\BulletObject.cs" />
     <Compile Include="Model\CamaraPersonal.cs" />
     <Compile Include="Model\Escenario.cs" />
+    <Compile Include="Model\FactoryPlanta.cs" />
     <Compile Include="Model\GameLogic.cs" />
     <Compile Include="Model\GameModel.cs" />
     <Compile Include="Model\GameObject.cs" />
@@ -109,9 +110,14 @@
     <Compile Include="Model\GameObjects\BulletObjects\Vida.cs" />
     <Compile Include="Model\GameObjects\BulletObjects\Zombie.cs" />
     <Compile Include="Model\GameObjects\Canion.cs" />
+    <Compile Include="Model\GameObjects\Chile.cs" />
+    <Compile Include="Model\GameObjects\Congelador.cs" />
+    <Compile Include="Model\GameObjects\Girasol.cs" />
+    <Compile Include="Model\GameObjects\Mina.cs" />
     <Compile Include="Model\GameObjects\Planta.cs" />
     <Compile Include="Model\GameObjects\Plataforma.cs" />
     <Compile Include="Model\GameObjects\Skybox.cs" />
+    <Compile Include="Model\GameObjects\Sol.cs" />
     <Compile Include="Model\GameObjects\Terreno.cs" />
     <Compile Include="Model\Gui\CustomBitmap.cs" />
     <Compile Include="Model\Gui\CustomSprite.cs" />

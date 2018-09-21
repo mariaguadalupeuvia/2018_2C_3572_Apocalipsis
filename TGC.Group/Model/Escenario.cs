@@ -9,28 +9,22 @@ using Microsoft.DirectX.DirectInput;
 
 namespace TGC.Group.Model
 {
-    class Escenario : IRenderObject // aca voy a ir poniendo todos los objetos estaticos (y algunos otros como para probar)
+    class Escenario : GameObject // aca voy a ir poniendo todos los objetos estaticos (y algunos otros como para probar)
     {
+        #region variables
         private List<TgcMesh> meshes = new List<TgcMesh>();
         private List<TgcScene> scenes = new List<TgcScene>();
+        #endregion
 
-        protected Microsoft.DirectX.Direct3D.Effect efecto;
-        public bool AlphaBlendEnable { get; set; }
-
-        public void Init()
+        public override void Init()
         {
             #region variables
-            TgcMesh zombie;
-            TgcMesh zombie1;
-            TgcMesh zombie2;
-            TgcMesh zombie3;
             TgcMesh tubo;
+            TgcMesh flecha;
+
             TgcMesh contenedor;
             TgcMesh helicoptero;
-            TgcMesh canion;
-            TgcMesh planta;
-
-            TgcScene girasoles;
+   
             TgcScene roquedal;
             TgcScene roquedal2;
             TgcScene muelle1;
@@ -40,17 +34,6 @@ namespace TGC.Group.Model
             var loader = new TgcSceneLoader();
 
             #region muelles
-
-                girasoles = loader.loadSceneFromFile(GameModel.mediaDir + "modelos\\GIRASOLES_TUBO-TgcScene.xml");
-                foreach (TgcMesh mesh in girasoles.Meshes)
-                {
-                    mesh.Scale =new TGCVector3(25.5f, 25.5f, 25.5f);
-                    mesh.Position = new TGCVector3(mesh.Position.X, 260f, mesh.Position.Z);
-                    mesh.Effect = efecto;
-                    mesh.Technique = "RenderScene";
-                }
-            scenes.Add(girasoles);
-
                 muelle1 = loader.loadSceneFromFile(GameModel.mediaDir + "modelos\\muelleGrande-TgcScene.xml");
                 foreach (TgcMesh mesh in muelle1.Meshes)
                 {
@@ -85,47 +68,26 @@ namespace TGC.Group.Model
             scenes.Add(roquedal2);
             #endregion
 
-            #region zombies
-
-            zombie = new TgcSceneLoader().loadSceneFromFile(GameModel.mediaDir + "modelos\\ZombieZero-TgcScene.xml").Meshes[0];
-                zombie.Scale = new TGCVector3(55.5f, 55.5f, 55.5f);
-                zombie.Position = new TGCVector3(500f, 250f, 1800f);
-                zombie.Effect = efecto;
-                zombie.Technique = "RenderScene";
-            meshes.Add(zombie);
-
-                zombie1 = new TgcSceneLoader().loadSceneFromFile(GameModel.mediaDir + "modelos\\ZombieZero-TgcScene.xml").Meshes[0];
-                zombie1.Scale = new TGCVector3(55.5f, 55.5f, 55.5f);
-                zombie1.Position = new TGCVector3(800f, 250f,2000f);
-                zombie1.Effect = efecto;
-                zombie1.Technique = "RenderScene";
-            meshes.Add(zombie1);
-
-                zombie2 = new TgcSceneLoader().loadSceneFromFile(GameModel.mediaDir + "modelos\\ZombieZero-TgcScene.xml").Meshes[0];
-                zombie2.Scale = new TGCVector3(55.5f, 55.5f, 55.5f);
-                zombie2.Position = new TGCVector3(600f, 250f, 1400f);
-                zombie2.Effect = efecto;
-                zombie2.Technique = "RenderScene";
-            meshes.Add(zombie2);
-
-                zombie3 = new TgcSceneLoader().loadSceneFromFile(GameModel.mediaDir + "modelos\\ZombieZero-TgcScene.xml").Meshes[0];
-                zombie3.Scale = new TGCVector3(55.5f, 55.5f, 55.5f);
-                zombie3.Position = new TGCVector3(900f, 250f, 1300f);
-                zombie3.Effect = efecto;
-                zombie3.Technique = "RenderScene";
-            meshes.Add(zombie3);
-
-            #endregion
-
             #region otros
-
-                tubo = new TgcSceneLoader().loadSceneFromFile(GameModel.mediaDir + "modelos\\TUBO_MARIO-TgcScene.xml").Meshes[0];
-                tubo.Scale = new TGCVector3(35.5f, 35.5f, 35.5f);
-                tubo.Position = new TGCVector3(1500f, 150f, 1500f);
-                tubo.Effect = efecto;
-                tubo.Technique = "RenderScene";
+            tubo = new TgcSceneLoader().loadSceneFromFile(GameModel.mediaDir + "modelos\\TUBO_MARIO-TgcScene.xml").Meshes[0];
+            tubo.Scale = new TGCVector3(35.5f, 35.5f, 35.5f);
+            tubo.Position = new TGCVector3(1500f, 150f, 1500f);
+            tubo.Effect = efecto;
+            tubo.Technique = "RenderScene";
 
             meshes.Add(tubo);
+
+            flecha = new TgcSceneLoader().loadSceneFromFile(GameModel.mediaDir + "modelos\\Flecha-TgcScene.xml").Meshes[0];
+            flecha.Scale = new TGCVector3(320.5f, 320.5f, 320.5f);
+            flecha.Position = new TGCVector3(0, 450f, 4800f);
+            flecha.RotateY(150);
+            flecha.RotateZ(150);
+            flecha.Effect = efecto;
+            flecha.Technique = "RenderScene";
+
+            meshes.Add(flecha);
+
+
 
             contenedor = new TgcSceneLoader().loadSceneFromFile(GameModel.mediaDir + "modelos\\contenedor-TgcScene.xml").Meshes[0];
             contenedor.Scale = new TGCVector3(45.5f, 45.5f, 45.5f);
@@ -136,52 +98,33 @@ namespace TGC.Group.Model
             meshes.Add(contenedor);
 
             helicoptero = new TgcSceneLoader().loadSceneFromFile(GameModel.mediaDir + "modelos\\HelicopteroMilitar3-TgcScene.xml").Meshes[0];
-                helicoptero.Scale = new TGCVector3(25.5f, 25.5f, 25.5f);
-                helicoptero.Position = new TGCVector3(5200f, 200f, 500f);
-                helicoptero.RotateY(90);
-                helicoptero.Effect = efecto;
-                helicoptero.Technique = "RenderScene";
+            helicoptero.Scale = new TGCVector3(25.5f, 25.5f, 25.5f);
+            helicoptero.Position = new TGCVector3(5200f, 200f, 500f);
+            helicoptero.RotateY(90);
+            helicoptero.Effect = efecto;
+            helicoptero.Technique = "RenderScene";
 
             meshes.Add(helicoptero);
 
             #endregion
-
-            #region planta
-
-                //canion = new TgcSceneLoader().loadSceneFromFile(GameModel.mediaDir + "modelos\\CANIONERO-TgcScene.xml").Meshes[0];
-                //canion.Scale = new TGCVector3(40.5f, 40.5f, 40.5f);
-                //canion.Position = new TGCVector3(500f, 420f, 1500f);
-                //canion.RotateX(90);
-                //canion.RotateY(90);
-                //canion.Effect = efecto;
-                //canion.Technique = "RenderScene";
-                //gameObjects.Add(canion);
-
-                //planta = new TgcSceneLoader().loadSceneFromFile(GameModel.mediaDir + "modelos\\PLANTA-TgcScene.xml").Meshes[0];
-                //planta.Scale = new TGCVector3(35.5f, 35.5f, 35.5f);
-                //planta.Position = new TGCVector3(500f, 200f, 1500f);
-           
-                //planta.Effect = efecto;
-                //planta.Technique = "RenderScene";
-
-                //gameObjects.Add(planta);
-
-            #endregion
         }
-        public void Update()
+
+        public override void Update()
         {
             efecto.SetValue("_Time", GameModel.time);
         }
-        public void Render()
+
+        public override void Render()
         {
             meshes.ForEach(m => m.Render());
             scenes.ForEach(s => s.RenderAll());
         }
 
-        public void Dispose()
+        public override void Dispose()
         {
             meshes.ForEach(m => m.Dispose());
             scenes.ForEach(s => s.DisposeAll());
         }
+
     }
 }

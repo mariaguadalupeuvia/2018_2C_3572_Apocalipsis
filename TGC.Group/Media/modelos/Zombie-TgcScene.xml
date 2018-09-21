@@ -1,0 +1,18 @@
+<tgcScene>
+	<name>Zombie</name>
+	<texturesExport enabled='true' dir='Textures'/>
+	<lightmapExport enabled='false' dir='LightMaps'/>
+	<sceneBoundingBox min='[-1.36132,-2.8816,-0.380374]' max='[1.36132,0.971967,1.09806]'/>
+	<materials count='1'>
+		<m name='MaterialX' type='Standardmaterial'>
+			<ambient>[149.94,149.94,149.94,255.0]</ambient>
+			<diffuse>[149.94,149.94,149.94,255.0]</diffuse>
+			<specular>[229.5,229.5,229.5,255.0]</specular>
+			<opacity>100.0</opacity>
+			<alphaBlendEnable>false</alphaBlendEnable>
+			<bitmap uvTiling='[1.0,1.0]' uvOffset='[0.0,0.0]'>tablero.jpg</bitmap>
+		</m>
+	</materials>
+	<meshes count='1' >
+		<mesh name='ZOMBIE BRAZOS 3' layer='0' type='Original' matId='0' color='[87.0,225.0,87.0]' visibility='1.0' lightmap=''>
+			<boundingBox min='[-1.36132,-2.8816,-0.380374]' max='[1.36132,0.971967,1.09806]'/>
