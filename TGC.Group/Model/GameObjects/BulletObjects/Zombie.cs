@@ -18,17 +18,19 @@ using TGC.Core.Textures;
 
 namespace TGC.Group.Model.GameObjects.BulletObjects
 {
-    class Zombie : BulletObject  
+    public class Zombie : BulletObject  
     {
+        #region variables
         TgcMesh zombie;
         TgcMesh globo;
-        float posicionZ = 3200;
+        float caidaFactor = 0;
+        #endregion
 
-        public Zombie(TGCVector3 posicion, GamePhysics world)
+        public Zombie(TGCVector3 posicion, GameLogic logica)
         {
-            physicWorld = world;
-            crearBody(posicion);// new TGCVector3(500f, 200f, 1500f));
-
+            crearBody(posicion);
+            callback = new CollisionCallbackZombie(logica, this);
+            
             #region configurarEfecto
             efecto = TgcShaders.loadEffect(GameModel.shadersDir + "shaderPlanta.fx");
             #endregion
@@ -36,7 +38,7 @@ namespace TGC.Group.Model.GameObjects.BulletObjects
             #region configurarObjeto
             zombie = new TgcSceneLoader().loadSceneFromFile(GameModel.mediaDir + "modelos\\Zombie7-TgcScene.xml").Meshes[0];
             zombie.Scale = new TGCVector3(55.5f, 55.5f, 55.5f);
-            zombie.Position = posicion;//new TGCVector3(800f, 200f, 1200f);
+            zombie.Position = posicion;
             zombie.Effect = efecto;
             zombie.Technique = "RenderScene";
 
@@ -52,9 +54,17 @@ namespace TGC.Group.Model.GameObjects.BulletObjects
             #endregion
         }
 
+        public void teGolpearon()
+        {
+            globo.Technique = "RenderSceneCongelada";
+            zombie.Technique = "RenderSceneCongelada";
+            caidaFactor = -10;
+        }
+
         public override void Update()
         {
-             body.Translate(new Vector3(0, 0, -10));
+            body.Translate(new Vector3(0, caidaFactor, -10));
+            efecto.SetValue("_Time", GameModel.time);
         }
 
         public override void Render()
@@ -65,7 +75,7 @@ namespace TGC.Group.Model.GameObjects.BulletObjects
             //zombie.Transform = new TGCMatrix(body.InterpolationWorldTransform);
             //globo.Transform = new TGCMatrix(body.InterpolationWorldTransform);
             base.Render();
-          //  Console.WriteLine("zombie t: " + body.InterpolationWorldTransform);
+            //Console.WriteLine("zombie t: " + body.InterpolationWorldTransform);
         }
     }
 }

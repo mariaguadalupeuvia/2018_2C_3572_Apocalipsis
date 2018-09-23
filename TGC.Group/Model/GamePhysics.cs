@@ -6,6 +6,7 @@ using TGC.Core.Direct3D;
 using TGC.Core.Geometry;
 using TGC.Core.Mathematica;
 using TGC.Core.Textures;
+using TGC.Group.Model.GameObjects.BulletObjects;
 
 namespace TGC.Group.Model
 {
@@ -20,7 +21,7 @@ namespace TGC.Group.Model
 
         public List<BulletObject> bulletObjects = new List<BulletObject>();
         public List<BulletObject> desactivados = new List<BulletObject>();
-
+       
         private TgcPlane floorMesh;
         public RigidBody floorBody;
         #endregion
@@ -83,7 +84,9 @@ namespace TGC.Group.Model
             bulletObjects.ForEach(b => dynamicsWorld.ContactTest(b.body, b.callback));
             bulletObjects.ForEach(b => b.Update());
             removerDesactivados();//Al colisionar los disparos mueren
+
             dynamicsWorld.StepSimulation(1 / 60f, 10);
+            
         }
 
         public void Render()

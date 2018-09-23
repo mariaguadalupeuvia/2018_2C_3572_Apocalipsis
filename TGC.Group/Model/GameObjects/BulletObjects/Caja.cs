@@ -21,12 +21,12 @@ namespace TGC.Group.Model.GameObjects.BulletObjects
         private TGCBox boxMesh;
         private TgcMesh planta;
 
-        public Caja(GamePhysics world)
+        public Caja(GameLogic logica)//GamePhysics world)
         {
             crearBody(new TGCVector3(1300f, 360f, 1500f));
             var d3dDevice = D3DDevice.Instance.Device;
 
-            physicWorld = world;
+         //   physicWorld = world;
 
             #region configurarEfecto
             efecto = TgcShaders.loadEffect(GameModel.shadersDir + "shaderPlanta.fx");
@@ -60,7 +60,7 @@ namespace TGC.Group.Model.GameObjects.BulletObjects
             boxMesh = TGCBox.fromSize(new TGCVector3(50, 50, 50), texture);
 
             #endregion
-            callback = new CollisionCallback(this, physicWorld);
+            callback = new CollisionCallback(logica, this);
 
             objetos.Add(boxMesh);
         }

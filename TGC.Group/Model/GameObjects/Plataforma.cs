@@ -17,8 +17,11 @@ namespace TGC.Group.Model.GameObjects
 {
     public class Plataforma : TgcMesh
     {
-        public TgcMesh plataforma { get; set; }
+        #region variables
+        public TgcMesh mesh { get; set; }
+        public bool ocupado { get; set; }
         protected Microsoft.DirectX.Direct3D.Effect efecto;
+        #endregion
 
         public Plataforma(TGCVector3 posicion)
         {
@@ -28,26 +31,28 @@ namespace TGC.Group.Model.GameObjects
             efecto = TgcShaders.loadEffect(GameModel.shadersDir + "shaderPlanta.fx");
             #endregion
 
-            #region configurarObjetos
-            plataforma = new TgcSceneLoader().loadSceneFromFile(GameModel.mediaDir + "modelos\\PLATAFORMA-TgcScene.xml").Meshes[0];
-            plataforma.Scale = new TGCVector3(35.5f, 15.5f, 35.5f);
-            plataforma.Position = posicion;
-            plataforma.Effect = efecto;
-            plataforma.Technique = "RenderScene";
-            plataforma.BoundingBox.setRenderColor(Color.Red);
-            plataforma.AutoTransform = true;
+            #region configurarMesh
+            mesh = new TgcSceneLoader().loadSceneFromFile(GameModel.mediaDir + "modelos\\PLATAFORMA-TgcScene.xml").Meshes[0];
+            mesh.Scale = new TGCVector3(35.5f, 15.5f, 35.5f);
+            mesh.Position = posicion;
+            mesh.Effect = efecto;
+            mesh.Technique = "RenderScene";
+            mesh.BoundingBox.setRenderColor(Color.Red);
+            mesh.AutoTransform = true;
             #endregion
+
+            ocupado = false;
         }
 
         public void Render()
         {
-            plataforma.Render();
-           // plataforma.BoundingBox.Render();
+            mesh.Render();
+           // mesh.BoundingBox.Render();
         }
 
         public void Dispose()
         {
-            plataforma.Dispose();
+            mesh.Dispose();
         }
     }
 }

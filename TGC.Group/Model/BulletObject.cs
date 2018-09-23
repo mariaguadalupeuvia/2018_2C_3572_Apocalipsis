@@ -11,17 +11,19 @@ using TGC.Core.Textures;
 using TGC.Group.Model.GameObjects.BulletObjects;
 using Microsoft.DirectX.Direct3D;
 using BulletSharp.Math;
+using TGC.Core.SceneLoader;
 
 namespace TGC.Group.Model
 {
     public class BulletObject : GameObject
     {
+        #region variables
         public RigidBody body { get; set; }
         public ContactResultCallback callback { get; set; }
-        protected GamePhysics physicWorld;
 
         float radio = 10;
         float masa = 0.1f;
+        #endregion
 
         public override void Init()
         {
@@ -38,48 +40,17 @@ namespace TGC.Group.Model
             var ballInfo = new RigidBodyConstructionInfo(masa, ballMotionState, ballShape, ballLocalInertia);
 
             body = new RigidBody(ballInfo);
-            callback = new CollisionCallback(this, physicWorld);
         }
-
-        //public void crearBodyZombie(TGCVector3 origen)//este lo usan los zombies
-        //{
-        //    var ballShape = new SphereShape(radio);
-        //    var ballTransform = TGCMatrix.Identity;
-        //    ballTransform.Origin = origen;
-
-        //    var ballMotionState = new DefaultMotionState(ballTransform.ToBsMatrix);
-        //    var ballLocalInertia = ballShape.CalculateLocalInertia(masa);
-        //    var ballInfo = new RigidBodyConstructionInfo(masa, ballMotionState, ballShape, ballLocalInertia);
-           
-        //    body = new RigidBody(ballInfo);
-
-        //    var dir = new TGCVector3(0, 0, 1).ToBsVector;
-        //    //dir.Normalize();
-        //    //body.LinearVelocity = dir * 75;
-        //    //body.LinearFactor = TGCVector3.One.ToBsVector;
-        //    //body.ApplyImpulse(dir, origen.ToBsVector);
-
-        //    callback = new CollisionCallback(this, physicWorld);
-        //}
 
         public void crearBody(TGCVector3 origen, TGCVector3 director)//este es para los disparos
         {
-            var ballShape = new SphereShape(radio);
-            var ballTransform = TGCMatrix.Identity;
-            ballTransform.Origin = origen;
+            crearBody(origen);
 
-            var ballMotionState = new DefaultMotionState(ballTransform.ToBsMatrix);
-            var ballLocalInertia = ballShape.CalculateLocalInertia(masa);
-            var ballInfo = new RigidBodyConstructionInfo(masa, ballMotionState, ballShape, ballLocalInertia);
-           
-            body = new RigidBody(ballInfo);
-
-            var dir = director.ToBsVector;//new TGCVector3(100, 100, 1).ToBsVector;
+            var dir = director.ToBsVector;
             dir.Normalize();
             body.LinearVelocity = dir * 75;
             //body.LinearFactor = TGCVector3.One.ToBsVector;
-            body.ApplyImpulse(dir , new TGCVector3(0, 0, 0).ToBsVector);
-            callback = new CollisionCallback(this, physicWorld);
+            body.ApplyImpulse(dir , new TGCVector3(0, 0, 0).ToBsVector);  
         }
 
         public override void Dispose()
@@ -92,7 +63,6 @@ namespace TGC.Group.Model
         {
            // Console.WriteLine("Update no implementado");
         }
-
-        
+ 
     }
 }

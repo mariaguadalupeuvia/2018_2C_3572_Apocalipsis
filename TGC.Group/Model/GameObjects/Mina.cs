@@ -13,9 +13,9 @@ namespace TGC.Group.Model.GameObjects
     {
         private TgcMesh mina;
 
-        public Mina(GamePhysics world, TGCVector3 posicion)
+        public Mina(TGCVector3 posicion, GameLogic logica)
         {
-            base.Init(world);
+            base.Init(logica);
 
             #region configurarObjeto
 

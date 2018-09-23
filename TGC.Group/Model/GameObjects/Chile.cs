@@ -13,9 +13,9 @@ namespace TGC.Group.Model.GameObjects
     {
         private TgcMesh chile;
 
-        public Chile(GamePhysics world, TGCVector3 posicion)
+        public Chile(TGCVector3 posicion, GameLogic logica)
         {
-            base.Init(world);
+            base.Init(logica);
 
             #region configurarObjeto
             float factorEscalado = 16.0f;
@@ -23,7 +23,7 @@ namespace TGC.Group.Model.GameObjects
             chile.Scale = new TGCVector3(factorEscalado, factorEscalado, factorEscalado);
             chile.Position =  new TGCVector3(posicion.X , posicion.Y - 40, posicion.Z + 20);
             chile.Effect = efecto;
-            chile.Technique = "RenderScene";
+            chile.Technique = "Explosivo";
 
             #endregion
         }
@@ -40,8 +40,9 @@ namespace TGC.Group.Model.GameObjects
 
         public override void Update(TgcD3dInput Input)
         {
-          
+            efecto.SetValue("_Time", GameModel.time);
         }
+
         public override int getCostoEnSoles()
         {
             return 300;

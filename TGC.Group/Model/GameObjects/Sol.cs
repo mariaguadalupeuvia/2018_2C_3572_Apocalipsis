@@ -5,19 +5,25 @@ using TGC.Core.Geometry;
 using TGC.Core.Mathematica;
 using TGC.Core.SceneLoader;
 using TGC.Core.Textures;
+using TGC.Group.Model.GameObjects.BulletObjects;
 
 namespace TGC.Group.Model.GameObjects
 {
     public class Sol : BulletObject
     {
+        #region variables
         private TGCSphere esfera;
-        private TgcMesh canion;
+        private TgcMesh girasol;
+        #endregion
 
-        public Sol(TgcMesh canion, GamePhysics world)
+        public Sol(TgcMesh girasol, GameLogic logica)
         {
-            physicWorld = world;
-            crearBody(canion.Position, new TGCVector3(1, 2, 1));
-            this.canion = canion;
+            crearBody(girasol.Position, new TGCVector3(1, 2, 1));
+            logica.addBulletObject(this);
+            callback = new CollisionCallbackFloor(logica, this);
+            
+            this.girasol = girasol;
+            GameLogic.cantidadEnergia += 50;
         }
 
         public void init()
@@ -29,9 +35,8 @@ namespace TGC.Group.Model.GameObjects
             var texture = TgcTexture.createTexture(D3DDevice.Instance.Device, GameModel.mediaDir + "modelos\\Textures\\mina.jpg");
             esfera = new TGCSphere(1, texture.Clone(), TGCVector3.Empty);
             esfera.Scale = new TGCVector3(60.5f, 60.5f, 60.5f);
-            esfera.Position = canion.Position;
-            esfera.Rotation = canion.Rotation;
-
+            esfera.Position = girasol.Position;
+            esfera.Rotation = girasol.Rotation;
             esfera.updateValues();
 
             objetos.Add(esfera);
@@ -39,22 +44,12 @@ namespace TGC.Group.Model.GameObjects
             #endregion
         }
 
-
-        public void render()
+        public override void Render()
         {
-            try //el body muere antes al collisionar y tira exception
-            {
-               // body.Translate(new Vector3(7, 0, 7));
-                esfera.Transform = TGCMatrix.Scaling(20, 20, 20) * new TGCMatrix(body.InterpolationWorldTransform);
-            }
-            catch { }
-
+            //el body muere antes al colisionar y tira exception
+            esfera.Transform = TGCMatrix.Scaling(15, 15, 15) * new TGCMatrix(body.InterpolationWorldTransform);
             esfera.Render();
         }
 
-        public void dispose()
-        {
-            esfera.Dispose();
-        }
     }
 }

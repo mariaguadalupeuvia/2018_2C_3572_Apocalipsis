@@ -88,11 +88,6 @@ namespace TGC.Group.Model
         //    return TGCVector3.Cross(vector2, vector1);
         //}
 
-
-
-
-
-
         /// <summary>
         ///     Constructor de la camara a partir de un TgcD3dInput y un positionEye. Los atributos mouseCenter a partir del centro del a pantalla, RotationSpeed 1.0f,
         ///     MovementSpeed y JumpSpeed 500f, el directionView (0,0,-1)
@@ -186,6 +181,7 @@ namespace TGC.Group.Model
         /// <param name="elapsedTime"></param>
         public override void UpdateCamera(float elapsedTime)
         {
+            #region input
             var moveVector = TGCVector3.Empty;
             //Forward
             if (Input.keyDown(Key.W))
@@ -222,6 +218,7 @@ namespace TGC.Group.Model
             {
                 moveVector += TGCVector3.Down * JumpSpeed;
             }
+            #endregion
 
             if (Input.keyPressed(Key.L) || Input.keyPressed(Key.Escape))
             {

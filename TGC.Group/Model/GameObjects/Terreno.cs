@@ -14,7 +14,6 @@ namespace TGC.Group.Model.GameObjects
     public class Terreno : GameObject
     {
         TgcSimpleTerrain terrain = new TgcSimpleTerrain();
-       // public static float t;
 
         public override void Init()
         {
@@ -31,7 +30,7 @@ namespace TGC.Group.Model.GameObjects
             terrain.loadHeightmap(GameModel.mediaDir + "texturas\\terrain\\Heightmap3.jpg", 255f, 1.6f, new TGCVector3(0, -100, 0));
             terrain.Effect = efecto;
             terrain.Technique = "RenderScene";
-
+            
             objetos.Add(terrain);
             #endregion
         }

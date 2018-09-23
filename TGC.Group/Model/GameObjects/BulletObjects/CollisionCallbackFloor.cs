@@ -1,16 +1,18 @@
 ﻿using BulletSharp;
-using BulletSharp.Math;
 using System;
-using System.Drawing;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace TGC.Group.Model.GameObjects.BulletObjects
 {
-    public class CollisionCallback : ContactResultCallback // este es para disparos de plantas
+    public class CollisionCallbackFloor : ContactResultCallback // este es para disparos de plantas
     {
-        private BulletObject bulletObject;//este seria una bala o disparo
-                                          
+        private BulletObject bulletObject;//este seria un sol o algo que no daña
         GameLogic logica;
-        public CollisionCallback(GameLogic logica,BulletObject objeto)
+
+        public CollisionCallbackFloor(GameLogic logica, BulletObject objeto)
         {
             this.logica = logica;
             bulletObject = objeto;
@@ -24,13 +26,9 @@ namespace TGC.Group.Model.GameObjects.BulletObjects
             {
                 if (logica.floor() == colObj1Wrap.CollisionObject)
                 {
-                    Console.WriteLine("Colisione con floor!!!");
+                    Console.WriteLine("Un sol colisiono con floor!!!");
                     //si choqué con el piso me despido de este mundo 
-                     logica.desactivar(bulletObject);
-                }
-                else if (logica.esZombie((RigidBody)colObj1Wrap.CollisionObject) )// esZombie() tiene efecto cuando es true
-                {
-                    Console.WriteLine("Colisione con un zombie!!!");
+                    logica.desactivar(bulletObject);
                 }
             }
             return 0;

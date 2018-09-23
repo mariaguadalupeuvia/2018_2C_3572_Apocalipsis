@@ -17,7 +17,6 @@ namespace TGC.Group.Model.GameObjects
     public class Canion : Planta
     {
         #region variables
-        List<Bala> disparos = new List<Bala>();
         private TgcMesh canion;
         private TgcMesh tallo;
         float axisRotation = 0;
@@ -25,9 +24,9 @@ namespace TGC.Group.Model.GameObjects
         private const float AXIS_ROTATION_SPEED = 0.02f;
         #endregion
 
-        public Canion(GamePhysics world, TGCVector3 posicion)
+        public Canion(TGCVector3 posicion, GameLogic logica)
         {
-            base.Init(world);
+            base.Init(logica);
 
             #region configurarObjeto
             float factorEscalado = 20.0f;
@@ -47,15 +46,12 @@ namespace TGC.Group.Model.GameObjects
 
             #endregion
 
-            physicWorld = world;
         }
 
         public void disparar()
         {
-            Bala disparo = new Bala(canion, physicWorld);
-            disparo.init("Canionero");
-            physicWorld.addBulletObject(disparo);
-            disparos.Add(disparo);  
+            Bala disparo = new Bala(canion, logica);
+            disparo.init("Canionero"); //el parametro es el nombre de la textura para el mesh 
         }
 
         public override void Update(TgcD3dInput Input)
@@ -95,14 +91,12 @@ namespace TGC.Group.Model.GameObjects
         {
             canion.Render();
             tallo.Render();
-            disparos.ForEach(d => d.render());
         }
 
         public override void Dispose()
         {
             canion.Dispose();
             tallo.Dispose();
-            disparos.ForEach(d => d.dispose());
         }
 
         public override int getCostoEnSoles()

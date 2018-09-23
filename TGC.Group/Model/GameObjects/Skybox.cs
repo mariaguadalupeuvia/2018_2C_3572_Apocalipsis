@@ -47,7 +47,6 @@ namespace TGC.Group.Model.GameObjects
             skybox.SkyEpsilon = 25f;
 
             skybox.Init();
-
             objetos.Add(skybox);
             #endregion
         }

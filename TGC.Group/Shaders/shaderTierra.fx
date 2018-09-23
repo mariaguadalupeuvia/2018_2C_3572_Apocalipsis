@@ -107,9 +107,19 @@ VS_OUTPUT vs_main(VS_INPUT Input)
 
 float4 ps_main(float3 Texcoord: TEXCOORD0, float3 N : TEXCOORD1, float3 Pos : TEXCOORD2, float3 Pos2 : TEXCOORD3, float3 WorldPosition : TEXCOORD4, float3 WorldNormal : TEXCOORD5, float3 Tangent : TEXCOORD6, float3 Binormal : TEXCOORD7, float fogfactor : FOG) : COLOR0
 {
-	//Obtener el texel de textura
-		float4 fvBaseColor = tex2D(diffuseMap, Texcoord);
+	float4 RGBColor = fogColor;
+	//para calcular la iluminacion del pixel
+	float ld = 0;		// luz difusa
+	float le = 0;		// luz specular
 
+	//calcular los factores de fog y alpha blending que actuan en profundidad
+	fogfactor = saturate((5000.0f - Pos2.z) / (fogStart)); // (fogEnd - z) /(fogEnd - fogStart)
+	float blendfactor = saturate((5000.0f - Pos2.z) / (blendStart));
+	//Obtener el texel de textura
+	float4 fvBaseColor = tex2D(diffuseMap, Texcoord);
+
+	if (Pos2.z < 2000)//si el pixel estaba lejos en world space va sin detalles
+	{ 
 		//cambio las coordenadas de textura
 		float3 newTexcoord = Texcoord;
 		//repito la textura varias veces (depende de _zoom)
@@ -119,34 +129,26 @@ float4 ps_main(float3 Texcoord: TEXCOORD0, float3 N : TEXCOORD1, float3 Pos : TE
 		newTexcoord = frac(newTexcoord);
 
 		// Calculate the normal, including the information in the bump map
-		   float3 bump = BumpConstant * (tex2D(bumpSampler, newTexcoord) - (0.5, 0.5, 0.5));
-		   float3 bumpNormal = N + (bump.x * Tangent + bump.y * Binormal);
-		   N = normalize(bumpNormal);
+		float3 bump = BumpConstant * (tex2D(bumpSampler, newTexcoord) - (0.5, 0.5, 0.5));
+		float3 bumpNormal = N + (bump.x * Tangent + bump.y * Binormal);
+		N = normalize(bumpNormal);
+	}
 
-		   //calculo la iluminacion del pixel
-		   float ld = 0;		// luz difusa
-		   float le = 0;		// luz specular
+	// calcula la luz diffusa
+	float3 LD = normalize(fvLightPosition - float3(Pos.x,Pos.y,Pos.z));
+	ld += saturate(dot(N, LD))*k_ld;
 
-		   // calcula la luz diffusa
-		   float3 LD = normalize(fvLightPosition - float3(Pos.x,Pos.y,Pos.z));
-		   ld += saturate(dot(N, LD))*k_ld;
+	// calcula la reflexion specular
+	float3 D = normalize(float3(Pos.x,Pos.y,Pos.z) - fvEyePosition);
+	float ks = saturate(dot(reflect(LD,N), D));
+	ks = pow(ks,fSpecularPower);
+	le += ks * k_ls;	
 
-		   // calcula la reflexion specular
-		   float3 D = normalize(float3(Pos.x,Pos.y,Pos.z) - fvEyePosition);
-		   float ks = saturate(dot(reflect(LD,N), D));
-		   ks = pow(ks,fSpecularPower);
-		   le += ks * k_ls;
+	fvBaseColor = (fvBaseColor *  fogfactor) + (fogColor * (1.0 - fogfactor));
+	RGBColor.rgb = saturate(fvBaseColor * (saturate(k_la + ld)) + le);
+	RGBColor.a = blendfactor;
 
-		   	//calcular los factores de fog y alpha blending que actuan en profundidad
-			fogfactor = saturate(( 5000.0f - Pos2.z ) / (fogStart)); // (fogEnd - z) /(fogEnd - fogStart)
-			float blendfactor = saturate((5000.0f - Pos2.z ) / ( blendStart));
-
-			float4 RGBColor = 0;
-			fvBaseColor = (fvBaseColor *  fogfactor) + (fogColor * (1.0 -  fogfactor));
-			RGBColor.rgb = saturate(fvBaseColor*(saturate(k_la+ld)) + le);
-			RGBColor.a = blendfactor;
-
-		   return RGBColor;
+	return RGBColor;
 }
 
 technique RenderScene

@@ -17,15 +17,14 @@ namespace TGC.Group.Model.GameObjects
     public class Girasol : Planta
     {
         #region variables
-        List<Sol> soles = new List<Sol>();
         private TgcMesh girasol;
         private TgcMesh tallo;
         private int espera = 0;
         #endregion
 
-        public Girasol(GamePhysics world, TGCVector3 posicion)
+        public Girasol(TGCVector3 posicion, GameLogic logica)
         {
-            base.Init(world);
+            base.Init(logica);
 
             #region configurarObjeto
 
@@ -45,23 +44,19 @@ namespace TGC.Group.Model.GameObjects
             tallo.Effect = efecto;
             tallo.Technique = "RenderScene";
             #endregion
-
-            physicWorld = world;
         }
 
         public void disparar()
         {
-            Sol disparo = new Sol( girasol, physicWorld);
+            Sol disparo = new Sol( girasol, logica);
             disparo.init();
             GameLogic.cantidadEnergia += 50;
-            physicWorld.addBulletObject(disparo);
-            soles.Add(disparo);
         }
 
         public override void Update(TgcD3dInput Input)
         {
             espera++;
-            if (espera == 900)
+            if (espera == 300)
             {
                 disparar();
                 espera = 0;
@@ -72,14 +67,12 @@ namespace TGC.Group.Model.GameObjects
         {
             girasol.Render();
             tallo.Render();
-            soles.ForEach(d => d.render());
         }
 
         public override void Dispose()
         {
             girasol.Dispose();
             tallo.Dispose();
-            soles.ForEach(d => d.dispose());
         }
 
         public override int getCostoEnSoles()
@@ -93,4 +86,4 @@ namespace TGC.Group.Model.GameObjects
             tallo.Technique = tecnica;
         }
     }
-    }
+}

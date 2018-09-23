@@ -16,15 +16,14 @@ namespace TGC.Group.Model.GameObjects
 {
     public abstract class Planta
     {
-        protected int nivelResistencia;
+        protected int nivelResistencia = 10;
         protected int costoEnSoles;
         protected Microsoft.DirectX.Direct3D.Effect efecto;
-        protected GamePhysics physicWorld;
+        protected GameLogic logica;
 
-        public void Init(GamePhysics physicWorld)
+        public void Init(GameLogic logica)
         {
-            this.physicWorld = physicWorld;
-
+            this.logica = logica;
             #region configurarEfecto
             efecto = TgcShaders.loadEffect(GameModel.shadersDir + "shaderPlanta.fx");
             #endregion
@@ -37,5 +36,13 @@ namespace TGC.Group.Model.GameObjects
         public abstract void Dispose();
         public abstract int getCostoEnSoles();
 
+        internal void teComen()//hacer esto bien
+        {
+            nivelResistencia--;
+            if (nivelResistencia == 0)
+            {
+                Console.WriteLine("Murio una planta");
+            }
+        }
     }
 }

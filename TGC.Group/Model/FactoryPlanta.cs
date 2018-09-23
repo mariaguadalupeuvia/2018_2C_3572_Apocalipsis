@@ -10,25 +10,25 @@ namespace TGC.Group.Model
 {
     public static class FactoryPlanta
     {
-        public static Planta crearCanion(GamePhysics world, TGCVector3 posicion)
+        public static Planta crearCanion(TGCVector3 posicion, GameLogic logica)
         {
-            return new Canion(world, posicion);
+            return new Canion(posicion, logica);
         }
-        public static Planta crearGirasol(GamePhysics world, TGCVector3 posicion)
+        public static Planta crearGirasol(TGCVector3 posicion, GameLogic logica)
         {
-            return new Girasol(world, posicion);
+            return new Girasol(posicion, logica);
         }
-        public static Planta crearCongelador(GamePhysics world, TGCVector3 posicion)
+        public static Planta crearCongelador(TGCVector3 posicion, GameLogic logica)
         {
-            return new Congelador(world, posicion);
+            return new Congelador(posicion, logica);
         }
-        public static Planta crearChile(GamePhysics world, TGCVector3 posicion)
+        public static Planta crearChile(TGCVector3 posicion, GameLogic logica)
         {
-            return new Chile(world, posicion);
+            return new Chile(posicion, logica);
         }
-        public static Planta crearMina(GamePhysics world, TGCVector3 posicion)
+        public static Planta crearMina(TGCVector3 posicion, GameLogic logica)
         {
-            return new Mina(world, posicion);
+            return new Mina(posicion, logica);
         }
 
     }

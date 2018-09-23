@@ -43,7 +43,6 @@ float4 SpecularColor = float4(1, 1, 1, 1);
 float SpecularIntensity = 1;
 float3 ViewVector = float3(1, 0, 0);
 
-
 float _Time = 0;
 
 //variables para la iluminacion
@@ -60,6 +59,9 @@ float blendStart = 2000;
 
 float reflection = 0.4;
 float delta = 150.0;
+
+//float _nivelExpansion;
+float scaleFactor = 0.2;
 
 //Input del Vertex Shader
 struct VS_INPUT
@@ -90,8 +92,6 @@ struct VS_OUTPUT
 	float3 Binormal : TEXCOORD7;
 };
 
-
-
 VS_OUTPUT vs_main(VS_INPUT Input)
 {
 	VS_OUTPUT Output;
@@ -116,6 +116,45 @@ VS_OUTPUT vs_main(VS_INPUT Input)
 	Output.fogfactor = saturate(Output.Position.z);
 
 	//Input.Texcoord.y = Input.Texcoord.y + cos(_Time);
+	Output.Texcoord = Input.Texcoord;
+	Output.Norm = normalize(mul(Input.Normal, matWorld));
+
+	return(Output);
+}
+
+VS_OUTPUT vs_explosivo(VS_INPUT Input)
+{
+	VS_OUTPUT Output;
+
+	//para mover el vertice como latidos
+	//float displacement = _nivelExpansion;
+    float displacement = scaleFactor * sin( _Time * 10);
+	float4 displacementDirection = float4(Input.Normal.x, Input.Normal.y, Input.Normal.z, 0);
+	float4 newPosition = Input.Position + displacement * displacementDirection; //para engordar un mesh
+	//newPosition = v.vertex + displacement / 2 * displacementDirection;
+	
+	//Input.Position.y = newPosition.y + sin(_Time * 6); //queda bien como moviemiento sutil
+	Input.Position = newPosition;
+
+	// Calculo la posicion real (en world space)
+	float4 pos_real = mul(Input.Position, matWorld);
+
+	// Y la propago usando las coordenadas de texturas 2
+	Output.Pos = float3(pos_real.x, pos_real.y, pos_real.z);
+	Input.Normal = normalize(Input.Position.xyz);
+
+	tangente = float3(Input.Position.x, 0, Input.Position.z + delta);
+	bitangente = float3(Input.Position.x + delta, 0, Input.Position.z);
+	Output.Tangent = normalize(mul(tangente, matWorld));
+	Output.Binormal = normalize(mul(bitangente, matWorld));
+
+	Output.Position = mul(Input.Position, matWorldViewProj);
+	Output.WorldPosition = mul(Input.Position, matWorld).xyz;
+	Output.WorldNormal = mul(Input.Normal, matInverseTransposeWorld).xyz;
+	Output.Pos2 = Output.Position;
+
+	Output.fogfactor = saturate(Output.Position.z);
+
 	Output.Texcoord = Input.Texcoord;
 	Output.Norm = normalize(mul(Input.Normal, matWorld));
 
@@ -325,3 +364,16 @@ technique Transparente
 	}
 }
 
+technique Explosivo
+{
+	pass Pass_0
+	{
+		AlphaBlendEnable = TRUE;
+		DestBlend = INVSRCALPHA;
+		SrcBlend = SRCALPHA;
+		//CullMode = Ccw;//Cw;//None;
+		//ZEnable = false;
+		VertexShader = compile vs_3_0 vs_explosivo();
+		PixelShader = compile ps_2_0 ps_main();
+	}
+}

@@ -95,6 +95,7 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
       <DependentUpon>Game.settings</DependentUpon>
     </Compile>
+    <Compile Include="Model\Apocalipsis.cs" />
     <Compile Include="Model\Bullet.cs" />
     <Compile Include="Model\BulletObject.cs" />
     <Compile Include="Model\CamaraPersonal.cs" />
@@ -107,6 +108,9 @@
     <Compile Include="Model\GameObjects\BulletObjects\Bala.cs" />
     <Compile Include="Model\GameObjects\BulletObjects\Caja.cs" />
     <Compile Include="Model\GameObjects\BulletObjects\CollisionCallback.cs" />
+    <Compile Include="Model\GameObjects\BulletObjects\CollisionCallbackFloor.cs" />
+    <Compile Include="Model\GameObjects\BulletObjects\CollisionCallbackPlanta.cs" />
+    <Compile Include="Model\GameObjects\BulletObjects\CollisionCallbackZombie.cs" />
     <Compile Include="Model\GameObjects\BulletObjects\Vida.cs" />
     <Compile Include="Model\GameObjects\BulletObjects\Zombie.cs" />
     <Compile Include="Model\GameObjects\Canion.cs" />
@@ -125,7 +129,10 @@
     <Compile Include="Model\Gui\Gui.cs" />
     <Compile Include="Model\MyContactResultCallback.cs" />
     <Compile Include="Model\GamePhysics.cs" />
-    <Compile Include="Model\Picking.cs" />
+    <Compile Include="Model\Optimizacion\Octree.cs" />
+    <Compile Include="Model\Optimizacion\OctreeBuilder.cs" />
+    <Compile Include="Model\Optimizacion\OctreeNode.cs" />
+    <Compile Include="Model\Tablero.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="Form\GameForm.resx">

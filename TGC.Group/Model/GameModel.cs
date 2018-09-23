@@ -13,6 +13,8 @@ using TGC.Group.Model.GameObjects.BulletObjects;
 using System.Collections.Generic;
 using System;
 using Microsoft.DirectX.DirectInput;
+using TGC.Core.BoundingVolumes;
+using TGC.Core.Text;
 
 namespace TGC.Group.Model
 {
@@ -41,26 +43,26 @@ namespace TGC.Group.Model
         #region variables
         List<GameObject> gameObjects = new List<GameObject>() { new Skybox(), new Terreno() , new Escenario()};
         GameObject agua = new Agua(); //los objetos transparentes se renderean arriba de todo
-
-        private GamePhysics physicWorld = new GamePhysics(); // este va a tener solo objetos colisionables
         //private Bullet prueba = new Bullet();
         private Gui.Gui gui = new Gui.Gui();
-      //  private Escenario escenario = new Escenario();
         public GameLogic logica = new GameLogic();
 
         public static float time = 0.0f;
         public static string mediaDir;
         public static string shadersDir;
-
-        
+        public static TgcFrustum frustum;
         #endregion
+
+        private TgcText2D text1;
 
         public override void Init()
         {
             var d3dDevice = D3DDevice.Instance.Device;
-
+            text1 = new TgcText2D();
+       
             #region variablesDeClase
 
+            frustum = Frustum;
             mediaDir = MediaDir;
             shadersDir = ShadersDir;
 
@@ -75,33 +77,32 @@ namespace TGC.Group.Model
             #region inicializarRendereables
 
             gameObjects.ForEach(g => g.Init());
-            physicWorld.Init();
-           // physicWorld.addBulletObject(new Caja(physicWorld));
             //prueba.Init();
-            gui.Init();
-         //   escenario.Init();
+            logica.Init(Input);
             agua.Init();
-            logica.Init(physicWorld, Input);
+            gui.Init();
 
             #endregion
 
-            Camara = new CamaraPersonal(new TGCVector3(1500f, 450f, 1500f), Input);
+            Camara = new CamaraPersonal(new TGCVector3(1070, 957, 1910), Input);// 1500f, 450f, 1500f), Input);
         }
 
         public override void Update()
         {
             PreUpdate();
 
-            #region update
             time += 0.003f;
+            if (time > 500) time = 0;
+            frustum = Frustum;
+
+            #region update
             gameObjects.ForEach(g => g.Update());
-            physicWorld.Update();
-           // escenario.Update();
            // prueba.Update();
             agua.Update();
             logica.Update(Input);
             #endregion
 
+            text1.Text = "camara: (" + Camara.Position.X +", " + Camara.Position.Y + ", " + Camara.Position.Z + ")";
             PostUpdate();
         }
 
@@ -111,15 +112,13 @@ namespace TGC.Group.Model
 
             #region render
             gameObjects.ForEach(g => g.Render());
-            physicWorld.Render();
-           // escenario.Render();
             //prueba.Render();
             logica.Render();
             agua.Render();
-            
             gui.Render();
             #endregion
 
+            text1.render();
             PostRender();
         }
 
@@ -127,13 +126,13 @@ namespace TGC.Group.Model
         {
             #region dispose
             gameObjects.ForEach(g => g.Dispose());
-            physicWorld.Dispose();
             //prueba.Dispose();
             agua.Dispose();
             logica.Dispose();
             gui.Dispose();
-          //  escenario.Dispose();
             #endregion
+
+            text1.Dispose();
         }
 
     }

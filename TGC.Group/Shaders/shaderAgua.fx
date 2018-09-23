@@ -120,14 +120,16 @@ VS_OUTPUT vs_main(VS_INPUT Input)
 
 float4 ps_agua(float3 Texcoord: TEXCOORD0, float3 N : TEXCOORD1, float3 Pos : TEXCOORD2, float3 Pos2 : TEXCOORD3, float3 WorldPosition : TEXCOORD4, float3 WorldNormal : TEXCOORD5, float3 Tangent : TEXCOORD6, float3 Binormal : TEXCOORD7, float fogfactor : FOG) : COLOR0
 {
-		//cambio las coordenadas de textura
-		float3 newTexcoord = Texcoord;
-		//repito la textura varias veces (depende de _zoom)
-		float _zoom = 85.0f;
-		newTexcoord *= _zoom;
-		newTexcoord.x += step(1., step(newTexcoord.x, 1.0)) * 0.5;
-		newTexcoord = frac(newTexcoord);
+	float3 newTexcoord = Texcoord;
+	//cambio las coordenadas de textura
+	//repito la textura varias veces (depende de _zoom)
+	float _zoom = 85.0f;
+	newTexcoord *= _zoom;
+	newTexcoord.x += step(1., step(newTexcoord.x, 1.0)) * 0.5;
+	newTexcoord = frac(newTexcoord);
 
+	if (Pos2.z < 2000)//si el pixel estaba lejos en world space va sin detalles de bump
+	{
 		float3 bumpTexcoord = newTexcoord;
 		// Calculate the normal, including the information in the bump map
 		bumpTexcoord.x = newTexcoord.x + sin(_Time * 2);
@@ -135,37 +137,38 @@ float4 ps_agua(float3 Texcoord: TEXCOORD0, float3 N : TEXCOORD1, float3 Pos : TE
 		float3 bump = BumpConstant * (tex2D(bumpSampler, bumpTexcoord) - (0.5, 0.5, 0.5));
 		float3 bumpNormal = N + (bump.x * Tangent + bump.y * Binormal);
 		N = normalize(bumpNormal);
+	}
 
-		//calculo la iluminacion del pixel
-		float ld = 0;		// luz difusa
-		float le = 0;		// luz specular
+	//calculo la iluminacion del pixel
+	float ld = 0;		// luz difusa
+	float le = 0;		// luz specular
 
-		// calcula la luz diffusa
-		float3 LD = normalize(fvLightPosition - float3(Pos.x,Pos.y,Pos.z));
-		ld += saturate(dot(N, LD))*k_ld;
+	// calcula la luz diffusa
+	float3 LD = normalize(fvLightPosition - float3(Pos.x,Pos.y,Pos.z));
+	ld += saturate(dot(N, LD))*k_ld;
 
-		// calcula la reflexion specular
-		float3 D = normalize(float3(Pos.x,Pos.y,Pos.z) - fvEyePosition);
-		float ks = saturate(dot(reflect(LD,N), D));
-		ks = pow(ks,fSpecularPower);
-		le += ks * k_ls;
+	// calcula la reflexion specular
+	float3 D = normalize(float3(Pos.x,Pos.y,Pos.z) - fvEyePosition);
+	float ks = saturate(dot(reflect(LD,N), D));
+	ks = pow(ks,fSpecularPower);
+	le += ks * k_ls;
 
-		//calcular los factores de fog y alpha blending que actuan en profundidad
-		fogfactor = saturate((5000.0f - Pos2.z) / (fogStart)); // (fogEnd - z) /(fogEnd - fogStart)
-		float blendfactor = saturate((5000.0f - Pos2.z) / (blendStart));
+	//calcular los factores de fog y alpha blending que actuan en profundidad
+	fogfactor = saturate((5000.0f - Pos2.z) / (fogStart)); // (fogEnd - z) /(fogEnd - fogStart)
+	float blendfactor = saturate((5000.0f - Pos2.z) / (blendStart));
 
-		//Obtener el texel de textura
-		newTexcoord.x += cos(_Time / 2);
-		newTexcoord.y += sin(_Time);
-		float4 fvBaseColor = tex2D(diffuseMap, newTexcoord);
-		float4 alpha = tex2D(alphaMap, Texcoord);
+	//Obtener el texel de textura
+	newTexcoord.x += cos(_Time / 2);
+	newTexcoord.y += sin(_Time);
+	float4 fvBaseColor = tex2D(diffuseMap, newTexcoord);
+	float4 alpha = tex2D(alphaMap, Texcoord);
 
-		float4 RGBColor = 0;
-		fvBaseColor = (fvBaseColor *  fogfactor) + (fogColor * (1.0 - fogfactor));
-		RGBColor.rgb = saturate(fvBaseColor*(saturate(k_la + ld)) + le);
-		//RGBColor.a = blendfactor;
-		RGBColor.a = min(blendfactor, 0.8 - alpha.r);
-		return RGBColor;
+	float4 RGBColor = 0;
+	fvBaseColor = (fvBaseColor *  fogfactor) + (fogColor * (1.0 - fogfactor));
+	RGBColor.rgb = saturate(fvBaseColor*(saturate(k_la + ld)) + le);
+
+	RGBColor.a = min(blendfactor, 0.8 - alpha.r);
+	return RGBColor;
 }
 
 technique RenderScene

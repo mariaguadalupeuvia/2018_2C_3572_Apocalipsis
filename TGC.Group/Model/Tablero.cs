@@ -16,16 +16,16 @@ using TGC.Core.Direct3D;
 
 namespace TGC.Group.Model
 {
-    public class Picking
+    public class Tablero
     {
         #region variables
-        List<Plataforma> pickingObjects = new List<Plataforma>();
+        List<Plataforma> plataformas = new List<Plataforma>();
         private TGCVector3 collisionPoint;
         private TGCBox collisionPointMesh;
         private TgcPickingRay pickingRay;
         private bool selected;
-        private TgcMesh selectedMesh;
-        TgcMesh isla;
+        public Plataforma plataformaSeleccionada { get; set; }
+        TgcMesh apoyo;
         #endregion
 
         private void crearTableroPicking(int filas, int columnas)
@@ -37,7 +37,7 @@ namespace TGC.Group.Model
             {
                 for ( j = 0; j < columnas; j++)
                 {
-                    pickingObjects.Add(new Plataforma(new TGCVector3(x, y, z)));
+                    plataformas.Add(new Plataforma(new TGCVector3(x, y, z)));
                     z += 100;
                 }
                 x += 100;
@@ -50,7 +50,7 @@ namespace TGC.Group.Model
             crearTableroPicking(5,9);
             crearIsla();
             pickingRay = new TgcPickingRay(Input);
-
+             
             //Crear caja para marcar en que lugar hubo colision
             collisionPointMesh = TGCBox.fromSize(new TGCVector3(3, 3, 3), Color.Red);
             collisionPointMesh.AutoTransform = true;
@@ -60,21 +60,18 @@ namespace TGC.Group.Model
         private void crearIsla()
         {
             #region configurarEfecto
-            //var d3dDevice = D3DDevice.Instance.Device;
-            //Texture bumpMap = TextureLoader.FromFile(d3dDevice, GameModel.mediaDir + "texturas\\terrain\\NormalMapMar.png");
             Effect efecto = TgcShaders.loadEffect(GameModel.shadersDir + "shaderPlanta.fx");
-            //efecto.SetValue("NormalMap", bumpMap);
             #endregion
             
-            isla = new TgcSceneLoader().loadSceneFromFile(GameModel.mediaDir + "modelos\\Isla-TgcScene.xml").Meshes[0];
-            isla.Scale = new TGCVector3(500.5f, 300.5f, 800.5f);
-            isla.Effect = efecto;
-            isla.Technique = "RenderScene";
-            isla.Position = new TGCVector3(400, 340f, 1800f);
-            isla.RotateZ(3.1f);
+            apoyo = new TgcSceneLoader().loadSceneFromFile(GameModel.mediaDir + "modelos\\Isla-TgcScene.xml").Meshes[0];
+            apoyo.Scale = new TGCVector3(500.5f, 300.5f, 800.5f);
+            apoyo.Effect = efecto;
+            apoyo.Technique = "RenderScene";
+            apoyo.Position = new TGCVector3(400, 340f, 1900f);
+            apoyo.RotateZ(3.1f);
         }
 
-        public TGCVector3 Update(TgcD3dInput Input)
+        public void Update(TgcD3dInput Input)
         {
             #region chequeoDeColision
 
@@ -84,43 +81,33 @@ namespace TGC.Group.Model
                 pickingRay.updateRay();
 
                 //Testear Ray contra el AABB de todos los meshes
-                foreach (var piker in pickingObjects)
+                foreach (var unaPlataforma in plataformas)//.Where(p => !p.ocupado).ToList())
                 {
-                    var aabb = piker.plataforma.BoundingBox;
+                    var aabb = unaPlataforma.mesh.BoundingBox;
 
                     //Ejecutar test, si devuelve true se carga el punto de colision collisionPoint
                     selected = TgcCollisionUtils.intersectRayAABB(pickingRay.Ray, aabb, out collisionPoint);
                     if (selected)
                     {
-                        selectedMesh = piker.plataforma;
-                        piker.plataforma.BoundingBox.setRenderColor(Color.LightBlue);
+                        plataformaSeleccionada = unaPlataforma;
+                        unaPlataforma.mesh.BoundingBox.setRenderColor(Color.LightBlue);
                         break;
                     }
                 }
             }
             #endregion
-
-            if (selectedMesh != null )
-            {
-                return selectedMesh.Position;
-            }
-            else
-            {
-                return new TGCVector3(100, 320, 500);
-            }
-            
         }
 
         public void Render()
         {
             #region renderizado
-            pickingObjects.ForEach(p => p.Render());
+            plataformas.ForEach(p => p.Render());
 
             //Renderizar BoundingBox del mesh seleccionado
             if (selected)
             {
                 //Render de AABB
-                selectedMesh.BoundingBox.Render();
+                plataformaSeleccionada.mesh.BoundingBox.Render();
 
                 //Dibujar caja que representa el punto de colision
                 collisionPointMesh.Position = collisionPoint;
@@ -128,13 +115,13 @@ namespace TGC.Group.Model
             }
             #endregion
 
-            isla.Render();
+            apoyo.Render();
         }
 
         public void Dispose()
         {
-            pickingObjects.ForEach(p => p.Dispose());
-            isla.Dispose();
+            plataformas.ForEach(p => p.Dispose());
+            apoyo.Dispose();
         }
     }
 }
