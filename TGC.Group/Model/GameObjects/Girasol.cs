@@ -46,14 +46,6 @@ namespace TGC.Group.Model.GameObjects
             #endregion
         }
 
-        public void disparar()
-        {
-            Sol disparo = new Sol( girasol, logica);
-            disparo.init("mina", girasol);
-            disparo.agrandarMesh();
-            GameLogic.cantidadEnergia += 50;
-        }
-
         public override void Update(TgcD3dInput Input)
         {
             espera++;
@@ -76,15 +68,23 @@ namespace TGC.Group.Model.GameObjects
             tallo.Dispose();
         }
 
-        public override int getCostoEnSoles()
-        {
-            return 50;
-        }
-
         public override void cambiarTecnicaShader(string tecnica)
         {
             girasol.Technique = tecnica;
             tallo.Technique = tecnica;
+        }
+
+        public void disparar()
+        {
+            Sol disparo = new Sol(girasol, logica);
+            disparo.init("mina", girasol);
+            disparo.agrandarMesh();
+            GameLogic.cantidadEnergia += 50;
+        }
+
+        public override int getCostoEnSoles()
+        {
+            return 50;
         }
     }
 }

@@ -43,13 +43,14 @@ namespace TGC.Group.Model.GameObjects
             efecto.SetValue("_Time", GameModel.time);
         }
 
-        public override int getCostoEnSoles()
-        {
-            return 300;
-        }
         public override void cambiarTecnicaShader(string tecnica)
         {
             chile.Technique = tecnica;
+        }
+
+        public override int getCostoEnSoles()
+        {
+            return 300;
         }
     }
 }

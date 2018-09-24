@@ -29,6 +29,17 @@ namespace TGC.Group.Model
         {
         }
 
+        public override void Dispose()
+        {
+            body.Dispose();
+            base.Dispose();
+        }
+
+        public override void Update()
+        {
+           // Console.WriteLine("Update no implementado");
+        }
+
         #region crearBodys
         public void crearBodyZombie(TGCVector3 origen)//este lo usan los zombies
         {
@@ -76,20 +87,8 @@ namespace TGC.Group.Model
             dir.Normalize();
             //body.LinearVelocity = dir * 75;
             //body.LinearFactor = TGCVector3.One.ToBsVector;
-            body.ApplyImpulse(new TGCVector3(0, 15, 0).ToBsVector, new TGCVector3(0, 20, 0).ToBsVector);  
+            body.ApplyImpulse(new TGCVector3(0, 15, 0).ToBsVector, new TGCVector3(0, 20, 0).ToBsVector);
         }
         #endregion
-
-        public override void Dispose()
-        {
-            body.Dispose();
-            base.Dispose();
-        }
-
-        public override void Update()
-        {
-           // Console.WriteLine("Update no implementado");
-        }
- 
     }
 }

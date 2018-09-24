@@ -11,13 +11,13 @@ using TGC.Core.Text;
 
 namespace TGC.Group.Model.Gui
 {
-    class Gui : IRenderObject
+    class Gui
     {
+        #region variables
         private List<CustomSprite> sprites = new List<CustomSprite>();
         private Drawer2D drawer2D;
         private TgcText2D texto = new TgcText2D();
-
-        public bool AlphaBlendEnable { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        #endregion
 
         public void Init()
         {
@@ -47,7 +47,6 @@ namespace TGC.Group.Model.Gui
             texto.Position = new Point(100, 10);
             texto.Size = new Size(100, 10);
             texto.changeFont(new Font("Console", 25, FontStyle.Bold | FontStyle.Italic));
-
             #endregion
         }
 

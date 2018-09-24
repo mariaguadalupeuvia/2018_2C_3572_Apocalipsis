@@ -21,11 +21,12 @@ namespace TGC.Group.Model.GameObjects.BulletObjects
     public class Zombie : BulletObject  
     {
         #region variables
-        TgcMesh zombie;
-        TgcMesh globo;
-        public float caidaFactor = 0;
-        public float velocidad = -10;
-        public float daño = 0;
+        protected TgcMesh zombie;
+        protected TgcMesh globo;
+        protected float caidaFactor = 0;
+        protected float velocidad = -6;
+        protected float daño = 0;
+        private const int MAXIMO_DAÑO_SOPORTADO = 25;
         #endregion
 
         public Zombie(TGCVector3 posicion, GameLogic logica)
@@ -47,45 +48,14 @@ namespace TGC.Group.Model.GameObjects.BulletObjects
             objetos.Add(zombie);
            
             globo = new TgcSceneLoader().loadSceneFromFile(GameModel.mediaDir + "modelos\\GLOBO-TgcScene.xml").Meshes[0];
-            globo.Scale = new TGCVector3(60.5f, 60.5f, 60.5f);
-            globo.Position = new TGCVector3(posicion.X, posicion.Y + 200, posicion.Z);
+            globo.Scale = new TGCVector3(40.5f, 40.5f, 40.5f);
+            globo.Position = posicion;
             globo.Effect = efecto;
             globo.Technique = "RenderZombie";
 
             objetos.Add(globo);
             #endregion
         }
-
-        #region respuestaAAtaqueDePlanta
-        internal void perderVida()
-        {
-            daño+= 1;
-            efecto.SetValue("colorVida", daño * 0.1f); //cambia el color del globo
-
-            if(daño == 25) //despues de 25 balazos quedas en caida libre, cuando tocas el piso vas a dispose
-            {
-                morir();
-            }
-        }
-
-        public void morir()
-        {
-            caidaFactor = -10;
-
-        }
-
-        public void teGolpearon(Disparo disparo)
-        {
-            disparo.dañarZombie(this);
-        }
-
-        internal void congelate()
-        {
-            globo.Technique = "RenderSceneCongelada";
-            zombie.Technique = "RenderSceneCongelada";
-            velocidad = -2;
-        }
-        #endregion
 
         public override void Update()
         {
@@ -96,11 +66,44 @@ namespace TGC.Group.Model.GameObjects.BulletObjects
         public override void Render()
         {
             zombie.Position = new TGCVector3(body.InterpolationWorldTransform.M41, body.InterpolationWorldTransform.M42, body.InterpolationWorldTransform.M43);
-            globo.Position = new TGCVector3( body.InterpolationWorldTransform.M41, body.InterpolationWorldTransform.M42 + 200, body.InterpolationWorldTransform.M43);
+            globo.Position = new TGCVector3(body.InterpolationWorldTransform.M41, body.InterpolationWorldTransform.M42 + 150, body.InterpolationWorldTransform.M43);
 
             //zombie.Transform = new TGCMatrix(body.InterpolationWorldTransform);
             //globo.Transform = new TGCMatrix(body.InterpolationWorldTransform);
             base.Render();
         }
+
+        #region respuestaAAtaqueDePlanta
+        public virtual void recibirDaño()
+        {
+            daño+= 1;
+            efecto.SetValue("colorVida", daño * 0.1f); //cambia el color del globo
+
+            if(daño == MAXIMO_DAÑO_SOPORTADO) //despues de 25 balazos quedas en caida libre, cuando tocas el piso vas a dispose
+            {
+                morir();
+            }
+        }
+
+        public void morir()
+        {
+            caidaFactor = -10;
+            GameLogic.cantidadZombiesMuertos++;
+            Console.WriteLine("zombies fritos:" + GameLogic.cantidadZombiesMuertos);
+        }
+
+        public void teGolpearon(Disparo disparo)
+        {
+            disparo.dañarZombie(this);
+        }
+
+        public virtual void congelate()
+        {
+            globo.Technique = "RenderSceneCongelada";
+            zombie.Technique = "RenderSceneCongelada";
+            velocidad = -1;
+        }
+        #endregion
+
     }
 }

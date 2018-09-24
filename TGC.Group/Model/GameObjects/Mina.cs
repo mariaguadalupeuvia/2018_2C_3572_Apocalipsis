@@ -38,17 +38,20 @@ namespace TGC.Group.Model.GameObjects
         {
           
         }
+
         public override void Dispose()
         {
             logica.removePlanta(this);
         }
-        public override int getCostoEnSoles()
-        {
-            return 200;
-        }
+
         public override void cambiarTecnicaShader(string tecnica)
         {
             mina.Technique = tecnica;
+        }
+
+        public override int getCostoEnSoles()
+        {
+            return 200;
         }
     }
 }

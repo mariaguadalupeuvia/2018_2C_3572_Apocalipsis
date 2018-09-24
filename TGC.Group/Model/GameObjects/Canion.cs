@@ -45,13 +45,6 @@ namespace TGC.Group.Model.GameObjects
             tallo.Technique = "RenderScene";
 
             #endregion
-
-        }
-
-        public void disparar()
-        {
-            Bala disparo = new Bala(canion, logica);
-            disparo.init("Canionero", canion); //el parametro es el nombre de la textura para el mesh 
         }
 
         public override void Update(TgcD3dInput Input)
@@ -99,15 +92,21 @@ namespace TGC.Group.Model.GameObjects
             tallo.Dispose();
         }
 
-        public override int getCostoEnSoles()
-        {
-            return 100;
-        }
-
         public override void cambiarTecnicaShader(string tecnica)
         {
             canion.Technique = tecnica;
             tallo.Technique = tecnica;
+        }
+
+        public void disparar()
+        {
+            Bala disparo = new Bala(canion, logica);
+            disparo.init("Canionero", canion); //el parametro es el nombre de la textura para el mesh 
+        }
+
+        public override int getCostoEnSoles()
+        {
+            return 100;
         }
     }
 }

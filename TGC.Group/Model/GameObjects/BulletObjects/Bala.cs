@@ -25,7 +25,7 @@ namespace TGC.Group.Model.GameObjects.BulletObjects
 
         public override void dañarZombie(Zombie zombie)
         {
-            zombie.perderVida();
+            zombie.recibirDaño();
         }
     }
 }

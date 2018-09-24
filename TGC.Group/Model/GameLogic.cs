@@ -16,13 +16,16 @@ namespace TGC.Group.Model
     {
         #region variables
         public static int cantidadEnergia = 50;
+        public static int cantidadZombiesMuertos = 0;
         private GamePhysics physicWorld = new GamePhysics(); // este va a tener los objetos colisionables
 
         List<Planta> plantas = new List<Planta>();
+        List<Planta> plantasIlegales = new List<Planta>();
         private static  List<Zombie> zombies = new List<Zombie>();
 
         private Tablero tablero = new Tablero();
         TGCVector3 posicionSeleccionada;
+        int tiempoDeHorda = 0;
         #endregion
 
         public void Init(TgcD3dInput Input)
@@ -38,7 +41,15 @@ namespace TGC.Group.Model
             if (new Random().Next(250) == 77)
             {
                 crearZombies();
+                tiempoDeHorda++;
+                quitarPlantasIlegales();
+                if (tiempoDeHorda > 10)
+                {
+                    crearHorda();
+                    tiempoDeHorda = 0;
+                }
             }
+
             //if (new Random().Next(300) == 125)
             //{
             //    bombardear();
@@ -87,13 +98,21 @@ namespace TGC.Group.Model
             physicWorld.Render();
             tablero.Render();
             plantas.ForEach(P => P.Render());
+            plantasIlegales.ForEach(P => P.Render());
         }
 
         public void Dispose()
         {
             plantas.ForEach(P => P.Dispose());
+            plantasIlegales.ForEach(P => P.Dispose());
             physicWorld.Dispose();
             tablero.Dispose();
+        }
+
+        public void quitarPlantasIlegales()
+        {
+            plantasIlegales.ForEach(P => P.Dispose());
+            plantasIlegales.Clear();
         }
 
         #region crearObjetos
@@ -108,14 +127,14 @@ namespace TGC.Group.Model
             {
                 //hacer esto bien, si es transparente no deberia atacar
                 unaPlanta.cambiarTecnicaShader("Transparente");
+                plantasIlegales.Add(unaPlanta);
             }
             else
             {
                 cantidadEnergia -= unaPlanta.getCostoEnSoles();
                 tablero.plataformaSeleccionada.ocupado = true;
+                plantas.Add(unaPlanta);
             }
-
-            plantas.Add(unaPlanta);
         }
 
         private void bombardear()//ver donde esta fallando
@@ -127,28 +146,40 @@ namespace TGC.Group.Model
             //physicWorld.addBulletObject(new Apocalipsis(new TGCVector3(10, 6200f, 300)));
             //physicWorld.addBulletObject(new Apocalipsis(new TGCVector3(600, 5000f, 100)));
         }
+        private void crearHorda()
+        {
+            Random random = new Random();
+            int i;
+            for (i = 0; i < random.Next(25); i++)
+            {
+                crearZombies();
+            }
+        }
 
         private void crearZombies()
         {
-            //int j = new Random().Next(4);
-            //int i, x, y, z;
+            Random random = new Random();
+            int j = random.Next();
+            Zombie zombie;
 
-            //for (i = 0; i< j; i++)
-            //{
-            //    x = new Random().Next(1000, 2000);
-            //    y = new Random().Next(600, 1000);
-            //    z = new Random().Next(4600, 5200);
-            //    physicWorld.addBulletObject(new Zombie(new TGCVector3(x, y, z), physicWorld));
-            //}
-            Zombie zombie = new Zombie(new TGCVector3(450, 500f, 5000f), this);// physicWorld); //1500f, 700f, 5000f), physicWorld);
-            zombies.Add(zombie);
-            physicWorld.addBulletObject(zombie);
-            //zombie = new Zombie(new TGCVector3(400, 600f, 5400f), this);//, physicWorld); //1860f, 900f, 5400f), physicWorld);
-            //zombies.Add(zombie);
-            //physicWorld.addBulletObject(zombie);
-            //zombie = new Zombie(new TGCVector3(500, 400f, 4800f), this);//, physicWorld);// 2000f, 1000f, 4800f), physicWorld);
-            //zombies.Add(zombie);
-            //physicWorld.addBulletObject(zombie);
+            switch (j % 3)
+                {
+                case 0:
+                    zombie = new Zombie(new TGCVector3(400, 500f, 5040f), this);
+                    zombies.Add(zombie);
+                    physicWorld.addBulletObject(zombie);
+                    break;
+                case 1:
+                    zombie = new ZombieVip(new TGCVector3(450, 510f, 5000f), this);
+                    zombies.Add(zombie);
+                    physicWorld.addBulletObject(zombie);
+                    break;
+                case 2:
+                    zombie = new ZombieXD(new TGCVector3(550, 530f, 5100f), this);
+                    zombies.Add(zombie);
+                    physicWorld.addBulletObject(zombie);
+                    break;
+                }
         }
         #endregion
 

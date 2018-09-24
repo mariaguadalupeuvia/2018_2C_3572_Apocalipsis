@@ -1,5 +1,4 @@
-﻿
-using BulletSharp;
+﻿using BulletSharp;
 using System;
 using TGC.Core.Direct3D;
 using TGC.Core.Geometry;
@@ -10,6 +9,7 @@ namespace TGC.Group.Model
 {
     public class Bullet //esta clase la tengo unicamente para probar cosas. no la voy a usar
     {
+        #region variables
         private TgcPlane floorMesh;
         private TGCBox boxMesh;
         private TGCSphere sphereMesh;
@@ -26,6 +26,7 @@ namespace TGC.Group.Model
         protected BroadphaseInterface overlappingPairCache;
 
         ContactResultCallback callback;
+        #endregion
 
         public void Init()
         {

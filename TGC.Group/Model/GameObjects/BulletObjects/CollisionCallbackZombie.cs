@@ -8,8 +8,8 @@ namespace TGC.Group.Model.GameObjects.BulletObjects
     public class CollisionCallbackZombie : ContactResultCallback //este es para zombies que quieren plantas para comer
     {
         private BulletObject zombie;
-
         GameLogic logica;
+
         public CollisionCallbackZombie(GameLogic logica, BulletObject objeto)
         {
             this.logica = logica;

@@ -49,12 +49,6 @@ namespace TGC.Group.Model.GameObjects
             tallo.Render();
         }
 
-        public void disparar()
-        {
-            BalaCongelante disparo = new BalaCongelante(congelador, logica);
-            disparo.init("tuboSol", congelador); //el parametro es el nombre de la textura del mesh
-        }
-
         public override void Update(TgcD3dInput Input)
         {
             #region chequearInput
@@ -94,15 +88,20 @@ namespace TGC.Group.Model.GameObjects
             tallo.Dispose();
         }
 
-        public override int getCostoEnSoles()
-        {
-            return 300;
-        }
-
         public override void cambiarTecnicaShader(string tecnica)
         {
             congelador.Technique = tecnica;
             tallo.Technique = tecnica;
+        }
+        public void disparar()
+        {
+            BalaCongelante disparo = new BalaCongelante(congelador, logica);
+            disparo.init("tuboSol", congelador); //el parametro es el nombre de la textura del mesh
+        }
+
+        public override int getCostoEnSoles()
+        {
+            return 300;
         }
     }
 }

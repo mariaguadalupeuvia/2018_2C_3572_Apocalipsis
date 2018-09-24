@@ -16,10 +16,12 @@ namespace TGC.Group.Model.GameObjects
 {
     public abstract class Planta 
     {
+        #region variables
         protected int nivelResistencia = 10;
         protected int costoEnSoles;
         protected Microsoft.DirectX.Direct3D.Effect efecto;
         protected GameLogic logica;
+        #endregion
 
         public void Init(GameLogic logica)
         {

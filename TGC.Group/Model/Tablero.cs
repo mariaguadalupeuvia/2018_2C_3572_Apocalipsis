@@ -28,23 +28,6 @@ namespace TGC.Group.Model
         TgcMesh apoyo;
         #endregion
 
-        private void crearTableroPicking(int filas, int columnas)
-        {
-            int i, j;
-            int x = 100, y = 400, z = 1500;
-
-            for ( i = 0; i< filas; i++)
-            {
-                for ( j = 0; j < columnas; j++)
-                {
-                    plataformas.Add(new Plataforma(new TGCVector3(x, y, z)));
-                    z += 100;
-                }
-                x += 100;
-                z = 1500;
-            }
-        }
-
         public void Init(TgcD3dInput Input)
         {
             crearTableroPicking(5,9);
@@ -55,22 +38,6 @@ namespace TGC.Group.Model
             collisionPointMesh = TGCBox.fromSize(new TGCVector3(3, 3, 3), Color.Red);
             collisionPointMesh.AutoTransform = true;
             selected = false;
-        }
-
-        private void crearIsla()
-        {
-            #region configurarEfecto
-            Effect efecto = TgcShaders.loadEffect(GameModel.shadersDir + "shaderPlanta.fx");
-            #endregion
-
-            #region configurarObjeto
-            apoyo = new TgcSceneLoader().loadSceneFromFile(GameModel.mediaDir + "modelos\\Isla-TgcScene.xml").Meshes[0];
-            apoyo.Scale = new TGCVector3(500.5f, 300.5f, 800.5f);
-            apoyo.Effect = efecto;
-            apoyo.Technique = "RenderScene";
-            apoyo.Position = new TGCVector3(400, 340f, 1900f);
-            apoyo.RotateZ(3.1f);
-            #endregion
         }
 
         public void Update(TgcD3dInput Input)
@@ -125,5 +92,40 @@ namespace TGC.Group.Model
             plataformas.ForEach(p => p.Dispose());
             apoyo.Dispose();
         }
+
+        #region crearObjetos
+        private void crearIsla()
+        {
+            #region configurarEfecto
+            Effect efecto = TgcShaders.loadEffect(GameModel.shadersDir + "shaderPlanta.fx");
+            #endregion
+
+            #region configurarObjeto
+            apoyo = new TgcSceneLoader().loadSceneFromFile(GameModel.mediaDir + "modelos\\Isla-TgcScene.xml").Meshes[0];
+            apoyo.Scale = new TGCVector3(500.5f, 300.5f, 800.5f);
+            apoyo.Effect = efecto;
+            apoyo.Technique = "RenderScene";
+            apoyo.Position = new TGCVector3(400, 340f, 1900f);
+            apoyo.RotateZ(3.1f);
+            #endregion
+        }
+
+        private void crearTableroPicking(int filas, int columnas)
+        {
+            int i, j;
+            int x = 100, y = 400, z = 1500;
+
+            for (i = 0; i < filas; i++)
+            {
+                for (j = 0; j < columnas; j++)
+                {
+                    plataformas.Add(new Plataforma(new TGCVector3(x, y, z)));
+                    z += 100;
+                }
+                x += 100;
+                z = 1500;
+            }
+        }
+        #endregion
     }
 }

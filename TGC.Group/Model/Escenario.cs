@@ -20,17 +20,6 @@ namespace TGC.Group.Model
         TGCVector3 pmax = new TGCVector3(0, -100, 0);
         #endregion
 
-        private void obtenerPminYPmax(TGCVector3 meshPmin, TGCVector3 meshPmax)
-        {
-            if ((pmin.X < meshPmin.X) && (pmin.Y < meshPmin.Y) && (pmin.Z < meshPmin.Z))
-            {
-                pmin = meshPmin;
-            }
-            if ((pmax.X > meshPmax.X) && (pmax.Y > meshPmax.Y) && (pmax.Z > meshPmax.Z))
-            {
-                pmax = meshPmax;
-            }
-        }
         public override void Init()
         {
             #region variables
@@ -187,6 +176,7 @@ namespace TGC.Group.Model
         public override void Update()
         {
             efecto.SetValue("_Time", GameModel.time);
+            efecto.SetValue("alturaEnY", GameLogic.cantidadZombiesMuertos * 10);
         }
 
         public override void Render()
@@ -197,6 +187,18 @@ namespace TGC.Group.Model
         public override void Dispose()
         {
             meshes.ForEach(m => m.Dispose());
+        }
+
+        private void obtenerPminYPmax(TGCVector3 meshPmin, TGCVector3 meshPmax)
+        {
+            if ((pmin.X < meshPmin.X) && (pmin.Y < meshPmin.Y) && (pmin.Z < meshPmin.Z))
+            {
+                pmin = meshPmin;
+            }
+            if ((pmax.X > meshPmax.X) && (pmax.Y > meshPmax.Y) && (pmax.Z > meshPmax.Z))
+            {
+                pmax = meshPmax;
+            }
         }
     }
 }

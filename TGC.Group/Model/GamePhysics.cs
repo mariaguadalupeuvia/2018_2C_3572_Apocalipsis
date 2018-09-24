@@ -1,5 +1,4 @@
-﻿
-using BulletSharp;
+﻿using BulletSharp;
 using System;
 using System.Collections.Generic;
 using TGC.Core.Direct3D;
@@ -22,7 +21,7 @@ namespace TGC.Group.Model
         public List<BulletObject> bulletObjects = new List<BulletObject>();
         public List<BulletObject> desactivados = new List<BulletObject>();
        
-        private TgcPlane floorMesh;
+      //  private TgcPlane floorMesh;
         public RigidBody floorBody;
         #endregion
 
@@ -58,35 +57,13 @@ namespace TGC.Group.Model
             #endregion
         }
 
-        #region agregarYQuitarObjetosDeLista
-        public void addBulletObject(BulletObject objeto)
-        {
-            bulletObjects.Add(objeto);
-            dynamicsWorld.AddRigidBody(objeto.body);
-        }
-
-        public void removeBulletObject(BulletObject objeto)
-        {
-            bulletObjects.Remove(objeto);
-            dynamicsWorld.RemoveRigidBody(objeto.body);
-            objeto.Dispose();
-        }
-
-        private void removerDesactivados()
-        {
-            desactivados.ForEach(d => removeBulletObject(d));
-            desactivados.Clear();
-        }
-        #endregion
-
         public void Update()
         {
             bulletObjects.ForEach(b => dynamicsWorld.ContactTest(b.body, b.callback));
             bulletObjects.ForEach(b => b.Update());
             removerDesactivados();//Al colisionar los disparos mueren
 
-            dynamicsWorld.StepSimulation(1 / 60f, 10);
-            
+            dynamicsWorld.StepSimulation(1 / 60f, 10); 
         }
 
         public void Render()
@@ -108,6 +85,27 @@ namespace TGC.Group.Model
             //floorMesh.Dispose();
             #endregion
         }
+
+        #region agregarYQuitarObjetosDeLista
+        public void addBulletObject(BulletObject objeto)
+        {
+            bulletObjects.Add(objeto);
+            dynamicsWorld.AddRigidBody(objeto.body);
+        }
+
+        public void removeBulletObject(BulletObject objeto)
+        {
+            bulletObjects.Remove(objeto);
+            dynamicsWorld.RemoveRigidBody(objeto.body);
+            objeto.Dispose();
+        }
+
+        private void removerDesactivados()
+        {
+            desactivados.ForEach(d => removeBulletObject(d));
+            desactivados.Clear();
+        }
+        #endregion
     }
 
 }

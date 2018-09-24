@@ -44,7 +44,7 @@ float SpecularIntensity = 1;
 float3 ViewVector = float3(1, 0, 0);
 
 float _Time = 0;
-
+float alturaEnY = 0;
 //variables para la iluminacion
 float3 fvLightPosition = float3(100.00, -10.00, 100.00);
 float3 fvEyePosition = float3(0.00, 0.00, 0.00);
@@ -228,16 +228,27 @@ float4 ps_blend(float3 Texcoord: TEXCOORD0, float3 N : TEXCOORD1, float3 Pos : T
 	if ((Pos.y > 290) && (Pos.y < 590))
 	{
 		Texcoord.x += Texcoord.x + _Time * 5;
+		float4 fvBaseColor = tex2D(diffuseMap, Texcoord);
+		fvBaseColor = (fvBaseColor *  fogfactor) + (fogColor * (1.0 - fogfactor));
+		RGBColor.rgb = saturate(fvBaseColor*(saturate(k_la + ld)) + le);
+
+		if (Pos.y > (290 + alturaEnY))
+		{
+			RGBColor.r = RGBColor.g;
+			RGBColor.g = RGBColor.b;
+		}
+
 		RGBColor.a = 0.5;
 	}
 	else
 	{
+		float4 fvBaseColor = tex2D(diffuseMap, Texcoord);
+		fvBaseColor = (fvBaseColor *  fogfactor) + (fogColor * (1.0 - fogfactor));
+		RGBColor.rgb = saturate(fvBaseColor*(saturate(k_la + ld)) + le);
 		RGBColor.a = blendfactor;
 	}
 
-	float4 fvBaseColor = tex2D(diffuseMap, Texcoord);
-	fvBaseColor = (fvBaseColor *  fogfactor) + (fogColor * (1.0 - fogfactor));
-	RGBColor.rgb = saturate(fvBaseColor*(saturate(k_la + ld)) + le);
+
 		 
 	return RGBColor;
 }
@@ -319,12 +330,6 @@ float4 ps_zombie(float3 Texcoord: TEXCOORD0, float3 N : TEXCOORD1, float3 Pos : 
 {
 	//Obtener el texel de textura
 	 float4 fvBaseColor = tex2D(diffuseMap, Texcoord);
-
-	 ////Calculate the normal, including the information in the bump map
-	 //float3 bump = BumpConstant * (tex2D(bumpSampler, Texcoord) - (0.5, 0.5, 0.5));
-	 //float3 bumpNormal = N + (bump.x * Tangent + bump.y * Binormal);
-	 //bumpNormal = normalize(bumpNormal);
-	 //N = bumpNormal;
 
 	 float ld = 0;		// luz difusa
 	 float le = 0;		// luz specular

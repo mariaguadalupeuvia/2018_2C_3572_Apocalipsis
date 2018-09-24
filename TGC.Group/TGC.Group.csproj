@@ -116,6 +116,8 @@
     <Compile Include="Model\GameObjects\BulletObjects\Explosivo.cs" />
     <Compile Include="Model\GameObjects\BulletObjects\Vida.cs" />
     <Compile Include="Model\GameObjects\BulletObjects\Zombie.cs" />
+    <Compile Include="Model\GameObjects\BulletObjects\ZombieVip.cs" />
+    <Compile Include="Model\GameObjects\BulletObjects\ZombieXD.cs" />
     <Compile Include="Model\GameObjects\Canion.cs" />
     <Compile Include="Model\GameObjects\Chile.cs" />
     <Compile Include="Model\GameObjects\Congelador.cs" />
@@ -124,7 +126,7 @@
     <Compile Include="Model\GameObjects\Planta.cs" />
     <Compile Include="Model\GameObjects\Plataforma.cs" />
     <Compile Include="Model\GameObjects\Skybox.cs" />
-    <Compile Include="Model\GameObjects\Sol.cs" />
+    <Compile Include="Model\GameObjects\BulletObjects\Sol.cs" />
     <Compile Include="Model\GameObjects\Terreno.cs" />
     <Compile Include="Model\Gui\CustomBitmap.cs" />
     <Compile Include="Model\Gui\CustomSprite.cs" />
