@@ -14,7 +14,7 @@ using TGC.Group.Model.GameObjects.BulletObjects;
 
 namespace TGC.Group.Model.GameObjects
 {
-    public abstract class Planta
+    public abstract class Planta 
     {
         protected int nivelResistencia = 10;
         protected int costoEnSoles;

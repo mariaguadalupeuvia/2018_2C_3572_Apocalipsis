@@ -62,13 +62,15 @@ namespace TGC.Group.Model
             #region configurarEfecto
             Effect efecto = TgcShaders.loadEffect(GameModel.shadersDir + "shaderPlanta.fx");
             #endregion
-            
+
+            #region configurarObjeto
             apoyo = new TgcSceneLoader().loadSceneFromFile(GameModel.mediaDir + "modelos\\Isla-TgcScene.xml").Meshes[0];
             apoyo.Scale = new TGCVector3(500.5f, 300.5f, 800.5f);
             apoyo.Effect = efecto;
             apoyo.Technique = "RenderScene";
             apoyo.Position = new TGCVector3(400, 340f, 1900f);
             apoyo.RotateZ(3.1f);
+            #endregion
         }
 
         public void Update(TgcD3dInput Input)

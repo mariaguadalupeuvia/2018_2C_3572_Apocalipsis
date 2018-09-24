@@ -29,8 +29,6 @@ namespace TGC.Group.Model
         {
             physicWorld.Init();
             tablero.Init(Input);
-           // bombardear();
-            //physicWorld.addBulletObject(new Caja(physicWorld));
         }
 
         public void Update(TgcD3dInput Input)
@@ -41,10 +39,10 @@ namespace TGC.Group.Model
             {
                 crearZombies();
             }
-            if (new Random().Next(300) == 125)
-            {
-                bombardear();
-            }
+            //if (new Random().Next(300) == 125)
+            //{
+            //    bombardear();
+            //}
 
             plantas.ForEach(P => P.Update(Input));
             tablero.Update(Input);
@@ -96,10 +94,9 @@ namespace TGC.Group.Model
             plantas.ForEach(P => P.Dispose());
             physicWorld.Dispose();
             tablero.Dispose();
-            
         }
 
-        //----------------------------------------------------------------------------------
+        #region crearObjetos
         internal void addBulletObject(BulletObject objeto)
         {
             physicWorld.addBulletObject(objeto);
@@ -109,7 +106,7 @@ namespace TGC.Group.Model
         {
             if (unaPlanta.getCostoEnSoles() > cantidadEnergia)
             {
-                //hacer esto bien
+                //hacer esto bien, si es transparente no deberia atacar
                 unaPlanta.cambiarTecnicaShader("Transparente");
             }
             else
@@ -146,14 +143,16 @@ namespace TGC.Group.Model
             Zombie zombie = new Zombie(new TGCVector3(450, 500f, 5000f), this);// physicWorld); //1500f, 700f, 5000f), physicWorld);
             zombies.Add(zombie);
             physicWorld.addBulletObject(zombie);
-            zombie = new Zombie(new TGCVector3(400, 600f, 5400f), this);//, physicWorld); //1860f, 900f, 5400f), physicWorld);
-            zombies.Add(zombie);
-            physicWorld.addBulletObject(zombie);
-            zombie = new Zombie(new TGCVector3(500, 400f, 4800f), this);//, physicWorld);// 2000f, 1000f, 4800f), physicWorld);
-            zombies.Add(zombie);
-            physicWorld.addBulletObject(zombie);
+            //zombie = new Zombie(new TGCVector3(400, 600f, 5400f), this);//, physicWorld); //1860f, 900f, 5400f), physicWorld);
+            //zombies.Add(zombie);
+            //physicWorld.addBulletObject(zombie);
+            //zombie = new Zombie(new TGCVector3(500, 400f, 4800f), this);//, physicWorld);// 2000f, 1000f, 4800f), physicWorld);
+            //zombies.Add(zombie);
+            //physicWorld.addBulletObject(zombie);
         }
+        #endregion
 
+        #region gestionColisiones
         internal void desactivar(BulletObject bulletObject)
         {
             physicWorld.desactivados.Add(bulletObject);
@@ -170,19 +169,25 @@ namespace TGC.Group.Model
             return false;
         }
 
-        public bool esZombie(RigidBody body)
+        public bool esZombie(RigidBody body, Disparo disparo)
         {
             Zombie zombieGolpeado = zombies.Find(z => z.body == body);
             if (zombieGolpeado != null)
             {
-                zombieGolpeado.teGolpearon();
+                zombieGolpeado.teGolpearon(disparo);
             }
             return zombieGolpeado != null;
         }
+        #endregion
 
         public RigidBody floor()
         {
             return physicWorld.floorBody;
+        }
+
+        public void removePlanta(Planta unaPlanta)
+        {
+            plantas.Remove(unaPlanta);
         }
     }
 }

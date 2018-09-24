@@ -49,7 +49,8 @@ namespace TGC.Group.Model.GameObjects
         public void disparar()
         {
             Sol disparo = new Sol( girasol, logica);
-            disparo.init();
+            disparo.init("mina", girasol);
+            disparo.agrandarMesh();
             GameLogic.cantidadEnergia += 50;
         }
 

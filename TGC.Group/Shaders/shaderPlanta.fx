@@ -48,9 +48,9 @@ float _Time = 0;
 //variables para la iluminacion
 float3 fvLightPosition = float3(100.00, -10.00, 100.00);
 float3 fvEyePosition = float3(0.00, 0.00, 0.00);
-float k_la = 0.5;							// luz ambiente global
+float k_la = 0.8;							// luz ambiente global
 float k_ld = 0.9;						// luz difusa
-float k_ls = 0.65;							// luz specular
+float k_ls = 0.85;//65;							// luz specular
 float fSpecularPower = 16.84;				// exponente de la luz specular
 
 float4 fogColor = float4(0.11f, 0.245f, 0.29f, 0.6f);
@@ -62,6 +62,7 @@ float delta = 150.0;
 
 //float _nivelExpansion;
 float scaleFactor = 0.2;
+float colorVida = 0;
 
 //Input del Vertex Shader
 struct VS_INPUT
@@ -314,6 +315,44 @@ float4 ps_transparente(float3 Texcoord: TEXCOORD0, float3 N : TEXCOORD1, float3 
 	return RGBColor;
 }
 
+float4 ps_zombie(float3 Texcoord: TEXCOORD0, float3 N : TEXCOORD1, float3 Pos : TEXCOORD2, float3 Pos2 : TEXCOORD3, float3 WorldPosition : TEXCOORD4, float3 WorldNormal : TEXCOORD5, float3 Tangent : TEXCOORD6, float3 Binormal : TEXCOORD7, float fogfactor : FOG) : COLOR0
+{
+	//Obtener el texel de textura
+	 float4 fvBaseColor = tex2D(diffuseMap, Texcoord);
+
+	 ////Calculate the normal, including the information in the bump map
+	 //float3 bump = BumpConstant * (tex2D(bumpSampler, Texcoord) - (0.5, 0.5, 0.5));
+	 //float3 bumpNormal = N + (bump.x * Tangent + bump.y * Binormal);
+	 //bumpNormal = normalize(bumpNormal);
+	 //N = bumpNormal;
+
+	 float ld = 0;		// luz difusa
+	 float le = 0;		// luz specular
+
+	 //calcula la luz diffusa
+	 float3 LD = normalize(fvLightPosition - float3(Pos.x,Pos.y,Pos.z));
+	 ld += saturate(dot(N, LD))*k_ld;
+
+	 //calcula la reflexion specular
+	 float3 D = normalize(float3(Pos.x,Pos.y,Pos.z) - fvEyePosition);
+	 float ks = saturate(dot(reflect(LD,N), D));
+	 ks = pow(ks,fSpecularPower);
+	 le += ks * k_ls;
+
+	 //calcular los factores de fog y alpha blending que actuan en profundidad
+	 fogfactor = saturate((5000.0f - Pos2.z) / (fogStart)); // (fogEnd - z) /(fogEnd - fogStart)
+	 float blendfactor = saturate((5000.0f - Pos2.z) / (blendStart));
+
+	 float4 RGBColor = 0;
+	 fvBaseColor = (fvBaseColor *  fogfactor) + (fogColor * (1.0 - fogfactor));
+	 RGBColor.rgb = saturate(fvBaseColor*(saturate(k_la + ld)) + le);
+	 RGBColor.r += colorVida;
+	 //RGBColor.b -= colorVida;
+	 RGBColor.a = blendfactor;
+
+	 return RGBColor;
+}
+
 technique RenderScene
 {
 	pass Pass_0
@@ -375,5 +414,17 @@ technique Explosivo
 		//ZEnable = false;
 		VertexShader = compile vs_3_0 vs_explosivo();
 		PixelShader = compile ps_2_0 ps_main();
+	}
+}
+
+technique RenderZombie
+{
+	pass Pass_0
+	{
+		AlphaBlendEnable = TRUE;
+		DestBlend = INVSRCALPHA;
+		SrcBlend = SRCALPHA;
+		VertexShader = compile vs_3_0 vs_main();
+		PixelShader = compile ps_2_0 ps_zombie();
 	}
 }

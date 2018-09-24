@@ -84,7 +84,7 @@ namespace TGC.Group.Model
 
             #endregion
 
-            Camara = new CamaraPersonal(new TGCVector3(1070, 957, 1910), Input);// 1500f, 450f, 1500f), Input);
+            Camara = new CamaraPersonal(new TGCVector3(1214, 1100, 2526), Input); //(1070, 1100, 1910), Input);// 1500f, 450f, 1500f), Input);
         }
 
         public override void Update()

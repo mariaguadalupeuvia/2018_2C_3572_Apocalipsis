@@ -11,7 +11,6 @@ namespace TGC.Group.Model
 {
     class CamaraPersonal : TgcCamera //por ahora no tiene ningun cambio. mas adelante tendra que adaptarse al piso cuando se mueve.
     {
-
         private readonly Point mouseCenter;
 
         /// <summary>
@@ -55,10 +54,10 @@ namespace TGC.Group.Model
             this.RotationSpeed = 0.1f;
             this.MovementSpeed = 500f;
             this.JumpSpeed = 500f;
-            this.directionView = new TGCVector3(0, 0, -1);
+            this.directionView = new TGCVector3(0, 0, -1); //(0.4f, -0.8f, -1);//(0, 0, -1);
             this.leftrightRot = FastMath.PI_HALF;
             this.updownRot = -FastMath.PI / 10.0f;
-            this.cameraRotation = TGCMatrix.RotationX(updownRot) * TGCMatrix.RotationY(leftrightRot);
+            this.cameraRotation = TGCMatrix.RotationX(updownRot) * TGCMatrix.RotationY(leftrightRot);///*TGCMatrix.RotationX(updownRot) **/ TGCMatrix.RotationY(leftrightRot);
         }
 
         // public void caminar()
@@ -220,10 +219,10 @@ namespace TGC.Group.Model
             }
             #endregion
 
-            if (Input.keyPressed(Key.L) || Input.keyPressed(Key.Escape))
-            {
-                LockCam = !lockCam;
-            }
+            //if (Input.keyPressed(Key.L) || Input.keyPressed(Key.Escape))
+            //{
+            //    LockCam = !lockCam;
+            //}
 
             //Solo rotar si se esta aprentando el boton izq del mouse
             if (lockCam || Input.buttonDown(TgcD3dInput.MouseButtons.BUTTON_LEFT))

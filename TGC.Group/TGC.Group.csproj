@@ -106,11 +106,14 @@
     <Compile Include="Model\GameObject.cs" />
     <Compile Include="Model\GameObjects\Agua.cs" />
     <Compile Include="Model\GameObjects\BulletObjects\Bala.cs" />
+    <Compile Include="Model\GameObjects\BulletObjects\BalaCongelante.cs" />
     <Compile Include="Model\GameObjects\BulletObjects\Caja.cs" />
     <Compile Include="Model\GameObjects\BulletObjects\CollisionCallback.cs" />
     <Compile Include="Model\GameObjects\BulletObjects\CollisionCallbackFloor.cs" />
     <Compile Include="Model\GameObjects\BulletObjects\CollisionCallbackPlanta.cs" />
     <Compile Include="Model\GameObjects\BulletObjects\CollisionCallbackZombie.cs" />
+    <Compile Include="Model\GameObjects\BulletObjects\Disparo.cs" />
+    <Compile Include="Model\GameObjects\BulletObjects\Explosivo.cs" />
     <Compile Include="Model\GameObjects\BulletObjects\Vida.cs" />
     <Compile Include="Model\GameObjects\BulletObjects\Zombie.cs" />
     <Compile Include="Model\GameObjects\Canion.cs" />

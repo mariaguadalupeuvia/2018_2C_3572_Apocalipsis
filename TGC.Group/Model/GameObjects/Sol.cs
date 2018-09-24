@@ -9,47 +9,32 @@ using TGC.Group.Model.GameObjects.BulletObjects;
 
 namespace TGC.Group.Model.GameObjects
 {
-    public class Sol : BulletObject
+    public class Sol : Disparo
     {
-        #region variables
-        private TGCSphere esfera;
-        private TgcMesh girasol;
-        #endregion
-
         public Sol(TgcMesh girasol, GameLogic logica)
         {
             crearBody(girasol.Position, new TGCVector3(1, 2, 1));
             logica.addBulletObject(this);
             callback = new CollisionCallbackFloor(logica, this);
-            
-            this.girasol = girasol;
             GameLogic.cantidadEnergia += 50;
         }
 
-        public void init()
+        public override void dañarZombie(Zombie zombie)
         {
-            var d3dDevice = D3DDevice.Instance.Device;
-
-            #region configurarObjeto
-
-            var texture = TgcTexture.createTexture(D3DDevice.Instance.Device, GameModel.mediaDir + "modelos\\Textures\\mina.jpg");
-            esfera = new TGCSphere(1, texture.Clone(), TGCVector3.Empty);
-            esfera.Scale = new TGCVector3(60.5f, 60.5f, 60.5f);
-            esfera.Position = girasol.Position;
-            esfera.Rotation = girasol.Rotation;
-            esfera.updateValues();
-
-            objetos.Add(esfera);
-
-            #endregion
+            //el sol no daña ni colisiona con zombie :)
         }
 
         public override void Render()
         {
             //el body muere antes al colisionar y tira exception
+            body.Translate(new Vector3(1, -3, 1));
             esfera.Transform = TGCMatrix.Scaling(15, 15, 15) * new TGCMatrix(body.InterpolationWorldTransform);
             esfera.Render();
         }
 
+        public void agrandarMesh()
+        {
+            esfera.Scale = new TGCVector3(85, 85, 85);
+        }
     }
 }

@@ -29,7 +29,33 @@ namespace TGC.Group.Model
         {
         }
 
-        public void crearBody(TGCVector3 origen)//este lo usan los zombies
+        #region crearBodys
+        public void crearBodyZombie(TGCVector3 origen)//este lo usan los zombies
+        {
+            radio = 200;
+            crearBody(origen);
+        }
+
+        public void crearBodyExplosivo(TGCVector3 origen, float radio)//este lo usan las minas y los chiles
+        {
+            this.radio = radio;
+            crearBodyEstatico(origen);
+        }
+
+        public void crearBodyEstatico(TGCVector3 origen)
+        {
+            var ballShape = new SphereShape(radio);
+            var ballTransform = TGCMatrix.Identity;
+            ballTransform.Origin = origen;
+
+            var ballMotionState = new DefaultMotionState(ballTransform.ToBsMatrix);
+            var ballInfo = new RigidBodyConstructionInfo(0, ballMotionState, ballShape);
+
+            body = new RigidBody(ballInfo);
+        }
+
+
+        public void crearBody(TGCVector3 origen)
         {
             var ballShape = new SphereShape(radio);
             var ballTransform = TGCMatrix.Identity;
@@ -48,10 +74,11 @@ namespace TGC.Group.Model
 
             var dir = director.ToBsVector;
             dir.Normalize();
-            body.LinearVelocity = dir * 75;
+            //body.LinearVelocity = dir * 75;
             //body.LinearFactor = TGCVector3.One.ToBsVector;
-            body.ApplyImpulse(dir , new TGCVector3(0, 0, 0).ToBsVector);  
+            body.ApplyImpulse(new TGCVector3(0, 15, 0).ToBsVector, new TGCVector3(0, 20, 0).ToBsVector);  
         }
+        #endregion
 
         public override void Dispose()
         {

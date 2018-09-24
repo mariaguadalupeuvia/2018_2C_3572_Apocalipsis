@@ -51,7 +51,7 @@ namespace TGC.Group.Model.GameObjects
         public void disparar()
         {
             Bala disparo = new Bala(canion, logica);
-            disparo.init("Canionero"); //el parametro es el nombre de la textura para el mesh 
+            disparo.init("Canionero", canion); //el parametro es el nombre de la textura para el mesh 
         }
 
         public override void Update(TgcD3dInput Input)

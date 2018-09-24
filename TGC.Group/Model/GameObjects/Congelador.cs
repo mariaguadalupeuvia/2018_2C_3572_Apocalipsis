@@ -51,8 +51,8 @@ namespace TGC.Group.Model.GameObjects
 
         public void disparar()
         {
-            Bala disparo = new Bala(congelador, logica);
-            disparo.init("tuboSol"); //el parametro es el nombre de la textura del mesh
+            BalaCongelante disparo = new BalaCongelante(congelador, logica);
+            disparo.init("tuboSol", congelador); //el parametro es el nombre de la textura del mesh
         }
 
         public override void Update(TgcD3dInput Input)

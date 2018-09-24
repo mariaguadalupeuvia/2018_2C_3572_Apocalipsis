@@ -26,6 +26,7 @@ namespace TGC.Group.Model.GameObjects
             mina.Technique = "RenderScene";
 
             #endregion
+            Explosivo disparo = new Explosivo(mina, logica, this);
         }
 
         public override void Render()
@@ -39,7 +40,7 @@ namespace TGC.Group.Model.GameObjects
         }
         public override void Dispose()
         {
-            mina.Dispose();
+            logica.removePlanta(this);
         }
         public override int getCostoEnSoles()
         {

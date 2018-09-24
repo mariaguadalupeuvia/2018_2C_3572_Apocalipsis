@@ -23,12 +23,14 @@ namespace TGC.Group.Model.GameObjects.BulletObjects
         #region variables
         TgcMesh zombie;
         TgcMesh globo;
-        float caidaFactor = 0;
+        public float caidaFactor = 0;
+        public float velocidad = -10;
+        public float daño = 0;
         #endregion
 
         public Zombie(TGCVector3 posicion, GameLogic logica)
         {
-            crearBody(posicion);
+            crearBodyZombie(new TGCVector3(posicion.X, posicion.Y + 150, posicion.Z)); //(posicion);
             callback = new CollisionCallbackZombie(logica, this);
             
             #region configurarEfecto
@@ -48,22 +50,46 @@ namespace TGC.Group.Model.GameObjects.BulletObjects
             globo.Scale = new TGCVector3(60.5f, 60.5f, 60.5f);
             globo.Position = new TGCVector3(posicion.X, posicion.Y + 200, posicion.Z);
             globo.Effect = efecto;
-            globo.Technique = "RenderScene";
+            globo.Technique = "RenderZombie";
 
             objetos.Add(globo);
             #endregion
         }
 
-        public void teGolpearon()
+        #region respuestaAAtaqueDePlanta
+        internal void perderVida()
+        {
+            daño+= 1;
+            efecto.SetValue("colorVida", daño * 0.1f); //cambia el color del globo
+
+            if(daño == 25) //despues de 25 balazos quedas en caida libre, cuando tocas el piso vas a dispose
+            {
+                morir();
+            }
+        }
+
+        public void morir()
+        {
+            caidaFactor = -10;
+
+        }
+
+        public void teGolpearon(Disparo disparo)
+        {
+            disparo.dañarZombie(this);
+        }
+
+        internal void congelate()
         {
             globo.Technique = "RenderSceneCongelada";
             zombie.Technique = "RenderSceneCongelada";
-            caidaFactor = -10;
+            velocidad = -2;
         }
+        #endregion
 
         public override void Update()
         {
-            body.Translate(new Vector3(0, caidaFactor, -10));
+            body.Translate(new Vector3(0, caidaFactor, velocidad));
             efecto.SetValue("_Time", GameModel.time);
         }
 
@@ -75,7 +101,6 @@ namespace TGC.Group.Model.GameObjects.BulletObjects
             //zombie.Transform = new TGCMatrix(body.InterpolationWorldTransform);
             //globo.Transform = new TGCMatrix(body.InterpolationWorldTransform);
             base.Render();
-            //Console.WriteLine("zombie t: " + body.InterpolationWorldTransform);
         }
     }
 }
