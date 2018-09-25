@@ -247,9 +247,7 @@ float4 ps_blend(float3 Texcoord: TEXCOORD0, float3 N : TEXCOORD1, float3 Pos : T
 		RGBColor.rgb = saturate(fvBaseColor*(saturate(k_la + ld)) + le);
 		RGBColor.a = blendfactor;
 	}
-
-
-		 
+ 
 	return RGBColor;
 }
 

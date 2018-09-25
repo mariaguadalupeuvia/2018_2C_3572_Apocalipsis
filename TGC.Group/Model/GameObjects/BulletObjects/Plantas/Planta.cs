@@ -11,16 +11,18 @@ using TGC.Core.Shaders;
 using Microsoft.DirectX.DirectInput;
 using TGC.Core.Input;
 using TGC.Group.Model.GameObjects.BulletObjects;
+using BulletSharp;
 
 namespace TGC.Group.Model.GameObjects
 {
-    public abstract class Planta 
+    public abstract class Planta : BulletObject 
     {
         #region variables
         protected int nivelResistencia = 10;
         protected int costoEnSoles;
         protected Microsoft.DirectX.Direct3D.Effect efecto;
         protected GameLogic logica;
+        protected RigidBody body;
         #endregion
 
         public void Init(GameLogic logica)
@@ -38,12 +40,14 @@ namespace TGC.Group.Model.GameObjects
         public abstract void Dispose();
         public abstract int getCostoEnSoles();
 
-        internal void teComen()//hacer esto bien
+        internal void teComen(Zombie zombie)
         {
             nivelResistencia--;
             if (nivelResistencia == 0)
             {
-                Console.WriteLine("Murio una planta");
+                zombie.empezaACaminar();
+                logica.removePlanta(this);
+                logica.desactivar(this);
             }
         }
     }

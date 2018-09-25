@@ -43,6 +43,8 @@ namespace TGC.Group.Model.GameObjects
             tallo.Position = new TGCVector3(posicion.X  , posicion.Y - 50, posicion.Z );// new TGCVector3(500f, 200f, 1500f);
             tallo.Effect = efecto;
             tallo.Technique = "RenderScene";
+
+
             #endregion
         }
 

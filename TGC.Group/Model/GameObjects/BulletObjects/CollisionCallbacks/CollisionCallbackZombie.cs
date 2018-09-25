@@ -7,10 +7,10 @@ namespace TGC.Group.Model.GameObjects.BulletObjects
 {
     public class CollisionCallbackZombie : ContactResultCallback //este es para zombies que quieren plantas para comer
     {
-        private BulletObject zombie;
+        private Zombie zombie;
         GameLogic logica;
 
-        public CollisionCallbackZombie(GameLogic logica, BulletObject objeto)
+        public CollisionCallbackZombie(GameLogic logica, Zombie objeto)
         {
             this.logica = logica;
             zombie = objeto;
@@ -25,13 +25,14 @@ namespace TGC.Group.Model.GameObjects.BulletObjects
                 if (logica.floor() == colObj1Wrap.CollisionObject)
                 {
                     //Console.WriteLine("Un zombie colisionó con floor!!!");
-                    //si choqué con el piso me despido de este mundo 
-                    logica.desactivar(zombie);
+                    if (zombie.enCaidaLibre())
+                    { 
+                        logica.desactivar(zombie);
+                    }
                 }
-                else if (logica.esPlanta((RigidBody)colObj1Wrap.CollisionObject))// esPlanta() tiene efecto cuando es true, es decir que es dañada por el zombie
+                else if (logica.esPlanta((RigidBody)colObj1Wrap.CollisionObject, zombie))// esPlanta() tiene efecto cuando es true, es decir que es dañada por el zombie que se detiene a comer
                 {
-                    Console.WriteLine("Un zombie colisionó con una planta!!!");
-                    logica.desactivar(zombie);
+                    //Console.WriteLine("Un zombie colisionó con una planta!!!");
                 }
             }
             return 0;

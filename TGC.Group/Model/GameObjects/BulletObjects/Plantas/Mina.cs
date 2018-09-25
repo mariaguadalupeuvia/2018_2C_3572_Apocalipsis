@@ -42,6 +42,7 @@ namespace TGC.Group.Model.GameObjects
         public override void Dispose()
         {
             logica.removePlanta(this);
+            
         }
 
         public override void cambiarTecnicaShader(string tecnica)

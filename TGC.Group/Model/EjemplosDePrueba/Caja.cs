@@ -18,7 +18,7 @@ namespace TGC.Group.Model.GameObjects.BulletObjects
     public class Caja : BulletObject //por ahora esta para pruebas
     {
         //TgcMesh caja;
-        private TGCBox boxMesh;
+        //private TGCBox boxMesh;
         private TgcMesh planta;
 
         public Caja(GameLogic logica)//GamePhysics world)
@@ -57,12 +57,12 @@ namespace TGC.Group.Model.GameObjects.BulletObjects
            
             var texture = TgcTexture.createTexture(D3DDevice.Instance.Device, GameModel.mediaDir + "texturas\\terrain\\NormalMapMar.png");
             //Es importante crear todos los mesh con centro en el 0,0,0 y que este coincida con el centro de masa definido caso contrario rotaria de otra forma diferente a la dada por el motor de fisica.
-            boxMesh = TGCBox.fromSize(new TGCVector3(50, 50, 50), texture);
+           // boxMesh = TGCBox.fromSize(new TGCVector3(50, 50, 50), texture);
 
             #endregion
             callback = new CollisionCallback(logica, this);
 
-            objetos.Add(boxMesh);
+           // objetos.Add(boxMesh);
         }
 
         public override void Init()

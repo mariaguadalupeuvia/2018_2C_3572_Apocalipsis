@@ -12,21 +12,26 @@ namespace TGC.Group.Model.GameObjects
     public class Explosivo : Disparo //este es para una mina
     {
         Planta planta;
+        GameLogic logica;
+
         public Explosivo(TgcMesh mesh, GameLogic logica, Planta planta)
         {
+            this.logica = logica;
             crearBodyExplosivo(mesh.Position, 20);
-            logica.addBulletObject(this);
-            callback = new CollisionCallbackPlanta(logica, this);
+            this.logica.addBulletObject(this);
+            callback = new CollisionCallbackDisparo(logica, this);
             this.planta = planta;
         }
 
         public override void dañarZombie(Zombie zombie)
         {
             zombie.morir();
+            logica.desactivar(planta);
         }
 
         public override void Render()
         {
+
         }
 
         public override void Dispose()

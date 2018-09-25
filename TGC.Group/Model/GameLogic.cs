@@ -189,15 +189,15 @@ namespace TGC.Group.Model
             physicWorld.desactivados.Add(bulletObject);
         }
 
-        internal bool esPlanta(RigidBody body)//por ahora no funciona porque planta no usa body
+        internal bool esPlanta(RigidBody body, Zombie zombie)
         {
-            //Planta plantaColisionada = plantas.Find(p => p.body == body);
-            //if (plantaColisionada != null)
-            //{
-            //    plantaColisionada.teComen();
-            //}
-            //return plantaColisionada != null;
-            return false;
+            Planta plantaColisionada = plantas.Find(p => p.body == body);
+            if (plantaColisionada != null)
+            {
+                zombie.empezaAComer();
+                plantaColisionada.teComen(zombie); 
+            }
+            return plantaColisionada != null;
         }
 
         public bool esZombie(RigidBody body, Disparo disparo)

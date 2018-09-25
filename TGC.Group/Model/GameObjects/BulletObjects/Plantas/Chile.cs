@@ -24,13 +24,13 @@ namespace TGC.Group.Model.GameObjects
             chile.Position =  new TGCVector3(posicion.X , posicion.Y - 40, posicion.Z + 20);
             chile.Effect = efecto;
             chile.Technique = "Explosivo";
-
             #endregion
+            Explosivo disparo = new Explosivo(chile, logica, this);
         }
 
         public override void Dispose()
         {
-            chile.Dispose();
+            logica.removePlanta(this);
         }
 
         public override void Render()

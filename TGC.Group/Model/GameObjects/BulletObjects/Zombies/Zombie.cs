@@ -67,7 +67,7 @@ namespace TGC.Group.Model.GameObjects.BulletObjects
         {
             zombie.Position = new TGCVector3(body.InterpolationWorldTransform.M41, body.InterpolationWorldTransform.M42, body.InterpolationWorldTransform.M43);
             globo.Position = new TGCVector3(body.InterpolationWorldTransform.M41, body.InterpolationWorldTransform.M42 + 150, body.InterpolationWorldTransform.M43);
-
+            
             //zombie.Transform = new TGCMatrix(body.InterpolationWorldTransform);
             //globo.Transform = new TGCMatrix(body.InterpolationWorldTransform);
             base.Render();
@@ -84,6 +84,10 @@ namespace TGC.Group.Model.GameObjects.BulletObjects
                 morir();
             }
         }
+        public virtual bool enCaidaLibre()
+        {
+            return (caidaFactor == -10);
+        }
 
         public void morir()
         {
@@ -99,8 +103,18 @@ namespace TGC.Group.Model.GameObjects.BulletObjects
 
         public virtual void congelate()
         {
+
             globo.Technique = "RenderSceneCongelada";
             zombie.Technique = "RenderSceneCongelada";
+            velocidad = -1;
+        }
+
+        public void empezaAComer()
+        {
+            velocidad = 0;
+        }
+        public void empezaACaminar()
+        {
             velocidad = -1;
         }
         #endregion

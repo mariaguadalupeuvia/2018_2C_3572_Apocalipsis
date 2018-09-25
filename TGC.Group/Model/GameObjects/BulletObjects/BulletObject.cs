@@ -40,6 +40,11 @@ namespace TGC.Group.Model
            // Console.WriteLine("Update no implementado");
         }
 
+        public virtual bool enCaidaLibre()
+        {
+            return false;
+        }
+
         #region crearBodys
         public void crearBodyZombie(TGCVector3 origen)//este lo usan los zombies
         {

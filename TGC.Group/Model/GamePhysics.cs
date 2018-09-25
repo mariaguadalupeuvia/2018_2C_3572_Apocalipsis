@@ -61,7 +61,7 @@ namespace TGC.Group.Model
         {
             bulletObjects.ForEach(b => dynamicsWorld.ContactTest(b.body, b.callback));
             bulletObjects.ForEach(b => b.Update());
-            removerDesactivados();//Al colisionar los disparos mueren
+            removerDesactivados();//Al colisionar los disparos mueren, las plantan son comida y a los zombies  los matan a tiros
 
             dynamicsWorld.StepSimulation(1 / 60f, 10); 
         }
