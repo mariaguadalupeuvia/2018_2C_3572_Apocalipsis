@@ -4,9 +4,11 @@ using Microsoft.DirectX.Direct3D;
 using Microsoft.DirectX.DirectInput;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using TGC.Core.BoundingVolumes;
 using TGC.Core.Direct3D;
 using TGC.Core.Geometry;
 using TGC.Core.Input;
@@ -26,16 +28,20 @@ namespace TGC.Group.Model.GameObjects.BulletObjects
         protected float caidaFactor = 0;
         protected float velocidad = -6;
         protected float daño = 0;
-        private const int MAXIMO_DAÑO_SOPORTADO = 25;
         #endregion
+
+        private const int MAXIMO_DAÑO_SOPORTADO = 25;
 
         public Zombie(TGCVector3 posicion, GameLogic logica)
         {
-            crearBodyZombie(new TGCVector3(posicion.X, posicion.Y + 150, posicion.Z)); //(posicion);
+            body = FactoryBody.crearBodyZombie(new TGCVector3(posicion.X, posicion.Y + 350, posicion.Z)); //(posicion);
             callback = new CollisionCallbackZombie(logica, this);
-            
+
             #region configurarEfecto
+            var d3dDevice = D3DDevice.Instance.Device;
             efecto = TgcShaders.loadEffect(GameModel.shadersDir + "shaderPlanta.fx");
+            //Texture bumpMap = TextureLoader.FromFile(d3dDevice, GameModel.mediaDir + "texturas\\terrain\\NormalMapNieve2.jpg");
+            //efecto.SetValue("NormalMap", bumpMap);
             #endregion
 
             #region configurarObjeto
@@ -60,14 +66,13 @@ namespace TGC.Group.Model.GameObjects.BulletObjects
         public override void Update()
         {
             body.Translate(new Vector3(0, caidaFactor, velocidad));
-            efecto.SetValue("_Time", GameModel.time);
         }
 
         public override void Render()
         {
             zombie.Position = new TGCVector3(body.InterpolationWorldTransform.M41, body.InterpolationWorldTransform.M42, body.InterpolationWorldTransform.M43);
             globo.Position = new TGCVector3(body.InterpolationWorldTransform.M41, body.InterpolationWorldTransform.M42 + 150, body.InterpolationWorldTransform.M43);
-            
+
             //zombie.Transform = new TGCMatrix(body.InterpolationWorldTransform);
             //globo.Transform = new TGCMatrix(body.InterpolationWorldTransform);
             base.Render();
@@ -93,7 +98,8 @@ namespace TGC.Group.Model.GameObjects.BulletObjects
         {
             caidaFactor = -10;
             GameLogic.cantidadZombiesMuertos++;
-            Console.WriteLine("zombies fritos:" + GameLogic.cantidadZombiesMuertos);
+            //SACAR LOS MUERTOS DE LA LISTA DE ZOMBIES DEL LOGIC
+            //Console.WriteLine("zombies muertos:" + GameLogic.cantidadZombiesMuertos);
         }
 
         public void teGolpearon(Disparo disparo)
@@ -103,7 +109,6 @@ namespace TGC.Group.Model.GameObjects.BulletObjects
 
         public virtual void congelate()
         {
-
             globo.Technique = "RenderSceneCongelada";
             zombie.Technique = "RenderSceneCongelada";
             velocidad = -1;
@@ -116,6 +121,13 @@ namespace TGC.Group.Model.GameObjects.BulletObjects
         public void empezaACaminar()
         {
             velocidad = -1;
+        }
+
+        public void llegaste()
+        {
+            velocidad = -1;
+            //aca el zombie tiene que dejar el globo y empezar a caminar
+          //  body.ApplyImpulse(new TGCVector3(0, 150, 0).ToBsVector, new TGCVector3(0, 20, 0).ToBsVector);
         }
         #endregion
 

@@ -11,7 +11,7 @@ using TGC.Core.BoundingVolumes;
 
 namespace TGC.Group.Model
 {
-    class Escenario : GameObject // aca voy a ir poniendo todos los objetos estaticos (y algunos otros como para probar)
+    class Escenario : GameObject //no esta funcionando el octree
     {
         #region variables
         private List<TgcMesh> meshes = new List<TgcMesh>();
@@ -25,10 +25,9 @@ namespace TGC.Group.Model
             #region variables
             //TgcMesh tubo;
             TgcMesh flecha;
-            TgcMesh isla;
+            //TgcMesh isla;
             TgcMesh tumba;
 
-            TgcMesh contenedor;
             TgcMesh helicoptero;
    
             TgcScene roquedal;
@@ -40,16 +39,16 @@ namespace TGC.Group.Model
             var loader = new TgcSceneLoader();
 
             #region muelles
-            muelle1 = loader.loadSceneFromFile(GameModel.mediaDir + "modelos\\muelleGrande-TgcScene.xml");
-            foreach (TgcMesh mesh in muelle1.Meshes)
-            {
-                mesh.Scale = new TGCVector3(25.5f, 25.5f, 25.5f);
-                mesh.Position = new TGCVector3(0, 260f, mesh.Position.Z + 500f);
-                mesh.Effect = efecto;
-                mesh.Technique = "RenderScene";
-                obtenerPminYPmax(mesh.BoundingBox.PMin, mesh.BoundingBox.PMax);
-            }
-            meshes.AddRange(muelle1.Meshes);
+            //muelle1 = loader.loadSceneFromFile(GameModel.mediaDir + "modelos\\muelleGrande-TgcScene.xml");
+            //foreach (TgcMesh mesh in muelle1.Meshes)
+            //{
+            //    mesh.Scale = new TGCVector3(25.5f, 25.5f, 25.5f);
+            //    mesh.Position = new TGCVector3(0, 260f, mesh.Position.Z + 500f);
+            //    mesh.Effect = efecto;
+            //    mesh.Technique = "RenderScene";
+            //    obtenerPminYPmax(mesh.BoundingBox.PMin, mesh.BoundingBox.PMax);
+            //}
+            //meshes.AddRange(muelle1.Meshes);
             #endregion
 
             #region piedras
@@ -57,7 +56,7 @@ namespace TGC.Group.Model
             foreach (TgcMesh mesh in roquedal.Meshes)
             {
                 mesh.Scale = new TGCVector3(90.5f, 90.5f, 90.5f);
-                mesh.Position = new TGCVector3(0, 10f, mesh.Position.Z + 5500f);
+                mesh.Position = new TGCVector3(mesh.Position.X - 1000f, 10f, mesh.Position.Z + 5500f);
                 mesh.Effect = efecto;
                 mesh.Technique = "RenderScene";
                 obtenerPminYPmax(mesh.BoundingBox.PMin, mesh.BoundingBox.PMax);
@@ -78,55 +77,55 @@ namespace TGC.Group.Model
             #endregion
 
             #region otros
-            isla = new TgcSceneLoader().loadSceneFromFile(GameModel.mediaDir + "modelos\\Isla-TgcScene.xml").Meshes[0];
-            isla.Scale = new TGCVector3(300.5f, 300.5f, 300.5f);
-            isla.Effect = efecto;
-            isla.Technique = "RenderScene";
-            isla.Position = new TGCVector3(400, 200f, 6500f);
-            isla.RotateZ(3);
-            obtenerPminYPmax(isla.BoundingBox.PMin, isla.BoundingBox.PMax);
-            meshes.Add(isla);
+            //isla = new TgcSceneLoader().loadSceneFromFile(GameModel.mediaDir + "modelos\\Isla-TgcScene.xml").Meshes[0];
+            //isla.Scale = new TGCVector3(300.5f, 300.5f, 300.5f);
+            //isla.Effect = efecto;
+            //isla.Technique = "RenderScene";
+            //isla.Position = new TGCVector3(400, 200f, 6500f);
+            //isla.RotateZ(3);
+            //obtenerPminYPmax(isla.BoundingBox.PMin, isla.BoundingBox.PMax);
+            //meshes.Add(isla);
 
             tumba = new TgcSceneLoader().loadSceneFromFile(GameModel.mediaDir + "modelos\\Tumbas-TgcScene.xml").Meshes[0];
-            tumba.Scale = new TGCVector3(12.5f, 12.5f, 12.5f);
+            tumba.Scale = new TGCVector3(52.5f, 52.5f, 52.5f);
             tumba.Effect = efecto;
             tumba.Technique = "RenderScene";
-            tumba.Position = new TGCVector3(400, 220f, 6500f);
+            tumba.Position = new TGCVector3(1900, 280f, 6500f);
 
             obtenerPminYPmax(tumba.BoundingBox.PMin, tumba.BoundingBox.PMax);
             meshes.Add(tumba);
 
             tumba = new TgcSceneLoader().loadSceneFromFile(GameModel.mediaDir + "modelos\\Tumbas-TgcScene.xml").Meshes[0];
-            tumba.Scale = new TGCVector3(12.5f, 14, 12.5f);
+            tumba.Scale = new TGCVector3(52.5f, 54, 52.5f);
             tumba.Effect = efecto;
             tumba.Technique = "RenderScene";
-            tumba.Position = new TGCVector3(440, 220f, 6405f);
+            tumba.Position = new TGCVector3(2000, 290f, 6405f);
             obtenerPminYPmax(tumba.BoundingBox.PMin, tumba.BoundingBox.PMax);
             meshes.Add(tumba);
 
             tumba = new TgcSceneLoader().loadSceneFromFile(GameModel.mediaDir + "modelos\\Tumbas-TgcScene.xml").Meshes[0];
-            tumba.Scale = new TGCVector3(10.5f, 12.5f, 10.5f);
+            tumba.Scale = new TGCVector3(50.5f, 52.5f, 50.5f);
             tumba.Effect = efecto;
             tumba.Technique = "RenderScene";
-            tumba.Position = new TGCVector3(340, 220f, 6300f);
+            tumba.Position = new TGCVector3(1840,320f, 6700f);
             tumba.RotateY(1);
             obtenerPminYPmax(tumba.BoundingBox.PMin, tumba.BoundingBox.PMax);
             meshes.Add(tumba);
 
             tumba = new TgcSceneLoader().loadSceneFromFile(GameModel.mediaDir + "modelos\\Tumbas-TgcScene.xml").Meshes[0];
-            tumba.Scale = new TGCVector3(7.5f, 12.5f, 7.5f);
+            tumba.Scale = new TGCVector3(57.5f, 52.5f,57.5f);
             tumba.Effect = efecto;
             tumba.Technique = "RenderScene";
-            tumba.Position = new TGCVector3(300, 220f, 6510f);
+            tumba.Position = new TGCVector3(2600, 320f, 6910f);
             tumba.RotateY(2);
             obtenerPminYPmax(tumba.BoundingBox.PMin, tumba.BoundingBox.PMax);
             meshes.Add(tumba);
 
             tumba = new TgcSceneLoader().loadSceneFromFile(GameModel.mediaDir + "modelos\\Tumbas-TgcScene.xml").Meshes[0];
-            tumba.Scale = new TGCVector3(12.5f, 12.5f, 12.5f);
+            tumba.Scale = new TGCVector3(52.5f, 52.5f, 52.5f);
             tumba.Effect = efecto;
             tumba.Technique = "RenderScene";
-            tumba.Position = new TGCVector3(220, 240f, 6400f);
+            tumba.Position = new TGCVector3(2920, 340f, 6200f);
             tumba.RotateY(1);
             obtenerPminYPmax(tumba.BoundingBox.PMin, tumba.BoundingBox.PMax);
             meshes.Add(tumba);
@@ -149,16 +148,8 @@ namespace TGC.Group.Model
             obtenerPminYPmax(flecha.BoundingBox.PMin, flecha.BoundingBox.PMax);
             meshes.Add(flecha);
 
-            contenedor = new TgcSceneLoader().loadSceneFromFile(GameModel.mediaDir + "modelos\\contenedor-TgcScene.xml").Meshes[0];
-            contenedor.Scale = new TGCVector3(45.5f, 45.5f, 45.5f);
-            contenedor.Position = new TGCVector3(850f, 400f, 100f);
-            contenedor.Effect = efecto;
-            contenedor.Technique = "RenderSceneBlend";
-            obtenerPminYPmax(contenedor.BoundingBox.PMin, contenedor.BoundingBox.PMax);
-            meshes.Add(contenedor);
-
             helicoptero = new TgcSceneLoader().loadSceneFromFile(GameModel.mediaDir + "modelos\\HelicopteroMilitar3-TgcScene.xml").Meshes[0];
-            helicoptero.Scale = new TGCVector3(25.5f, 25.5f, 25.5f);
+            helicoptero.Scale = new TGCVector3(10.5f, 10.5f, 10.5f);
             helicoptero.Position = new TGCVector3(5200f, 200f, 500f);
             helicoptero.RotateY(90);
             helicoptero.Effect = efecto;
@@ -175,13 +166,13 @@ namespace TGC.Group.Model
 
         public override void Update()
         {
-            efecto.SetValue("_Time", GameModel.time);
-            efecto.SetValue("alturaEnY", GameLogic.cantidadZombiesMuertos * 10);
+            //efecto.SetValue("_Time", GameModel.time);
+            //efecto.SetValue("alturaEnY", GameLogic.cantidadZombiesMuertos * 10);
         }
 
         public override void Render()
         {
-            octree.render(GameModel.frustum, false);//el true o false es para renderear o no el tree
+           octree.render(GameModel.frustum, false);//el true o false es para renderear o no el tree
         }
 
         public override void Dispose()

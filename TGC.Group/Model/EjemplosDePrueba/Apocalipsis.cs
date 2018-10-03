@@ -37,7 +37,7 @@ namespace TGC.Group.Model
             //semiesfera.Technique = "Explosivo";
             //semiesfera.Position = new TGCVector3(posicion.X, 220, posicion.Z); ;
           
-            crearBody(posicion);
+            //crearBody(posicion);
         }
 
         public void Update(TgcD3dInput Input)

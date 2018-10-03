@@ -15,6 +15,7 @@ using System;
 using Microsoft.DirectX.DirectInput;
 using TGC.Core.BoundingVolumes;
 using TGC.Core.Text;
+using TGC.Group.Model.GameObjects.BulletObjects.Zombies;
 
 namespace TGC.Group.Model
 {
@@ -41,25 +42,26 @@ namespace TGC.Group.Model
         }
 
         #region variables
-        List<GameObject> gameObjects = new List<GameObject>() { new Skybox(), new Terreno() , new Escenario()};
+        List<GameObject> gameObjects = new List<GameObject>() { new Skybox(), new Terreno(), new Escenario()};
         GameObject agua = new Agua(); //los objetos transparentes se renderean arriba de todo
         //private Bullet prueba = new Bullet();
         private Gui.Gui gui = new Gui.Gui();
         public GameLogic logica = new GameLogic();
+        public ZombieRey zombieRey;
+        TgcCamera camaraAerea;
 
         public static float time = 0.0f;
         public static string mediaDir;
         public static string shadersDir;
         public static TgcFrustum frustum;
-        #endregion
-
         private TgcText2D text1;
+        #endregion
 
         public override void Init()
         {
             var d3dDevice = D3DDevice.Instance.Device;
             text1 = new TgcText2D();
-       
+
             #region variablesDeClase
 
             frustum = Frustum;
@@ -79,30 +81,50 @@ namespace TGC.Group.Model
             gameObjects.ForEach(g => g.Init());
             //prueba.Init();
             logica.Init(Input);
-            agua.Init();
+            agua.Init(); 
             gui.Init();
+
+            zombieRey = new ZombieRey(new TGCVector3(700, 50, 6000), logica);
+            logica.addBulletObject(zombieRey);
 
             #endregion
 
-            Camara = new CamaraPersonal(new TGCVector3(1214, 1100, 2526), Input); //(1070, 1100, 1910), Input);// 1500f, 450f, 1500f), Input);
+            camaraAerea = new CamaraPersonal(new TGCVector3(1214, 950, 2526), Input);
+            Camara = camaraAerea;
         }
+
 
         public override void Update()
         {
             PreUpdate();
+
+            #region manejarCamara
+            //3ra persona
+            if (Input.keyDown(Key.C))
+            {
+                Camara = ZombieRey.activarCamaraInterna();
+            }
+            //aerea
+            if (Input.keyDown(Key.V))
+            {
+                ZombieRey.desactivarCamaraInterna();
+                Camara = camaraAerea;
+            }
+            #endregion
 
             time += 0.003f;
             if (time > 500) time = 0;
             frustum = Frustum;
 
             #region update
+            zombieRey.Update(Input);
             gameObjects.ForEach(g => g.Update());
            // prueba.Update();
             agua.Update();
             logica.Update(Input);
+            //text1.Text = "camara: (" + Camara.Position.X + ", " + Camara.Position.Y + ", " + Camara.Position.Z + ")";
             #endregion
 
-            text1.Text = "camara: (" + Camara.Position.X +", " + Camara.Position.Y + ", " + Camara.Position.Z + ")";
             PostUpdate();
         }
 
@@ -116,9 +138,9 @@ namespace TGC.Group.Model
             logica.Render();
             agua.Render();
             gui.Render();
+            text1.render();
             #endregion
 
-            text1.render();
             PostRender();
         }
 
@@ -130,10 +152,8 @@ namespace TGC.Group.Model
             agua.Dispose();
             logica.Dispose();
             gui.Dispose();
-            #endregion
-
             text1.Dispose();
+            #endregion
         }
-
     }
 }

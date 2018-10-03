@@ -24,7 +24,7 @@ namespace TGC.Group.Model.GameObjects.BulletObjects
 
         public Vida( )
         {
-             crearBody(new TGCVector3(1300f, 360f, 1500f));
+             body = FactoryBody.crearBodyEsfericoEstatico(new TGCVector3(1300f, 360f, 1500f), radio);
 
             #region configurarEfecto
             efecto = TgcShaders.loadEffect(GameModel.shadersDir + "shaderPlanta.fx");

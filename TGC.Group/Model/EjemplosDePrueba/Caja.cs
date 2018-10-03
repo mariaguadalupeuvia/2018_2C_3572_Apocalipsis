@@ -23,7 +23,7 @@ namespace TGC.Group.Model.GameObjects.BulletObjects
 
         public Caja(GameLogic logica)//GamePhysics world)
         {
-            crearBody(new TGCVector3(1300f, 360f, 1500f));
+            body = FactoryBody.crearBodyCubico(masa, new TGCVector3(10, 10, 10), new TGCVector3(0, 600, 0));
             var d3dDevice = D3DDevice.Instance.Device;
 
          //   physicWorld = world;

@@ -9,6 +9,7 @@ using TGC.Core.Mathematica;
 using TGC.Group.Model.GameObjects;
 using TGC.Group.Model.GameObjects.BulletObjects;
 using BulletSharp;
+using TGC.Group.Model.GameObjects.BulletObjects.Zombies;
 
 namespace TGC.Group.Model
 {
@@ -18,19 +19,21 @@ namespace TGC.Group.Model
         public static int cantidadEnergia = 50;
         public static int cantidadZombiesMuertos = 0;
         private GamePhysics physicWorld = new GamePhysics(); // este va a tener los objetos colisionables
+        private Tablero tablero;
+        TGCVector3 posicionSeleccionada;
+        int tiempoDeHorda = 0;
 
         List<Planta> plantas = new List<Planta>();
         List<Planta> plantasIlegales = new List<Planta>();
         private static  List<Zombie> zombies = new List<Zombie>();
-
-        private Tablero tablero = new Tablero();
-        TGCVector3 posicionSeleccionada;
-        int tiempoDeHorda = 0;
         #endregion
+
+        private const int MAXIMA_CANTIDAD_DE_ZOMBIES = 25;
 
         public void Init(TgcD3dInput Input)
         {
             physicWorld.Init();
+            tablero = new Tablero(this);
             tablero.Init(Input);
         }
 
@@ -38,24 +41,27 @@ namespace TGC.Group.Model
         {
             physicWorld.Update();
 
-            if (new Random().Next(250) == 77)
+            #region manejarCreacionDeZombies
+
+            if (zombies.Count < MAXIMA_CANTIDAD_DE_ZOMBIES)
             {
-                crearZombies();
-                tiempoDeHorda++;
-                quitarPlantasIlegales();
-                if (tiempoDeHorda > 10)
+                if (new Random().Next(250) == 77)
                 {
-                    crearHorda();
-                    tiempoDeHorda = 0;
+                    crearZombies();
+                    tiempoDeHorda++;
+                    quitarPlantasIlegales();
+                    if (tiempoDeHorda > 10)
+                    {
+                        crearHorda();
+                        tiempoDeHorda = 0;
+                    }
                 }
             }
-
-            //if (new Random().Next(300) == 125)
-            //{
-            //    bombardear();
-            //}
+            #endregion
 
             plantas.ForEach(P => P.Update(Input));
+
+            #region manejoTablero
             tablero.Update(Input);
 
             if (tablero.plataformaSeleccionada == null)
@@ -67,27 +73,28 @@ namespace TGC.Group.Model
                 return;
             }
             posicionSeleccionada = tablero.plataformaSeleccionada.mesh.Position;
+            #endregion
 
             #region chequearInput
             if (Input.keyDown(Key.NumPad1))
             {
-                addPlanta(FactoryPlanta.crearCanion(posicionSeleccionada, this));
+                addPlanta(FactoryPlanta.crearCanion(posicionSeleccionada, this, tablero.plataformaSeleccionada));
             }
             if (Input.keyDown(Key.NumPad2))
             {
-                addPlanta(FactoryPlanta.crearGirasol(posicionSeleccionada, this));
+                addPlanta(FactoryPlanta.crearGirasol(posicionSeleccionada, this, tablero.plataformaSeleccionada));
             }
             if (Input.keyDown(Key.NumPad3))
             {
-                addPlanta(FactoryPlanta.crearCongelador(posicionSeleccionada, this));
+                addPlanta(FactoryPlanta.crearCongelador(posicionSeleccionada, this, tablero.plataformaSeleccionada));
             }
             if (Input.keyDown(Key.NumPad4))
             {
-                addPlanta(FactoryPlanta.crearMina(posicionSeleccionada, this));
+                addPlanta(FactoryPlanta.crearMina(posicionSeleccionada, this, tablero.plataformaSeleccionada));
             }
             if (Input.keyDown(Key.NumPad5))
             {
-                addPlanta(FactoryPlanta.crearChile(posicionSeleccionada, this));
+                addPlanta(FactoryPlanta.crearChile(posicionSeleccionada, this, tablero.plataformaSeleccionada));
             }
 
             #endregion
@@ -103,16 +110,10 @@ namespace TGC.Group.Model
 
         public void Dispose()
         {
-            plantas.ForEach(P => P.Dispose());
+            plantas.ForEach(P => P.Dispose());//chequear que los explosivos generan error aca
             plantasIlegales.ForEach(P => P.Dispose());
             physicWorld.Dispose();
             tablero.Dispose();
-        }
-
-        public void quitarPlantasIlegales()
-        {
-            plantasIlegales.ForEach(P => P.Dispose());
-            plantasIlegales.Clear();
         }
 
         #region crearObjetos
@@ -165,17 +166,17 @@ namespace TGC.Group.Model
             switch (j % 3)
                 {
                 case 0:
-                    zombie = new Zombie(new TGCVector3(400, 500f, 5040f), this);
+                    zombie = new Zombie(new TGCVector3(400, 900f, 5040f), this);
                     zombies.Add(zombie);
                     physicWorld.addBulletObject(zombie);
                     break;
                 case 1:
-                    zombie = new ZombieVip(new TGCVector3(450, 510f, 5000f), this);
+                    zombie = new ZombieVip(new TGCVector3(450, 910f, 5000f), this);
                     zombies.Add(zombie);
                     physicWorld.addBulletObject(zombie);
                     break;
                 case 2:
-                    zombie = new ZombieXD(new TGCVector3(550, 530f, 5100f), this);
+                    zombie = new ZombieXD(new TGCVector3(550, 930f, 5100f), this);
                     zombies.Add(zombie);
                     physicWorld.addBulletObject(zombie);
                     break;
@@ -200,6 +201,7 @@ namespace TGC.Group.Model
             return plantaColisionada != null;
         }
 
+        //aca llego cuando un zombie colisiona con un disparo
         public bool esZombie(RigidBody body, Disparo disparo)
         {
             Zombie zombieGolpeado = zombies.Find(z => z.body == body);
@@ -209,8 +211,20 @@ namespace TGC.Group.Model
             }
             return zombieGolpeado != null;
         }
+
+        //aca llego cuando un zombie colisiona con la isla pricipal
+        public bool esZombieEnIsla(RigidBody body)
+        {
+            Zombie zombieAterrizado = zombies.Find(z => z.body == body);
+            if (zombieAterrizado != null)
+            {
+                zombieAterrizado.llegaste();
+            }
+            return zombieAterrizado != null;
+        }
         #endregion
 
+        #region cosasPocoImportantes
         public RigidBody floor()
         {
             return physicWorld.floorBody;
@@ -220,5 +234,12 @@ namespace TGC.Group.Model
         {
             plantas.Remove(unaPlanta);
         }
+
+        public void quitarPlantasIlegales()
+        {
+            plantasIlegales.ForEach(P => P.Dispose());
+            plantasIlegales.Clear();
+        }
+        #endregion
     }
 }

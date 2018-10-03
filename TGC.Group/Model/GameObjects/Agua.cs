@@ -21,15 +21,13 @@ namespace TGC.Group.Model.GameObjects
 
             #region configurarEfecto
             efecto = TgcShaders.loadEffect(GameModel.shadersDir + "shaderAgua.fx");
-            Texture alphaMap = TextureLoader.FromFile(d3dDevice, GameModel.mediaDir + "texturas\\terrain\\Heightmap3.jpg");
-            Texture normalAguaMap = TextureLoader.FromFile(d3dDevice, GameModel.mediaDir + "texturas\\terrain\\NormalMapMar.png");
+            Texture alphaMap = TextureLoader.FromFile(d3dDevice, GameModel.mediaDir + "texturas\\terrain\\Heightmap3_1.jpg");
             efecto.SetValue("texAlphaMap", alphaMap);
-            efecto.SetValue("NormalMap", normalAguaMap);
             #endregion
 
             #region configurarObjeto
             agua.loadTexture(GameModel.mediaDir + "texturas\\terrain\\agua1.jpg");
-            agua.loadHeightmap(GameModel.mediaDir + "texturas\\terrain\\Heightmap3.jpg", 255f, 1.5f, new TGCVector3(0, -60, 0));
+            agua.loadHeightmap(GameModel.mediaDir + "texturas\\terrain\\Heightmap3.jpg", 255f,  1.5f, new TGCVector3(0, -95, 0));
             agua.Effect = efecto;
             agua.Technique = "RenderScene";
 

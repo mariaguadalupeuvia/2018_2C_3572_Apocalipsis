@@ -23,11 +23,13 @@ namespace TGC.Group.Model.GameObjects
         protected Microsoft.DirectX.Direct3D.Effect efecto;
         protected GameLogic logica;
         protected RigidBody body;
+        protected Plataforma plataforma;
         #endregion
 
-        public void Init(GameLogic logica)
+        public void Init(GameLogic logica, Plataforma plataformaSeleccionada)
         {
             this.logica = logica;
+            this.plataforma = plataformaSeleccionada;
             #region configurarEfecto
             efecto = TgcShaders.loadEffect(GameModel.shadersDir + "shaderPlanta.fx");
             #endregion
@@ -48,6 +50,7 @@ namespace TGC.Group.Model.GameObjects
                 zombie.empezaACaminar();
                 logica.removePlanta(this);
                 logica.desactivar(this);
+                plataforma.ocupado = false;
             }
         }
     }

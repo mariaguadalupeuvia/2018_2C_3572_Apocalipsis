@@ -18,7 +18,7 @@ namespace TGC.Group.Model.GameObjects.BulletObjects
     {
         public Bala(TgcMesh planta, GameLogic logica)
         {
-            crearBody(planta.Position, planta.Rotation);
+            body = FactoryBody.crearBodyConImpulso(planta.Position, radio, masa, planta.Rotation);// * 0.01f);
             logica.addBulletObject(this);
             callback = new CollisionCallbackDisparo(logica, this);
         }

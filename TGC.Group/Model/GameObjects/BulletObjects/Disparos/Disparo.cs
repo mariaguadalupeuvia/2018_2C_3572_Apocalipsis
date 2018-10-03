@@ -40,7 +40,7 @@ namespace TGC.Group.Model.GameObjects.BulletObjects
 
         public override void Render()
         {
-            body.Translate(new Vector3(0, 0, 17));
+            //body.Translate(new Vector3(0, 0, 17));
             esfera.Transform = TGCMatrix.Scaling(10, 10, 10) * new TGCMatrix(body.InterpolationWorldTransform);
             esfera.Render();
         }

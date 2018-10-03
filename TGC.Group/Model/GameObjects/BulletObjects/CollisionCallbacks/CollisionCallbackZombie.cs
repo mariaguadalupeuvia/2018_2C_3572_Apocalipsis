@@ -24,7 +24,7 @@ namespace TGC.Group.Model.GameObjects.BulletObjects
             {
                 if (logica.floor() == colObj1Wrap.CollisionObject)
                 {
-                    //Console.WriteLine("Un zombie colisionó con floor!!!");
+
                     if (zombie.enCaidaLibre())
                     { 
                         logica.desactivar(zombie);

@@ -17,7 +17,7 @@ namespace TGC.Group.Model.GameObjects
         public Explosivo(TgcMesh mesh, GameLogic logica, Planta planta)
         {
             this.logica = logica;
-            crearBodyExplosivo(mesh.Position, 20);
+            body = FactoryBody.crearBodyExplosivo(mesh.Position, 10);
             this.logica.addBulletObject(this);
             callback = new CollisionCallbackDisparo(logica, this);
             this.planta = planta;
@@ -36,6 +36,7 @@ namespace TGC.Group.Model.GameObjects
 
         public override void Dispose()
         {
+            logica.removePlanta(planta);
             planta.Dispose();
             base.Dispose();
         }

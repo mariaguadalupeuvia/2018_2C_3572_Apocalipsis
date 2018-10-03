@@ -44,13 +44,14 @@ sampler2D bumpSampler = sampler_state
 	MAGFILTER = LINEAR;
 	MIPFILTER = LINEAR;
 };
+
 //variables para la iluminacion
 float3 fvLightPosition = float3(500.00, 700.00, 3000.00);
 float3 fvEyePosition = float3(-100.00, 1000.00, -100.00);
-float k_la = 0.3;						// luz ambiente global
+float k_la = 0.6;					    // luz ambiente global
 float k_ld = 0.6;						// luz difusa
 float k_ls = 1;							// luz specular
-float fSpecularPower = 77.8;//7.5;//16.84;				// exponente de la luz specular
+float fSpecularPower = 77.8;//7.5;//16.84;
 
 float4 fogColor = float4(0.11f, 0.245f, 0.29f, 0.6f);
 float fogStart = 3000;
@@ -82,8 +83,8 @@ struct VS_OUTPUT
 	float3 Norm :     TEXCOORD1;	    // Normales
 	float3 Pos :      TEXCOORD2;		// Posicion real 3d
 	float3 Pos2 :     TEXCOORD3;		// Posicion en 2d
-	float3 WorldPosition : TEXCOORD4;
-	float3 WorldNormal	: TEXCOORD5;
+	//float3 WorldPosition : TEXCOORD4;
+	//float3 WorldNormal	: TEXCOORD5;
 	float fogfactor : FOG;
 	//para bump
 	float3 Tangent : TEXCOORD6;
@@ -107,8 +108,8 @@ VS_OUTPUT vs_main(VS_INPUT Input)
 	Output.Binormal = normalize(mul(bitangente, matWorld));
 
 	Output.Position = mul(Input.Position, matWorldViewProj);
-	Output.WorldPosition = mul(Input.Position, matWorld).xyz;
-	Output.WorldNormal = mul(Input.Normal, matInverseTransposeWorld).xyz;
+	//Output.WorldPosition = mul(Input.Position, matWorld).xyz;
+	//Output.WorldNormal = mul(Input.Normal, matInverseTransposeWorld).xyz;
 	Output.Pos2 = Output.Position;
 
 	Output.fogfactor = saturate(Output.Position.z);
@@ -118,26 +119,26 @@ VS_OUTPUT vs_main(VS_INPUT Input)
 	return(Output);
 }
 
-float4 ps_agua(float3 Texcoord: TEXCOORD0, float3 N : TEXCOORD1, float3 Pos : TEXCOORD2, float3 Pos2 : TEXCOORD3, float3 WorldPosition : TEXCOORD4, float3 WorldNormal : TEXCOORD5, float3 Tangent : TEXCOORD6, float3 Binormal : TEXCOORD7, float fogfactor : FOG) : COLOR0
+float4 ps_agua(float3 Texcoord: TEXCOORD0, float3 N : TEXCOORD1, float3 Pos : TEXCOORD2, float3 Pos2 : TEXCOORD3, /*float3 WorldPosition : TEXCOORD4, float3 WorldNormal : TEXCOORD5,*/ float3 Tangent : TEXCOORD6, float3 Binormal : TEXCOORD7, float fogfactor : FOG) : COLOR0
 {
 	float3 newTexcoord = Texcoord;
 	//cambio las coordenadas de textura
 	//repito la textura varias veces (depende de _zoom)
-	float _zoom = 85.0f;
+	float _zoom = 35.0f;//85.0f;
 	newTexcoord *= _zoom;
 	newTexcoord.x += step(1., step(newTexcoord.x, 1.0)) * 0.5;
 	newTexcoord = frac(newTexcoord);
 
-	if (Pos2.z < 2000)//si el pixel estaba lejos en world space va sin detalles de bump
-	{
-		float3 bumpTexcoord = newTexcoord;
-		// Calculate the normal, including the information in the bump map
-		bumpTexcoord.x = newTexcoord.x + sin(_Time * 2);
-		bumpTexcoord.y = newTexcoord.y + cos(_Time / 2);
-		float3 bump = BumpConstant * (tex2D(bumpSampler, bumpTexcoord) - (0.5, 0.5, 0.5));
-		float3 bumpNormal = N + (bump.x * Tangent + bump.y * Binormal);
-		N = normalize(bumpNormal);
-	}
+	//if (Pos2.z < 2000)//si el pixel estaba lejos en world space va sin detalles de bump
+	//{
+	//	float3 bumpTexcoord = newTexcoord;
+	//	// Calculate the normal, including the information in the bump map
+	//	bumpTexcoord.x = newTexcoord.x + sin(_Time * 2);
+	//	bumpTexcoord.y = newTexcoord.y + cos(_Time / 2);
+	//	float3 bump = BumpConstant * (tex2D(bumpSampler, bumpTexcoord) - (0.5, 0.5, 0.5));
+	//	float3 bumpNormal = N + (bump.x * Tangent + bump.y * Binormal);
+	//	N = normalize(bumpNormal);
+	//}
 
 	//calculo la iluminacion del pixel
 	float ld = 0;		// luz difusa
@@ -158,7 +159,7 @@ float4 ps_agua(float3 Texcoord: TEXCOORD0, float3 N : TEXCOORD1, float3 Pos : TE
 	float blendfactor = saturate((5000.0f - Pos2.z) / (blendStart));
 
 	//Obtener el texel de textura
-	newTexcoord.x += cos(_Time / 2);
+	newTexcoord.x += cos(_Time * 0.5);
 	newTexcoord.y += sin(_Time);
 	float4 fvBaseColor = tex2D(diffuseMap, newTexcoord);
 	float4 alpha = tex2D(alphaMap, Texcoord);
@@ -166,8 +167,12 @@ float4 ps_agua(float3 Texcoord: TEXCOORD0, float3 N : TEXCOORD1, float3 Pos : TE
 	float4 RGBColor = 0;
 	fvBaseColor = (fvBaseColor *  fogfactor) + (fogColor * (1.0 - fogfactor));
 	RGBColor.rgb = saturate(fvBaseColor*(saturate(k_la + ld)) + le);
+	RGBColor.rgb = saturate(fvBaseColor*(saturate(k_la + ld)) + le);
+	float4 alpha2 = min(blendfactor, 0.5 - alpha.r);
+	 
+	RGBColor.rgb = saturate(RGBColor * (alpha.r + 0.1)  * 7);
+	RGBColor.a = alpha2;
 
-	RGBColor.a = min(blendfactor, 0.8 - alpha.r);
 	return RGBColor;
 }
 

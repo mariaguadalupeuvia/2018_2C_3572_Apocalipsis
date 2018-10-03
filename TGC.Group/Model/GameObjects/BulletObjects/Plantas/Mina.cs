@@ -13,9 +13,9 @@ namespace TGC.Group.Model.GameObjects
     {
         private TgcMesh mina;
 
-        public Mina(TGCVector3 posicion, GameLogic logica)
+        public Mina(TGCVector3 posicion, GameLogic logica, Plataforma plataforma)
         {
-            base.Init(logica);
+            base.Init(logica, plataforma);
 
             #region configurarObjeto
 
@@ -42,7 +42,6 @@ namespace TGC.Group.Model.GameObjects
         public override void Dispose()
         {
             logica.removePlanta(this);
-            
         }
 
         public override void cambiarTecnicaShader(string tecnica)

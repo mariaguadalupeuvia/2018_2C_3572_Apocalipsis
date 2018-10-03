@@ -13,16 +13,19 @@ namespace TGC.Group.Model.GameObjects
 {
     public class Terreno : GameObject
     {
-        TgcSimpleTerrain terrain = new TgcSimpleTerrain();
+        public static TgcSimpleTerrain terrain = new TgcSimpleTerrain();
 
         public override void Init()
         {
             var d3dDevice = D3DDevice.Instance.Device;
 
             #region configurarEfecto
-            Texture bumpMap = TextureLoader.FromFile(d3dDevice, GameModel.mediaDir + "texturas\\terrain\\NormalMapCristales.jpg");
+            Texture alphaMap = TextureLoader.FromFile(d3dDevice, GameModel.mediaDir + "texturas\\terrain\\Heightmap3_1.jpg");
             efecto = TgcShaders.loadEffect(GameModel.shadersDir + "shaderTierra.fx");
-            efecto.SetValue("NormalMap", bumpMap);
+            efecto.SetValue("alphaMap", alphaMap);
+
+            Texture mainText = TextureLoader.FromFile(d3dDevice, GameModel.mediaDir + "texturas\\terrain\\terreno.jpg");
+            efecto.SetValue("mainText", mainText);
             #endregion
 
             #region configurarObjeto
@@ -38,6 +41,10 @@ namespace TGC.Group.Model.GameObjects
         public override void Update()
         {
            
+        }
+        public static int alturaEnPunto(int x, int z)
+        {
+            return terrain.HeightmapData[x,z];
         }
     }
 }

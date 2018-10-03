@@ -13,7 +13,7 @@ namespace TGC.Group.Model.GameObjects
     {
         public Sol(TgcMesh girasol, GameLogic logica)
         {
-            crearBody(girasol.Position, new TGCVector3(1, 2, 1));
+            body = FactoryBody.crearBodyConImpulso(girasol.Position, radio, masa, new TGCVector3(1, 2, 1));
             logica.addBulletObject(this);
             callback = new CollisionCallbackFloor(logica, this);
             GameLogic.cantidadEnergia += 50;
@@ -27,7 +27,7 @@ namespace TGC.Group.Model.GameObjects
         public override void Render()
         {
             //el body muere antes al colisionar y tira exception
-            body.Translate(new Vector3(1, -3, 1));
+            body.Translate(new Vector3(1, -3, -10));
             esfera.Transform = TGCMatrix.Scaling(15, 15, 15) * new TGCMatrix(body.InterpolationWorldTransform);
             esfera.Render();
         }

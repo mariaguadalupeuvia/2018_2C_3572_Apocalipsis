@@ -31,6 +31,12 @@ namespace TGC.Group.Model.Gui
             sprite.Position = new TGCVector2(FastMath.Max(D3DDevice.Instance.Width  - textureSize.Width / 0.75f, 0), 0);
             sprites.Add(sprite);
 
+            CustomSprite ayuda = new CustomSprite();
+            ayuda.Bitmap = new CustomBitmap(GameModel.mediaDir + "\\sprites\\ayuda2.png", D3DDevice.Instance.Device);
+            textureSize = ayuda.Bitmap.Size;
+            ayuda.Position = new TGCVector2(FastMath.Max(D3DDevice.Instance.Width - textureSize.Width, 0), FastMath.Max(D3DDevice.Instance.Height - textureSize.Height, 0));
+            sprites.Add(ayuda);
+
             CustomSprite plantas = new CustomSprite();
             plantas.Bitmap = new CustomBitmap(GameModel.mediaDir + "\\sprites\\PLANTAS.png", D3DDevice.Instance.Device);
             textureSize = plantas.Bitmap.Size;

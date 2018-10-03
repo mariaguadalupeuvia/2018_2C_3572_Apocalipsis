@@ -95,10 +95,14 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
       <DependentUpon>Game.settings</DependentUpon>
     </Compile>
+    <Compile Include="Model\Camara\ThirdPersonCamera.cs" />
     <Compile Include="Model\EjemplosDePrueba\Apocalipsis.cs" />
     <Compile Include="Model\EjemplosDePrueba\Bullet.cs" />
     <Compile Include="Model\GameObjects\BulletObjects\BulletObject.cs" />
-    <Compile Include="Model\CamaraPersonal.cs" />
+    <Compile Include="Model\Camara\CamaraPersonal.cs" />
+    <Compile Include="Model\GameObjects\BulletObjects\CollisionCallbacks\CollisionCallbackIsla.cs" />
+    <Compile Include="Model\GameObjects\BulletObjects\Isla.cs" />
+    <Compile Include="Model\GameObjects\BulletObjects\Zombies\ZombieRey.cs" />
     <Compile Include="Model\GameObjects\Escenario.cs" />
     <Compile Include="Model\Factorys\FactoryPlanta.cs" />
     <Compile Include="Model\GameLogic.cs" />

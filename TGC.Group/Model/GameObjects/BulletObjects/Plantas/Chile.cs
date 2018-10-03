@@ -13,9 +13,9 @@ namespace TGC.Group.Model.GameObjects
     {
         private TgcMesh chile;
 
-        public Chile(TGCVector3 posicion, GameLogic logica)
+        public Chile(TGCVector3 posicion, GameLogic logica, Plataforma plataforma)
         {
-            base.Init(logica);
+            base.Init(logica, plataforma);
 
             #region configurarObjeto
             float factorEscalado = 16.0f;

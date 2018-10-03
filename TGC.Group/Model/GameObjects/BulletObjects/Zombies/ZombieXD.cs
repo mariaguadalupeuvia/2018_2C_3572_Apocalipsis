@@ -15,17 +15,17 @@ namespace TGC.Group.Model.GameObjects.BulletObjects
 
             public ZombieXD(TGCVector3 posicion, GameLogic logica) : base(posicion, logica)
             {
-            #region configurarObjeto
-            cono = new TgcSceneLoader().loadSceneFromFile(GameModel.mediaDir + "modelos\\Cono-TgcScene.xml").Meshes[0];
-            cono.Scale = new TGCVector3(40.5f, 40.5f, 40.5f);
-            cono.Position = posicion;
-            cono.RotateX(10); 
-            cono.Effect = efecto;
-            cono.Technique = "RenderScene";
+                #region configurarObjeto
+                cono = new TgcSceneLoader().loadSceneFromFile(GameModel.mediaDir + "modelos\\Cono-TgcScene.xml").Meshes[0];
+                cono.Scale = new TGCVector3(40.5f, 40.5f, 40.5f);
+                cono.Position = posicion;
+                cono.RotateX(10); 
+                cono.Effect = efecto;
+                cono.Technique = "RenderScene";
 
-            objetos.Add(cono);
-            #endregion
-        }
+                objetos.Add(cono);
+                #endregion
+            }
 
             public override void Render()
             {

@@ -46,13 +46,18 @@ float3 ViewVector = float3(1, 0, 0);
 float _Time = 0;
 float alturaEnY = 0;
 //variables para la iluminacion
-float3 fvLightPosition = float3(100.00, -10.00, 100.00);
-float3 fvEyePosition = float3(0.00, 0.00, 0.00);
-float k_la = 0.8;							// luz ambiente global
-float k_ld = 0.9;						// luz difusa
-float k_ls = 0.85;//65;							// luz specular
-float fSpecularPower = 16.84;				// exponente de la luz specular
-
+float3 fvLightPosition = float3(100.00, 10.00, 1000.00);
+float3 fvEyePosition = float3(0.00, -1000.00, 0.00);
+//float3 fvLightPosition = float3(100.00, -10.00, 100.00);
+//float3 fvEyePosition = float3(0.00, 0.00, 0.00);
+float k_la = 0.3;							// luz ambiente global
+float k_ld = 1;						// luz difusa
+float k_ls = 1;//65;							// luz specular
+float fSpecularPower = 6.84;				// exponente de la luz specular
+//float k_la = 0.8;							// luz ambiente global
+//float k_ld = 0.9;						// luz difusa
+//float k_ls = 0.85;//65;							// luz specular
+//float fSpecularPower = 16.84;
 float4 fogColor = float4(0.11f, 0.245f, 0.29f, 0.6f);
 float fogStart = 3000;
 float blendStart = 2000;
@@ -115,8 +120,6 @@ VS_OUTPUT vs_main(VS_INPUT Input)
 	Output.Pos2 = Output.Position;
 
 	Output.fogfactor = saturate(Output.Position.z);
-
-	//Input.Texcoord.y = Input.Texcoord.y + cos(_Time);
 	Output.Texcoord = Input.Texcoord;
 	Output.Norm = normalize(mul(Input.Normal, matWorld));
 
@@ -167,12 +170,6 @@ float4 ps_main(float3 Texcoord: TEXCOORD0, float3 N : TEXCOORD1, float3 Pos : TE
    //Obtener el texel de textura
 	float4 fvBaseColor = tex2D(diffuseMap, Texcoord);
 
-    //Calculate the normal, including the information in the bump map
-	float3 bump = BumpConstant * (tex2D(bumpSampler, Texcoord) - (0.5, 0.5, 0.5));
-	float3 bumpNormal = N + (bump.x * Tangent + bump.y * Binormal);
-	bumpNormal = normalize(bumpNormal);
-	N = bumpNormal;
-
 	float ld = 0;		// luz difusa
 	float le = 0;		// luz specular
 
@@ -198,14 +195,8 @@ float4 ps_main(float3 Texcoord: TEXCOORD0, float3 N : TEXCOORD1, float3 Pos : TE
 	return RGBColor;
 }
 
-float4 ps_blend(float3 Texcoord: TEXCOORD0, float3 N : TEXCOORD1, float3 Pos : TEXCOORD2, float3 Pos2 : TEXCOORD3, float3 WorldPosition : TEXCOORD4, float3 WorldNormal : TEXCOORD5, float3 Tangent : TEXCOORD6, float3 Binormal : TEXCOORD7, float fogfactor : FOG) : COLOR0
+float4 ps_progresivo(float3 Texcoord: TEXCOORD0, float3 N : TEXCOORD1, float3 Pos : TEXCOORD2, float3 Pos2 : TEXCOORD3, float3 WorldPosition : TEXCOORD4, float3 WorldNormal : TEXCOORD5, float3 Tangent : TEXCOORD6, float3 Binormal : TEXCOORD7, float fogfactor : FOG) : COLOR0
 {
-	//Calculate the normal, including the information in the bump map
-	float3 bump = BumpConstant * (tex2D(bumpSampler, Texcoord) - (0.5, 0.5, 0.5));
-	float3 bumpNormal = N + (bump.x * Tangent + bump.y * Binormal);
-	bumpNormal = normalize(bumpNormal);
-	N = bumpNormal;
-
 	float ld = 0;		// luz difusa
 	float le = 0;		// luz specular
 
@@ -256,12 +247,6 @@ float4 ps_hielo(float3 Texcoord: TEXCOORD0, float3 N : TEXCOORD1, float3 Pos : T
 	//Obtener el texel de textura
 	float4 fvBaseColor = tex2D(diffuseMap, Texcoord);
 
-	//Calculate the normal, including the information in the bump map
-	float3 bump = BumpConstant * (tex2D(bumpSampler, Texcoord) - (0.5, 0.5, 0.5));
-	float3 bumpNormal = N + (bump.x * Tangent + bump.y * Binormal);
-	bumpNormal = normalize(bumpNormal);
-	N = bumpNormal;
-
 	float ld = 0;		// luz difusa
 	float le = 0;		// luz specular
 
@@ -283,7 +268,7 @@ float4 ps_hielo(float3 Texcoord: TEXCOORD0, float3 N : TEXCOORD1, float3 Pos : T
 	fvBaseColor = (fvBaseColor *  fogfactor) + (fogColor * (1.0 - fogfactor));
 	RGBColor.rgb = saturate(fvBaseColor*(saturate(k_la + ld)) + le);
 	RGBColor.a = blendfactor;
-	RGBColor.b = RGBColor.g * 1.2;
+	RGBColor.b = RGBColor.g * 1.8;
 	RGBColor.g = RGBColor.r;
 	return RGBColor;
 }
@@ -292,12 +277,6 @@ float4 ps_transparente(float3 Texcoord: TEXCOORD0, float3 N : TEXCOORD1, float3 
 {
 	//Obtener el texel de textura
 	float4 fvBaseColor = tex2D(diffuseMap, Texcoord);
-
-	//Calculate the normal, including the information in the bump map
-	float3 bump = BumpConstant * (tex2D(bumpSampler, Texcoord) - (0.5, 0.5, 0.5));
-	float3 bumpNormal = N + (bump.x * Tangent + bump.y * Binormal);
-	bumpNormal = normalize(bumpNormal);
-	N = bumpNormal;
 
 	float ld = 0;		// luz difusa
 	float le = 0;		// luz specular
@@ -370,7 +349,7 @@ technique RenderScene
 	}
 }
 
-technique RenderSceneBlend
+technique RenderSceneProgresivo
 {
 	pass Pass_0
 	{
@@ -378,7 +357,7 @@ technique RenderSceneBlend
 		DestBlend = INVSRCALPHA;
 		SrcBlend = SRCALPHA;
 		VertexShader = compile vs_3_0 vs_main();
-		PixelShader = compile ps_2_0 ps_blend();
+		PixelShader = compile ps_2_0 ps_progresivo();
 	}
 }
 

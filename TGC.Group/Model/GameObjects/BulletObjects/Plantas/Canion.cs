@@ -24,9 +24,9 @@ namespace TGC.Group.Model.GameObjects
         private const float AXIS_ROTATION_SPEED = 0.02f;
         #endregion
 
-        public Canion(TGCVector3 posicion, GameLogic logica)
+        public Canion(TGCVector3 posicion, GameLogic logica, Plataforma plataforma)
         {
-            base.Init(logica);
+            base.Init(logica, plataforma);
 
             #region configurarObjeto
             float factorEscalado = 20.0f;
@@ -34,7 +34,7 @@ namespace TGC.Group.Model.GameObjects
             canion.Scale = new TGCVector3(factorEscalado, factorEscalado, factorEscalado);
             canion.Position = new TGCVector3(posicion.X, posicion.Y + 40, posicion.Z);
             canion.RotateX(90);
-            canion.RotateY(90);
+            //canion.RotateY(90);
             canion.Effect = efecto;
             canion.Technique = "RenderScene";
 
@@ -102,6 +102,7 @@ namespace TGC.Group.Model.GameObjects
         {
             Bala disparo = new Bala(canion, logica);
             disparo.init("Canionero", canion); //el parametro es el nombre de la textura para el mesh 
+           // Console.WriteLine("canion rotation: " + canion.Rotation);
         }
 
         public override int getCostoEnSoles()

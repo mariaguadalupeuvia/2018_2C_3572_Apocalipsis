@@ -21,9 +21,9 @@ namespace TGC.Group.Model.GameObjects
         private const float AXIS_ROTATION_SPEED = 0.02f;
         #endregion
 
-        public Congelador(TGCVector3 posicion, GameLogic logica)
+        public Congelador(TGCVector3 posicion, GameLogic logica, Plataforma plataforma)
         {
-            base.Init(logica);
+            base.Init(logica, plataforma);
 
             #region configurarObjeto
             float factorEscalado = 20.0f;

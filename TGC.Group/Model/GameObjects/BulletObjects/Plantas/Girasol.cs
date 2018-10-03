@@ -22,9 +22,9 @@ namespace TGC.Group.Model.GameObjects
         private int espera = 0;
         #endregion
 
-        public Girasol(TGCVector3 posicion, GameLogic logica)
+        public Girasol(TGCVector3 posicion, GameLogic logica, Plataforma plataforma)
         {
-            base.Init(logica);
+            base.Init(logica, plataforma);
 
             #region configurarObjeto
 

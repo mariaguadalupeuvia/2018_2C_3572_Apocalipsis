@@ -13,10 +13,13 @@ using TGC.Group.Model.GameObjects;
 using Microsoft.DirectX.Direct3D;
 using TGC.Core.Shaders;
 using TGC.Core.Direct3D;
+using BulletSharp;
+using TGC.Group.Model.GameObjects.BulletObjects;
+using TGC.Group.Model.GameObjects.BulletObjects.CollisionCallbacks;
 
 namespace TGC.Group.Model
 {
-    public class Tablero
+    public class Tablero : BulletObject
     {
         #region variables
         List<Plataforma> plataformas = new List<Plataforma>();
@@ -25,23 +28,52 @@ namespace TGC.Group.Model
         private TgcPickingRay pickingRay;
         private bool selected;
         public Plataforma plataformaSeleccionada { get; set; }
-        TgcMesh apoyo;
+        TgcMesh contenedor;
+        public GameLogic logica;
         #endregion
+
+        public Tablero(GameLogic logica)
+        {
+            this.logica = logica;
+        }
 
         public void Init(TgcD3dInput Input)
         {
             crearTableroPicking(5,9);
-            crearIsla();
+
             pickingRay = new TgcPickingRay(Input);
              
             //Crear caja para marcar en que lugar hubo colision
             collisionPointMesh = TGCBox.fromSize(new TGCVector3(3, 3, 3), Color.Red);
             collisionPointMesh.AutoTransform = true;
             selected = false;
+
+            #region configurarEfecto
+            efecto = TgcShaders.loadEffect(GameModel.shadersDir + "shaderPlanta.fx");
+            #endregion
+
+            #region contenedor
+            contenedor = new TgcSceneLoader().loadSceneFromFile(GameModel.mediaDir + "modelos\\contenedor-TgcScene.xml").Meshes[0];
+            contenedor.Scale = new TGCVector3(45.5f, 45.5f, 45.5f);
+            contenedor.Position = new TGCVector3(-2000f, 400f, -800f);
+            contenedor.Effect = efecto;
+            contenedor.Technique = "RenderSceneProgresivo";
+
+            objetos.Add(contenedor);
+            #endregion
+
+
+            //este body seria del tablero o isla principal
+            body = FactoryBody.crearBodyIsla(new TGCVector3(400, 1, 400), new TGCVector3(400, 340f, 1000f)); //(new TGCVector3(500, 10, 1000), new TGCVector3(850f, 800f, 1000f));
+            callback = new CollisionCallbackIsla(logica);
+            logica.addBulletObject(this);
         }
 
         public void Update(TgcD3dInput Input)
         {
+            efecto.SetValue("_Time", GameModel.time);
+            efecto.SetValue("alturaEnY", GameLogic.cantidadZombiesMuertos * 10);
+
             #region chequeoDeColision
 
             //Si hacen clic con el mouse, ver si hay colision RayAABB
@@ -71,7 +103,6 @@ namespace TGC.Group.Model
         {
             #region renderizado
             plataformas.ForEach(p => p.Render());
-
             //Renderizar BoundingBox del mesh seleccionado
             if (selected)
             {
@@ -83,47 +114,29 @@ namespace TGC.Group.Model
                 collisionPointMesh.Render();
             }
             #endregion
-
-            apoyo.Render();
+            base.Render();
         }
 
         public void Dispose()
         {
             plataformas.ForEach(p => p.Dispose());
-            apoyo.Dispose();
         }
 
         #region crearObjetos
-        private void crearIsla()
-        {
-            #region configurarEfecto
-            Effect efecto = TgcShaders.loadEffect(GameModel.shadersDir + "shaderPlanta.fx");
-            #endregion
-
-            #region configurarObjeto
-            apoyo = new TgcSceneLoader().loadSceneFromFile(GameModel.mediaDir + "modelos\\Isla-TgcScene.xml").Meshes[0];
-            apoyo.Scale = new TGCVector3(500.5f, 300.5f, 800.5f);
-            apoyo.Effect = efecto;
-            apoyo.Technique = "RenderScene";
-            apoyo.Position = new TGCVector3(400, 340f, 1900f);
-            apoyo.RotateZ(3.1f);
-            #endregion
-        }
-
         private void crearTableroPicking(int filas, int columnas)
         {
             int i, j;
-            int x = 100, y = 400, z = 1500;
+            int x = -1200, y = 300, z = -3000;
 
             for (i = 0; i < filas; i++)
             {
                 for (j = 0; j < columnas; j++)
                 {
                     plataformas.Add(new Plataforma(new TGCVector3(x, y, z)));
-                    z += 100;
+                    z += 450;
                 }
-                x += 100;
-                z = 1500;
+                x += 700;
+                z = -3000;
             }
         }
         #endregion
