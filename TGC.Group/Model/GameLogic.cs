@@ -10,6 +10,7 @@ using TGC.Group.Model.GameObjects;
 using TGC.Group.Model.GameObjects.BulletObjects;
 using BulletSharp;
 using TGC.Group.Model.GameObjects.BulletObjects.Zombies;
+using BulletSharp.Math;
 
 namespace TGC.Group.Model
 {
@@ -20,6 +21,12 @@ namespace TGC.Group.Model
         public static int cantidadZombiesMuertos = 0;
         private GamePhysics physicWorld = new GamePhysics(); // este va a tener los objetos colisionables
         private Tablero tablero;
+
+        internal bool esApocalipsisZombie(RigidBody collisionObject)
+        {
+            return false;
+        }
+
         TGCVector3 posicionSeleccionada;
         int tiempoDeHorda = 0;
 
@@ -35,6 +42,7 @@ namespace TGC.Group.Model
             physicWorld.Init();
             tablero = new Tablero(this);
             tablero.Init(Input);
+            crearZombies();
         }
 
         public void Update(TgcD3dInput Input)
@@ -43,20 +51,20 @@ namespace TGC.Group.Model
 
             #region manejarCreacionDeZombies
 
-            if (zombies.Count < MAXIMA_CANTIDAD_DE_ZOMBIES)
-            {
-                if (new Random().Next(250) == 77)
-                {
-                    crearZombies();
-                    tiempoDeHorda++;
-                    quitarPlantasIlegales();
-                    if (tiempoDeHorda > 10)
-                    {
-                        crearHorda();
-                        tiempoDeHorda = 0;
-                    }
-                }
-            }
+            //if (zombies.Count < MAXIMA_CANTIDAD_DE_ZOMBIES)
+            //{
+            //    if (new Random().Next(250) == 77)
+            //    {
+            //        crearZombies();
+            //        tiempoDeHorda++;
+            //        quitarPlantasIlegales();
+            //        if (tiempoDeHorda > 10)
+            //        {
+            //            crearHorda();
+            //            tiempoDeHorda = 0;
+            //        }
+            //    }
+            //}
             #endregion
 
             plantas.ForEach(P => P.Update(Input));
@@ -159,12 +167,37 @@ namespace TGC.Group.Model
 
         private void crearZombies()
         {
+            Zombie zombie;
+
+            zombie = new Zombie(new TGCVector3(-1200, 900f, 5040f), this);
+            zombies.Add(zombie);
+            physicWorld.addBulletObject(zombie);
+
+            zombie = new ZombieVip(new TGCVector3(-500, 900f, 5040f), this);
+            zombies.Add(zombie);
+            physicWorld.addBulletObject(zombie);
+
+            zombie = new ZombieXD(new TGCVector3(200, 900f, 5040f), this);
+            zombies.Add(zombie);
+            physicWorld.addBulletObject(zombie);
+
+            zombie = new ZombieVip(new TGCVector3(900, 900f, 5040f), this);
+            zombies.Add(zombie);
+            physicWorld.addBulletObject(zombie);
+
+            zombie = new ZombieXD(new TGCVector3(1600, 900f, 5040f), this);
+            zombies.Add(zombie);
+            physicWorld.addBulletObject(zombie);
+
+        }
+        private void crearZombiesVIEJO()
+        {
             Random random = new Random();
             int j = random.Next();
             Zombie zombie;
 
             switch (j % 3)
-                {
+            {
                 case 0:
                     zombie = new Zombie(new TGCVector3(400, 900f, 5040f), this);
                     zombies.Add(zombie);
@@ -180,7 +213,7 @@ namespace TGC.Group.Model
                     zombies.Add(zombie);
                     physicWorld.addBulletObject(zombie);
                     break;
-                }
+            }
         }
         #endregion
 
@@ -219,6 +252,8 @@ namespace TGC.Group.Model
             if (zombieAterrizado != null)
             {
                 zombieAterrizado.llegaste();
+               // Console.WriteLine("ZOMBIE " + zombieAterrizado.nombre);
+
             }
             return zombieAterrizado != null;
         }

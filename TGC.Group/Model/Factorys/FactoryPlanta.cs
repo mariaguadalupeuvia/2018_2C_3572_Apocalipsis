@@ -31,7 +31,7 @@ namespace TGC.Group.Model
         public static Planta crearGirasol(TGCVector3 posicion, GameLogic logica, Plataforma plataforma)
         {
             Planta girasol = new Girasol(posicion, logica, plataforma);
-            girasol.body = FactoryBody.crearBodyPlanta(new TGCVector3(5, 5, 5), posicion);
+            girasol.body = FactoryBody.crearBodyPlanta(new TGCVector3(1, 2, 1), posicion);
             girasol.callback = new CollisionCallbackFloor(logica, girasol);
             logica.addBulletObject(girasol);
             return girasol;

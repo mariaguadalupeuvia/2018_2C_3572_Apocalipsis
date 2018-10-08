@@ -19,7 +19,7 @@ using TGC.Group.Model.GameObjects.BulletObjects.CollisionCallbacks;
 
 namespace TGC.Group.Model.GameObjects.BulletObjects
 {
-    public class Isla : BulletObject
+    public class Isla : BulletObject//esta me parece que no se usa nunca
     {
         #region variables
         protected TgcMesh isla;
@@ -42,7 +42,8 @@ namespace TGC.Group.Model.GameObjects.BulletObjects
 
             objetos.Add(isla);
 
-            body = FactoryBody.crearBodyIsla(new TGCVector3(400, 1, 400), new TGCVector3(400, 340f, 1900f));
+            body = FactoryBody.crearBodyIsla();
+           
             callback = new CollisionCallbackIsla(logica);
             logica.addBulletObject(this);
             #endregion

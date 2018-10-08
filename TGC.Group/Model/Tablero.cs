@@ -62,9 +62,8 @@ namespace TGC.Group.Model
             objetos.Add(contenedor);
             #endregion
 
-
             //este body seria del tablero o isla principal
-            body = FactoryBody.crearBodyIsla(new TGCVector3(400, 1, 400), new TGCVector3(400, 340f, 1000f)); //(new TGCVector3(500, 10, 1000), new TGCVector3(850f, 800f, 1000f));
+            body = FactoryBody.crearBodyIsla();// new TGCVector3(400, 1, 400), new TGCVector3(400, 340f, 1000f)); //(new TGCVector3(500, 10, 1000), new TGCVector3(850f, 800f, 1000f));
             callback = new CollisionCallbackIsla(logica);
             logica.addBulletObject(this);
         }
@@ -126,7 +125,7 @@ namespace TGC.Group.Model
         private void crearTableroPicking(int filas, int columnas)
         {
             int i, j;
-            int x = -1200, y = 300, z = -3000;
+            int x = -1200, y = 293, z = -3000;
 
             for (i = 0; i < filas; i++)
             {

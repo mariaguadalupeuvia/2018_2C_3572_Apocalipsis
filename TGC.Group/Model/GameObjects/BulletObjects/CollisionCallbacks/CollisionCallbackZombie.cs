@@ -32,7 +32,7 @@ namespace TGC.Group.Model.GameObjects.BulletObjects
                 }
                 else if (logica.esPlanta((RigidBody)colObj1Wrap.CollisionObject, zombie))// esPlanta() tiene efecto cuando es true, es decir que es dañada por el zombie que se detiene a comer
                 {
-                    //Console.WriteLine("Un zombie colisionó con una planta!!!");
+                    Console.WriteLine("Un zombie colisionó con una planta!!!");
                 }
             }
             return 0;

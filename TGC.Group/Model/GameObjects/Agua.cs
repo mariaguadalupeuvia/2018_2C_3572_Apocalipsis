@@ -29,7 +29,7 @@ namespace TGC.Group.Model.GameObjects
             agua.loadTexture(GameModel.mediaDir + "texturas\\terrain\\agua1.jpg");
             agua.loadHeightmap(GameModel.mediaDir + "texturas\\terrain\\Heightmap3.jpg", 255f,  1.5f, new TGCVector3(0, -95, 0));
             agua.Effect = efecto;
-            agua.Technique = "RenderScene";
+            agua.Technique = "RenderScene";// "apocalipsis";// "RenderScene";
 
             objetos.Add(agua);
             #endregion

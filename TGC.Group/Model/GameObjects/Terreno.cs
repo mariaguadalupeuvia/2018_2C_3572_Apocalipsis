@@ -32,7 +32,7 @@ namespace TGC.Group.Model.GameObjects
             terrain.loadTexture(GameModel.mediaDir + "texturas\\terrain\\TerrainTexture1.jpg");
             terrain.loadHeightmap(GameModel.mediaDir + "texturas\\terrain\\Heightmap3.jpg", 255f, 1.6f, new TGCVector3(0, -100, 0));
             terrain.Effect = efecto;
-            terrain.Technique = "RenderScene";
+            terrain.Technique = "RenderScene"; //"apocalipsis";// 
             
             objetos.Add(terrain);
             #endregion

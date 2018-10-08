@@ -1,4 +1,5 @@
 ﻿using BulletSharp;
+using BulletSharp.Math;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,10 +17,15 @@ namespace TGC.Group.Model.GameObjects.BulletObjects
         {
             return crearBodyCubicoEstatico(escala, origen);
         }
-        public static RigidBody crearBodyIsla(TGCVector3 escala, TGCVector3 origen)
+        public static RigidBody crearBodyIsla()//TGCVector3 escala, TGCVector3 origen)
+        {
+            return crearBodyCubicoEstatico();// (escala, origen);
+        }
+        public static RigidBody crearBodyParedFinal(TGCVector3 escala, TGCVector3 origen)
         {
             return crearBodyCubicoEstatico(escala, origen);
         }
+        
         public static RigidBody crearBodyZombie(TGCVector3 origen)//este lo usan los zombies
         {
             return crearBodyEsferico(origen, 200, 1);
@@ -30,14 +36,31 @@ namespace TGC.Group.Model.GameObjects.BulletObjects
         }
 
         #region crearBodysGenericos
+        private static RigidBody crearBodyCubicoEstatico()//TGCVector3 escala, TGCVector3 origen)
+        {
+            #region CAJA
+
+            var boxShape = new BoxShape(4000, 1, 2000);// escala.ToBsVector);
+            //var boxTransform = TGCMatrix.Identity;
+            //boxTransform.Origin = origen;
+            DefaultMotionState boxMotionState = new DefaultMotionState(Matrix.Translation(0f, 215f, -700f));
+
+          //  DefaultMotionState boxMotionState = new DefaultMotionState(boxTransform.ToBsMatrix);
+            var boxInfo = new RigidBodyConstructionInfo(0, boxMotionState, boxShape);
+            return new RigidBody(boxInfo);
+
+            #endregion
+        }
         private static RigidBody crearBodyCubicoEstatico(TGCVector3 escala, TGCVector3 origen)
         {
             #region CAJA
 
-            var boxShape = new BoxShape(escala.ToBsVector);
-            var boxTransform = TGCMatrix.Identity;
-            boxTransform.Origin = origen;
-            DefaultMotionState boxMotionState = new DefaultMotionState(boxTransform.ToBsMatrix);
+            var boxShape = new BoxShape(escala.X, escala.Y, escala.Z);//  5, 5, 5);// escala.ToBsVector);
+            //var boxTransform = TGCMatrix.Identity;
+            //boxTransform.Origin = origen;
+            DefaultMotionState boxMotionState = new DefaultMotionState(Matrix.Translation(origen.X, origen.Y, origen.Z));
+
+            //  DefaultMotionState boxMotionState = new DefaultMotionState(boxTransform.ToBsMatrix);
             var boxInfo = new RigidBodyConstructionInfo(0, boxMotionState, boxShape);
             return new RigidBody(boxInfo);
 

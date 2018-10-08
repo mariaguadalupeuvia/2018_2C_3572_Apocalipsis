@@ -1,4 +1,5 @@
 ﻿using BulletSharp;
+using BulletSharp.Math;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -25,9 +26,10 @@ namespace TGC.Group.Model.GameObjects.BulletObjects.CollisionCallbacks
                     if (logica.esZombieEnIsla((RigidBody)colObj1Wrap.CollisionObject))// esZombieEnIsla() tiene efecto cuando es true
                 {
                         //Console.WriteLine("Colisione con la isla!!!, tengo que hacer algo aca");
-                    }
                 }
+            }
                 return 0;
             }
+
         }
     }

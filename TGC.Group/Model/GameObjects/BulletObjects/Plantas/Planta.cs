@@ -18,18 +18,17 @@ namespace TGC.Group.Model.GameObjects
     public abstract class Planta : BulletObject 
     {
         #region variables
-        protected int nivelResistencia = 10;
+        protected int nivelResistencia = 1000;
         protected int costoEnSoles;
         protected Microsoft.DirectX.Direct3D.Effect efecto;
         protected GameLogic logica;
-        protected RigidBody body;
         protected Plataforma plataforma;
         #endregion
 
         public void Init(GameLogic logica, Plataforma plataformaSeleccionada)
         {
             this.logica = logica;
-            this.plataforma = plataformaSeleccionada;
+            plataforma = plataformaSeleccionada;
             #region configurarEfecto
             efecto = TgcShaders.loadEffect(GameModel.shadersDir + "shaderPlanta.fx");
             #endregion
@@ -45,6 +44,7 @@ namespace TGC.Group.Model.GameObjects
         internal void teComen(Zombie zombie)
         {
             nivelResistencia--;
+            Console.WriteLine(nivelResistencia);
             if (nivelResistencia == 0)
             {
                 zombie.empezaACaminar();

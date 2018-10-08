@@ -44,7 +44,6 @@ namespace TGC.Group.Model.GameObjects
             tallo.Effect = efecto;
             tallo.Technique = "RenderScene";
 
-
             #endregion
         }
 
@@ -53,7 +52,7 @@ namespace TGC.Group.Model.GameObjects
             espera++;
             if (espera == 300)
             {
-                disparar();
+                //disparar();
                 espera = 0;
             }
         }

@@ -25,6 +25,7 @@ namespace TGC.Group.Model.Gui
             drawer2D = new Drawer2D();
 
             #region configurarSprites
+
             CustomSprite sprite = new CustomSprite();
             sprite.Bitmap = new CustomBitmap(GameModel.mediaDir + "\\sprites\\emoji.png", D3DDevice.Instance.Device);
             var textureSize = sprite.Bitmap.Size;
@@ -42,6 +43,7 @@ namespace TGC.Group.Model.Gui
             textureSize = plantas.Bitmap.Size;
             plantas.Position = new TGCVector2(0, FastMath.Max(D3DDevice.Instance.Height - textureSize.Height , 0));
             sprites.Add(plantas);
+
             #endregion
 
             #region texto

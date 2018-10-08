@@ -73,10 +73,25 @@ float4 ps_tarde( float3 Texcoord: TEXCOORD0) : COLOR0
 
     return fvBaseColor;
 }
+float4 ps_Apocalipsis(float3 Texcoord: TEXCOORD0) : COLOR0
+{
+	float4 fvBaseColor = tex2D(diffuseMap, Texcoord);
+	float4 rgbColor = fvBaseColor;
 
+	fvBaseColor.r = rgbColor.b;
+	fvBaseColor.g = rgbColor.g;
+	fvBaseColor.b = rgbColor.r;
+
+	//fvBaseColor.r = saturate(fvBaseColor.r * 4.0);
+	//fvBaseColor.g = saturate(fvBaseColor.g * 0.3);
+	//fvBaseColor.b = saturate(fvBaseColor.b * 0.1);
+	fvBaseColor.rgb = saturate(fvBaseColor);
+
+	return fvBaseColor;
+}
 
 // ------------------------------------------------------------------
-technique normal
+technique RenderScene
 {
    pass Pass_0
    {
@@ -100,7 +115,17 @@ technique tarde
    }
 }
 
-
+technique apocalipsis
+{
+	pass Pass_0
+	{
+		AlphaBlendEnable = TRUE;
+		DestBlend = INVSRCALPHA;
+		SrcBlend = SRCALPHA;
+		VertexShader = compile vs_2_0 vs_main();
+		PixelShader = compile ps_2_0 ps_Apocalipsis();
+	}
+}
 
 
 

@@ -26,12 +26,17 @@ namespace TGC.Group.Model.GameObjects.BulletObjects
         protected TgcMesh zombie;
         protected TgcMesh globo;
         protected float caidaFactor = 0;
-        protected float velocidad = -6;
+        protected float velocidad = -7;
         protected float daño = 0;
+        public string nombre;
         #endregion
+        protected TgcBoundingAxisAlignBox boundingBox;
 
         private const int MAXIMO_DAÑO_SOPORTADO = 25;
-
+        public TGCVector3 POSICION()
+        {
+            return zombie.Position;  
+        }
         public Zombie(TGCVector3 posicion, GameLogic logica)
         {
             body = FactoryBody.crearBodyZombie(new TGCVector3(posicion.X, posicion.Y + 350, posicion.Z)); //(posicion);
@@ -61,11 +66,25 @@ namespace TGC.Group.Model.GameObjects.BulletObjects
 
             objetos.Add(globo);
             #endregion
+
+            //Vector3 pmin, pmax;
+            //body.GetAabb(out pmin, out pmax);
+            //TGCVector3 tgcpmin = new TGCVector3(pmin.X, pmin.Y, pmin.Z);
+            //TGCVector3 tgcpmax = new TGCVector3(pmax.X, pmax.Y, pmax.Z);
+            //boundingBox = new TgcBoundingAxisAlignBox(tgcpmin, tgcpmax);
+            //boundingBox.setRenderColor(Color.Red);
+            ////Console.WriteLine("ZOMBIE PMIN " + zombie.BoundingBox.PMin + ", PMAX " + zombie.BoundingBox.PMax);
+
+            //zombie.BoundingBox = boundingBox;
+            
+            //Console.WriteLine("BODY PMIN " + pmin + ", PMAX " + pmax);
+            // zombie.updateBoundingBox();
         }
 
         public override void Update()
         {
             body.Translate(new Vector3(0, caidaFactor, velocidad));
+           // zombie.updateBoundingBox();
         }
 
         public override void Render()
@@ -76,6 +95,10 @@ namespace TGC.Group.Model.GameObjects.BulletObjects
             //zombie.Transform = new TGCMatrix(body.InterpolationWorldTransform);
             //globo.Transform = new TGCMatrix(body.InterpolationWorldTransform);
             base.Render();
+
+           // zombie.BoundingBox.Render();
+            //boundingBox.Render();
+            
         }
 
         #region respuestaAAtaqueDePlanta

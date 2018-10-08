@@ -51,6 +51,7 @@ namespace TGC.Group.Model.GameObjects.BulletObjects.Zombies
            // zombie.Position = new TGCVector3(body.InterpolationWorldTransform.M41, body.InterpolationWorldTransform.M42, body.InterpolationWorldTransform.M43);
             //corona.Position = new TGCVector3(body.InterpolationWorldTransform.M41, body.InterpolationWorldTransform.M42 + 20, body.InterpolationWorldTransform.M43);
             zombie.Render();
+            
             //corona.Render();
         }
 
