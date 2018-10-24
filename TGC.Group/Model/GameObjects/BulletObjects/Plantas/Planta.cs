@@ -44,14 +44,18 @@ namespace TGC.Group.Model.GameObjects
         internal void teComen(Zombie zombie)
         {
             nivelResistencia--;
-            Console.WriteLine(nivelResistencia);
             if (nivelResistencia == 0)
             {
                 zombie.empezaACaminar();
-                logica.removePlanta(this);
-                logica.desactivar(this);
-                plataforma.ocupado = false;
+                liberar();
             }
+        }
+
+        public void liberar()
+        {
+            logica.removePlanta(this);
+            logica.desactivar(this);
+            plataforma.ocupado = false;
         }
     }
 }

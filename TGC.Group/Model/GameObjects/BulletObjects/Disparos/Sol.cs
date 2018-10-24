@@ -13,6 +13,7 @@ namespace TGC.Group.Model.GameObjects
     {
         public Sol(TgcMesh girasol, GameLogic logica)
         {
+            masa = 10.0f;
             body = FactoryBody.crearBodyConImpulso(girasol.Position, radio, masa, new TGCVector3(1, 2, 1));
             logica.addBulletObject(this);
             callback = new CollisionCallbackFloor(logica, this);
@@ -22,6 +23,7 @@ namespace TGC.Group.Model.GameObjects
         public override void dañarZombie(Zombie zombie)
         {
             //el sol no daña ni colisiona con zombie :)
+            zombie.avanza();
         }
 
         public override void Render()

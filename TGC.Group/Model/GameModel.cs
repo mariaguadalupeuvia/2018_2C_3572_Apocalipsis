@@ -17,6 +17,7 @@ using TGC.Core.BoundingVolumes;
 using TGC.Core.Text;
 using TGC.Group.Model.GameObjects.BulletObjects.Zombies;
 using TGC.Group.Model.EstadosJuego;
+using TGC.Core;
 
 namespace TGC.Group.Model
 {
@@ -44,107 +45,73 @@ namespace TGC.Group.Model
 
         #region variables
         public static Estado estadoDelJuego;
-
-        /*
-        private Menu menu = new Menu();
-
-        List<GameObject> gameObjects = new List<GameObject>() { new Skybox(), new Terreno(), new Escenario()};
-        GameObject agua = new Agua(); //los objetos transparentes se renderean arriba de todo
-        //private Bullet prueba = new Bullet();
-        private Gui.Gui gui = new Gui.Gui();
-        public GameLogic logica = new GameLogic();
-        public ZombieRey zombieRey;
-        */
+        public static bool enPlay = false;
         TgcCamera camaraAerea;
 
         public static float time = 0.0f;
         public static string mediaDir;
         public static string shadersDir;
         public static TgcFrustum frustum;
-       // private TgcText2D text1;
         #endregion
+
+        HighResolutionTimer timer= new HighResolutionTimer();
 
         public override void Init()
         {
+            #region devices
             var d3dDevice = D3DDevice.Instance.Device;
-
-           
-            //text1 = new TgcText2D();
+            var deviceSound = DirectSound.DsDevice;
+            #endregion
 
             #region variablesDeClase
-
             frustum = Frustum;
             mediaDir = MediaDir;
             shadersDir = ShadersDir;
-
             #endregion
 
             #region frustum  //alejar far plane
             d3dDevice.Transform.Projection = Matrix.PerspectiveFovLH(Geometry.DegreeToRadian(45.0f),
                 (float)d3dDevice.CreationParameters.FocusWindow.Width / d3dDevice.CreationParameters.FocusWindow.Height, 1f, 50000f);
             #endregion
+
             estadoDelJuego = new Inicial();
-            //estadoDelJuego = new Play();
             estadoDelJuego.Init(Input);
+            GameSound sonido = new GameSound(deviceSound);
 
-            //estadoDelJuego = estadoDelJuego.cambiarEstado();
-            //estadoDelJuego.Init(Input);
-            /*
-            #region inicializarRendereables
-
-            gameObjects.ForEach(g => g.Init());
-            //prueba.Init();
-            logica.Init(Input);
-            agua.Init(); 
-            gui.Init();
-
-            zombieRey = new ZombieRey(new TGCVector3(700, 50, 6000), logica);
-            logica.addBulletObject(zombieRey);
-
-            #endregion
-
-            menu.Init(Input);
-            */
-            //camaraAerea = new CamaraPersonal(new TGCVector3(1214, 950, 2526), Input);
-            camaraAerea = new CamaraPersonal(new TGCVector3(171, 453, 577), Input);
+            camaraAerea = new CamaraPersonal(new TGCVector3(1214, 1050, 2526), Input);
+           // camaraAerea = new CamaraPersonal(new TGCVector3(171, 453, 577), Input);
             Camara = camaraAerea;
         }
-
+        
         public override void Update()
         {
             PreUpdate();
-            /*
-            #region manejarCamara
-            //3ra persona
-            if (Input.keyDown(Key.C))
-            {
-                Camara = ZombieRey.activarCamaraInterna();
-            }
-            //aerea
-            if (Input.keyDown(Key.V))
-            {
-                ZombieRey.desactivarCamaraInterna();
-                Camara = camaraAerea;
-            }
-            #endregion
-            */
-            time += 0.003f;
+            // timer.FramesPerSecond;
+
+            time +=0.0003f;//0.003f;
+
             if (time > 500) time = 0;
             frustum = Frustum;
 
             estadoDelJuego.Update(Input);
-            /*
-            #region update
-            zombieRey.Update(Input);
-            gameObjects.ForEach(g => g.Update());
-           // prueba.Update();
-            agua.Update();
-            logica.Update(Input);
-            text1.Text = "camara: (" + Camara.Position.X + ", " + Camara.Position.Y + ", " + Camara.Position.Z + ")";
+
+            #region manejarCamara
+            if (enPlay)
+            {
+                //3ra persona
+                if (Input.keyDown(Key.C))
+                {
+                    Camara = ZombieRey.activarCamaraInterna();
+                }
+                //aerea
+                if (Input.keyDown(Key.V))
+                {
+                    ZombieRey.desactivarCamaraInterna();
+                    Camara = camaraAerea;
+                }
+            }
             #endregion
 
-            menu.Update(Input);
-            */
             PostUpdate();
         }
 
@@ -152,34 +119,12 @@ namespace TGC.Group.Model
         {
             PreRender();
             estadoDelJuego.Render();
-            /*
-            #region render
-            gameObjects.ForEach(g => g.Render());
-            //prueba.Render();
-            logica.Render();
-            agua.Render();
-            gui.Render();
-            text1.render();
-            #endregion
-            menu.Render(); 
-            */
             PostRender();
         }
 
         public override void Dispose()
         {
             estadoDelJuego.Dispose();
-            /*
-            #region dispose
-            gameObjects.ForEach(g => g.Dispose());
-            //prueba.Dispose();
-            agua.Dispose();
-            logica.Dispose();
-            gui.Dispose();
-            text1.Dispose();
-            #endregion
-            menu.Dispose();
-            */
         }
     }
 }

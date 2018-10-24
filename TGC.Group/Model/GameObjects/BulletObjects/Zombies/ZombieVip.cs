@@ -28,7 +28,16 @@ namespace TGC.Group.Model.GameObjects.BulletObjects
 
         public override void Render()
         {
-            sombrero.Position = new TGCVector3(body.InterpolationWorldTransform.M41, body.InterpolationWorldTransform.M42 + 360, body.InterpolationWorldTransform.M43 );
+            if (body.InterpolationWorldTransform.M42 < 400)
+            {
+                sombrero.Position = new TGCVector3(body.InterpolationWorldTransform.M41, body.InterpolationWorldTransform.M42 + 360 + (subir * 2), body.InterpolationWorldTransform.M43);
+            }
+            else
+            {
+                sombrero.Position = new TGCVector3(body.InterpolationWorldTransform.M41, body.InterpolationWorldTransform.M42 + 360, body.InterpolationWorldTransform.M43);
+            }
+
+           
             base.Render();
         }
 

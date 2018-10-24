@@ -14,10 +14,10 @@ namespace TGC.Group.Model.GameObjects
         Planta planta;
         GameLogic logica;
 
-        public Explosivo(TgcMesh mesh, GameLogic logica, Planta planta)
+        public Explosivo(TGCVector3 posicion, GameLogic logica, Planta planta)
         {
             this.logica = logica;
-            body = FactoryBody.crearBodyExplosivo(mesh.Position, 10);
+            body = FactoryBody.crearBodyExplosivo(posicion, 10);
             this.logica.addBulletObject(this);
             callback = new CollisionCallbackDisparo(logica, this);
             this.planta = planta;
@@ -26,17 +26,16 @@ namespace TGC.Group.Model.GameObjects
         public override void dañarZombie(Zombie zombie)
         {
             zombie.morir();
-            logica.desactivar(planta);
+            planta.liberar(); 
         }
 
         public override void Render()
         {
-
+            
         }
 
         public override void Dispose()
         {
-            logica.removePlanta(planta);
             planta.Dispose();
             base.Dispose();
         }

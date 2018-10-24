@@ -19,9 +19,10 @@ namespace TGC.Group.Model.GameObjects
         #region variables
         private TgcMesh canion;
         private TgcMesh tallo;
-        float axisRotation = 0;
-        float ayisRotation = 0;
-        private const float AXIS_ROTATION_SPEED = 0.02f;
+        //float axisRotation = 0;
+        //float ayisRotation = 0;
+        //private const float AXIS_ROTATION_SPEED = 0.02f;
+        private int espera = 0;
         #endregion
 
         public Canion(TGCVector3 posicion, GameLogic logica, Plataforma plataforma)
@@ -49,35 +50,42 @@ namespace TGC.Group.Model.GameObjects
 
         public override void Update(TgcD3dInput Input)
         {
-            #region chequearInput
-            if (Input.keyDown(Key.UpArrow))
-            {
-                axisRotation -= AXIS_ROTATION_SPEED * GameModel.time;
-            }
-            if (Input.keyDown(Key.DownArrow))
-            {
-                axisRotation += AXIS_ROTATION_SPEED * GameModel.time;
-            }
+            //#region chequearInput
+            //if (Input.keyDown(Key.UpArrow))
+            //{
+            //    axisRotation -= AXIS_ROTATION_SPEED * GameModel.time;
+            //}
+            //if (Input.keyDown(Key.DownArrow))
+            //{
+            //    axisRotation += AXIS_ROTATION_SPEED * GameModel.time;
+            //}
 
-            if (Input.keyDown(Key.RightArrow))
-            {
-                ayisRotation -= AXIS_ROTATION_SPEED * GameModel.time;
-            }
-            if (Input.keyDown(Key.LeftArrow))
-            {
-                ayisRotation += AXIS_ROTATION_SPEED * GameModel.time;
-            }
-            if (Input.keyUp(Key.P))
+            //if (Input.keyDown(Key.RightArrow))
+            //{
+            //    ayisRotation -= AXIS_ROTATION_SPEED * GameModel.time;
+            //}
+            //if (Input.keyDown(Key.LeftArrow))
+            //{
+            //    ayisRotation += AXIS_ROTATION_SPEED * GameModel.time;
+            //}
+            //if (Input.keyUp(Key.P))
+            //{
+            //    disparar();
+            //}
+            //#endregion
+
+            //canion.RotateX(axisRotation);
+            //canion.RotateY(ayisRotation);
+
+            //axisRotation = 0;
+            //ayisRotation = 0;
+
+            espera++;
+            if (espera == 300)
             {
                 disparar();
+                espera = 0;
             }
-            #endregion
-
-            canion.RotateX(axisRotation);
-            canion.RotateY(ayisRotation);
-
-            axisRotation = 0;
-            ayisRotation = 0;
         }
 
         public override void Render()

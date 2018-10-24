@@ -11,6 +11,7 @@ namespace TGC.Group.Model.GameObjects.BulletObjects
         public class ZombieXD : Zombie
         {
             protected TgcMesh cono;
+            int bajar = 0;
             private const int MAXIMO_DAÑO_SOPORTADO = 30;
 
             public ZombieXD(TGCVector3 posicion, GameLogic logica) : base(posicion, logica)
@@ -29,7 +30,17 @@ namespace TGC.Group.Model.GameObjects.BulletObjects
 
             public override void Render()
             {
-                cono.Position = new TGCVector3(body.InterpolationWorldTransform.M41, body.InterpolationWorldTransform.M42 + 120, body.InterpolationWorldTransform.M43 + 70);
+            if (body.InterpolationWorldTransform.M42 < 400)
+            {
+                bajar ++;
+                cono.Position = new TGCVector3(cono.Position.X, 520  - (bajar * 0.5f), body.InterpolationWorldTransform.M43 + 70 + bajar);
+
+            }
+            else
+            {
+                cono.Position = new TGCVector3(cono.Position.X, body.InterpolationWorldTransform.M42 + 120, body.InterpolationWorldTransform.M43 + 70);
+            }
+           
                 base.Render();
             }
 

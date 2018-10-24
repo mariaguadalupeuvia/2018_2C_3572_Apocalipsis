@@ -17,6 +17,7 @@ namespace TGC.Group.Model.EstadosJuego
         private List<CustomSprite> sprites = new List<CustomSprite>();
         private Drawer2D drawer2D;
         CustomSprite barra2 = new CustomSprite();
+        
         private float tiempo = 0;
         #endregion
 
@@ -28,12 +29,14 @@ namespace TGC.Group.Model.EstadosJuego
             #region configurarSprites
             CustomSprite apocalipsis = new CustomSprite();
             apocalipsis.Bitmap = new CustomBitmap(GameModel.mediaDir + "\\sprites\\apocalipsisYa.png", D3DDevice.Instance.Device);
-            apocalipsis.Position = new TGCVector2(0, 0);
+            var textureSize = apocalipsis.Bitmap.Size;
+            apocalipsis.Position = new TGCVector2(FastMath.Max((D3DDevice.Instance.Width - textureSize.Width)* 0.5f, 0), FastMath.Max((D3DDevice.Instance.Height - textureSize.Height) * 0.5f, 0));
             sprites.Add(apocalipsis);
             
             barra2.Bitmap = new CustomBitmap(GameModel.mediaDir + "\\sprites\\barraAmarilla.png", D3DDevice.Instance.Device);
-            barra2.Position = new TGCVector2(FastMath.Max(D3DDevice.Instance.Width * 0.16f, 0), FastMath.Max(D3DDevice.Instance.Height * 0.879f, 0));
+            barra2.Position = new TGCVector2(apocalipsis.Position.X, FastMath.Max(D3DDevice.Instance.Height * 0.879f, 0));
             barra2.Scaling = new TGCVector2(1, 1);
+
             sprites.Add(barra2);
             #endregion
         }
@@ -52,7 +55,7 @@ namespace TGC.Group.Model.EstadosJuego
 
         public void Update(TgcD3dInput Input)
         {
-            if (tiempo < 55.5f)
+            if (tiempo < 65.5f)
             {
                 tiempo = GameModel.time * 60;
                 barra2.Scaling = new TGCVector2(tiempo, 1);

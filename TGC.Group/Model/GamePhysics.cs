@@ -1,4 +1,5 @@
 ﻿using BulletSharp;
+using BulletSharp.Math;
 using System;
 using System.Collections.Generic;
 using TGC.Core.Direct3D;
@@ -44,9 +45,10 @@ namespace TGC.Group.Model
 
             #region PISO 
             var d3dDevice = D3DDevice.Instance.Device;
+
             //El piso es un plano estatico se dice que si tiene masa 0 es estatico.
             var floorShape = new StaticPlaneShape(TGCVector3.Up.ToBsVector, 0);
-            var floorMotionState = new DefaultMotionState();
+            var floorMotionState = new DefaultMotionState();// Matrix.Translation(0f, 200f, -700f));//esto puede ir sin parametro y funciona
             var floorInfo = new RigidBodyConstructionInfo(0, floorMotionState, floorShape);
             floorBody = new RigidBody(floorInfo);
             dynamicsWorld.AddRigidBody(floorBody);
@@ -61,9 +63,9 @@ namespace TGC.Group.Model
         {
             bulletObjects.ForEach(b => dynamicsWorld.ContactTest(b.body, b.callback));
             bulletObjects.ForEach(b => b.Update());
-            removerDesactivados();//Al colisionar los disparos mueren, las plantan son comida y a los zombies  los matan a tiros
+            removerDesactivados();//Al colisionar los disparos mueren, las plantan son comida y a los zombies los matan a tiros
 
-            dynamicsWorld.StepSimulation(1 / 60f, 10); 
+            dynamicsWorld.StepSimulation(1/60f, 10);
         }
 
         public void Render()

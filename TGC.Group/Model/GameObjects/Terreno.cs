@@ -42,8 +42,13 @@ namespace TGC.Group.Model.GameObjects
         {
            
         }
+
         public static int alturaEnPunto(int x, int z)
         {
+            if ((z < 0) || (x < 0) || (z > 63) || (x > 63))
+            {
+                return -1;
+            }
             return terrain.HeightmapData[x,z];
         }
     }

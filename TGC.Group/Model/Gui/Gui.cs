@@ -16,7 +16,8 @@ namespace TGC.Group.Model.Gui
         #region variables
         private List<CustomSprite> sprites = new List<CustomSprite>();
         private Drawer2D drawer2D;
-        private TgcText2D texto = new TgcText2D();
+        private TgcText2D soles = new TgcText2D();
+        private TgcText2D zombies = new TgcText2D();
         #endregion
 
         public void Init()
@@ -32,11 +33,11 @@ namespace TGC.Group.Model.Gui
             sprite.Position = new TGCVector2(FastMath.Max(D3DDevice.Instance.Width  - textureSize.Width / 0.75f, 0), 0);
             sprites.Add(sprite);
 
-            CustomSprite ayuda = new CustomSprite();
-            ayuda.Bitmap = new CustomBitmap(GameModel.mediaDir + "\\sprites\\ayuda2.png", D3DDevice.Instance.Device);
-            textureSize = ayuda.Bitmap.Size;
-            ayuda.Position = new TGCVector2(FastMath.Max(D3DDevice.Instance.Width - textureSize.Width, 0), FastMath.Max(D3DDevice.Instance.Height - textureSize.Height, 0));
-            sprites.Add(ayuda);
+            //CustomSprite ayuda = new CustomSprite();
+            //ayuda.Bitmap = new CustomBitmap(GameModel.mediaDir + "\\sprites\\ayuda2.png", D3DDevice.Instance.Device);
+            //textureSize = ayuda.Bitmap.Size;
+            //ayuda.Position = new TGCVector2(FastMath.Max(D3DDevice.Instance.Width - textureSize.Width, 0), FastMath.Max(D3DDevice.Instance.Height - textureSize.Height, 0));
+            //sprites.Add(ayuda);
 
             CustomSprite plantas = new CustomSprite();
             plantas.Bitmap = new CustomBitmap(GameModel.mediaDir + "\\sprites\\PLANTAS.png", D3DDevice.Instance.Device);
@@ -44,17 +45,36 @@ namespace TGC.Group.Model.Gui
             plantas.Position = new TGCVector2(0, FastMath.Max(D3DDevice.Instance.Height - textureSize.Height , 0));
             sprites.Add(plantas);
 
+
+            CustomSprite girasol = new CustomSprite();
+            girasol.Bitmap = new CustomBitmap(GameModel.mediaDir + "\\sprites\\girasol.png", D3DDevice.Instance.Device);
+            girasol.Position = new TGCVector2(30, 30);
+            sprites.Add(girasol);
+
+            CustomSprite zombie = new CustomSprite();
+            zombie.Bitmap = new CustomBitmap(GameModel.mediaDir + "\\sprites\\zombie.png", D3DDevice.Instance.Device);
+            zombie.Position = new TGCVector2(30, 100);
+            sprites.Add(zombie);
             #endregion
 
             #region texto
             //Crear texto 2, especificando color, alineacion, posicion, tamano y fuente.
-            texto = new TgcText2D();
-            texto.Text = "Soles " + GameLogic.cantidadEnergia;
-            texto.Color = Color.BlueViolet;
-            texto.Align = TgcText2D.TextAlign.LEFT;
-            texto.Position = new Point(100, 10);
-            texto.Size = new Size(100, 10);
-            texto.changeFont(new Font("Console", 25, FontStyle.Bold | FontStyle.Italic));
+            soles = new TgcText2D();
+            soles.Text = "" + GameLogic.cantidadEnergia;
+            soles.Color = Color.GreenYellow;
+            soles.Align = TgcText2D.TextAlign.LEFT;
+            soles.Position = new Point(100, 40);
+            soles.Size = new Size(100, 10);
+            soles.changeFont(new Font("Console", 25, FontStyle.Bold | FontStyle.Italic));
+
+
+            zombies = new TgcText2D();
+            zombies.Text = "" + GameLogic.cantidadZombiesMuertos;
+            zombies.Color = Color.LawnGreen;
+            zombies.Align = TgcText2D.TextAlign.LEFT;
+            zombies.Position = new Point(100, 110);
+            zombies.Size = new Size(100, 10);
+            zombies.changeFont(new Font("Console", 25, FontStyle.Bold | FontStyle.Italic));
             #endregion
         }
 
@@ -63,14 +83,17 @@ namespace TGC.Group.Model.Gui
             drawer2D.BeginDrawSprite();
             sprites.ForEach(s => drawer2D.DrawSprite(s));
             drawer2D.EndDrawSprite();
-            texto.Text = "Soles " + GameLogic.cantidadEnergia;
-            texto.render();
+            soles.Text = "" + GameLogic.cantidadEnergia;
+            soles.render();
+            zombies.Text = "" + GameLogic.cantidadZombiesMuertos;
+            zombies.render();
         }
 
         public void Dispose()
         {
             sprites.ForEach(s => s.Dispose());
-            texto.Dispose();
+            soles.Dispose();
+            zombies.Dispose();
         }
     }
 }

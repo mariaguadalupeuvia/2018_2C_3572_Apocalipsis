@@ -345,7 +345,7 @@ technique RenderScene
 		//CullMode = Ccw;//Cw;//None;
 	    //ZEnable = false;
 		VertexShader = compile vs_3_0 vs_main();
-		PixelShader = compile ps_2_0 ps_main();
+		PixelShader = compile ps_3_0 ps_main();
 	}
 }
 
@@ -357,7 +357,7 @@ technique RenderSceneProgresivo
 		DestBlend = INVSRCALPHA;
 		SrcBlend = SRCALPHA;
 		VertexShader = compile vs_3_0 vs_main();
-		PixelShader = compile ps_2_0 ps_progresivo();
+		PixelShader = compile ps_3_0 ps_progresivo();
 	}
 }
 
@@ -369,7 +369,7 @@ technique RenderSceneCongelada
 		DestBlend = INVSRCALPHA;
 		SrcBlend = SRCALPHA;
 		VertexShader = compile vs_3_0 vs_main();
-		PixelShader = compile ps_2_0 ps_hielo();
+		PixelShader = compile ps_3_0 ps_hielo();
 	}
 }
 
@@ -381,7 +381,7 @@ technique Transparente
 		DestBlend = INVSRCALPHA;
 		SrcBlend = SRCALPHA;
 		VertexShader = compile vs_3_0 vs_main();
-		PixelShader = compile ps_2_0 ps_transparente();
+		PixelShader = compile ps_3_0 ps_transparente();
 	}
 }
 
@@ -395,7 +395,7 @@ technique Explosivo
 		//CullMode = Ccw;//Cw;//None;
 		//ZEnable = false;
 		VertexShader = compile vs_3_0 vs_explosivo();
-		PixelShader = compile ps_2_0 ps_main();
+		PixelShader = compile ps_3_0 ps_main();
 	}
 }
 
@@ -407,6 +407,6 @@ technique RenderZombie
 		DestBlend = INVSRCALPHA;
 		SrcBlend = SRCALPHA;
 		VertexShader = compile vs_3_0 vs_main();
-		PixelShader = compile ps_2_0 ps_zombie();
+		PixelShader = compile ps_3_0 ps_zombie();
 	}
 }

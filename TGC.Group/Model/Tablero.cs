@@ -31,10 +31,18 @@ namespace TGC.Group.Model
         TgcMesh contenedor;
         public GameLogic logica;
         #endregion
+        List<Pared> paredes = new List<Pared>();
 
         public Tablero(GameLogic logica)
         {
             this.logica = logica;
+            //x = -850, -150, 550, 1250
+            paredes.Add(new Pared(logica, -1550));
+            paredes.Add(new Pared(logica, -850));
+            paredes.Add(new Pared(logica, -150));
+            paredes.Add(new Pared(logica, 550));
+            paredes.Add(new Pared(logica, 1250));
+            paredes.Add(new Pared(logica, 1950));
         }
 
         public void Init(TgcD3dInput Input)
@@ -63,9 +71,10 @@ namespace TGC.Group.Model
             #endregion
 
             //este body seria del tablero o isla principal
-            body = FactoryBody.crearBodyIsla();// new TGCVector3(400, 1, 400), new TGCVector3(400, 340f, 1000f)); //(new TGCVector3(500, 10, 1000), new TGCVector3(850f, 800f, 1000f));
+            body = FactoryBody.crearBodyIsla();
             callback = new CollisionCallbackIsla(logica);
             logica.addBulletObject(this);
+
         }
 
         public void Update(TgcD3dInput Input)
@@ -136,6 +145,7 @@ namespace TGC.Group.Model
                 }
                 x += 700;
                 z = -3000;
+
             }
         }
         #endregion

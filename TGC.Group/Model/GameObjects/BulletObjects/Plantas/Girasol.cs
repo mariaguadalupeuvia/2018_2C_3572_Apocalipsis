@@ -11,6 +11,7 @@ using TGC.Core.Shaders;
 using Microsoft.DirectX.DirectInput;
 using TGC.Core.Input;
 using TGC.Group.Model.GameObjects.BulletObjects;
+using System.Timers;
 
 namespace TGC.Group.Model.GameObjects
 {
@@ -19,8 +20,12 @@ namespace TGC.Group.Model.GameObjects
         #region variables
         private TgcMesh girasol;
         private TgcMesh tallo;
-        private int espera = 0;
+        //private int espera = 0;
+        static Timer time;
+        static bool tiempoCumplido = false;
         #endregion
+
+        private const int INTERVALO = 10000;
 
         public Girasol(TGCVector3 posicion, GameLogic logica, Plataforma plataforma)
         {
@@ -45,15 +50,24 @@ namespace TGC.Group.Model.GameObjects
             tallo.Technique = "RenderScene";
 
             #endregion
-        }
 
+            #region manejarTiempo
+            time = new Timer(INTERVALO);
+            time.Elapsed += OnTimedEvent;
+            time.AutoReset = true;
+            time.Enabled = true;
+            #endregion
+        }
+        static void OnTimedEvent(Object source, ElapsedEventArgs e)
+        {
+            tiempoCumplido = true;
+        }
         public override void Update(TgcD3dInput Input)
         {
-            espera++;
-            if (espera == 300)
+            if (tiempoCumplido)
             {
-                //disparar();
-                espera = 0;
+                tiempoCumplido = false;
+                disparar();
             }
         }
 

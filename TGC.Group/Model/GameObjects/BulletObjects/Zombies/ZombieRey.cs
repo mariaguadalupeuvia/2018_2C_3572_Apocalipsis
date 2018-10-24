@@ -48,10 +48,7 @@ namespace TGC.Group.Model.GameObjects.BulletObjects.Zombies
     
         public override void Render()
         {
-           // zombie.Position = new TGCVector3(body.InterpolationWorldTransform.M41, body.InterpolationWorldTransform.M42, body.InterpolationWorldTransform.M43);
-            //corona.Position = new TGCVector3(body.InterpolationWorldTransform.M41, body.InterpolationWorldTransform.M42 + 20, body.InterpolationWorldTransform.M43);
             zombie.Render();
-            
             //corona.Render();
         }
 
@@ -91,17 +88,36 @@ namespace TGC.Group.Model.GameObjects.BulletObjects.Zombies
             }
             #endregion
 
-            zombie.Position = zombie.Position + moveVector;
-            zombie.Position = new TGCVector3(zombie.Position.X, alturaEnPunto() + 30, zombie.Position.Z);
-            //body.Translate(zombie.Position.ToBsVector);
+            #region manejarAltura
+            
+            int x = (int)(zombie.Position.X / 255f);
+            int z = (int)(zombie.Position.Z / 255f);
+            int y = alturaEnPunto(x, z);
+
+            if (y != -1)
+            {
+                zombie.Position = zombie.Position + moveVector;
+                zombie.Position = new TGCVector3(zombie.Position.X, y + 30, zombie.Position.Z);
+                //body.Translate(zombie.Position.ToBsVector);
+            }
+            else
+            {
+                if (z < 0) z = 0;
+                if (z > 63) z = 63;
+                if (x < 0) x = 0;
+                if (x > 63) x = 63;
+                zombie.Position = new TGCVector3(x, zombie.Position.Y, z);
+            }
+            #endregion
+
             camaraInterna.Target = zombie.Position;
         }
 
         #region cosasPocoInteresantes
-        private int alturaEnPunto()
+        private int alturaEnPunto(int x, int z)
         {
-            int x = (int)(zombie.Position.X / 255f);
-            int z = (int)(zombie.Position.Z / 255f);
+            //int x = (int)(zombie.Position.X / 255f);
+            //int z = (int)(zombie.Position.Z / 255f);
             return (int)(Terreno.alturaEnPunto(x + 32, z + 32) * 1.7f);
         }
 

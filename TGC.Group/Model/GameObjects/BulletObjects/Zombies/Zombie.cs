@@ -27,19 +27,16 @@ namespace TGC.Group.Model.GameObjects.BulletObjects
         protected TgcMesh globo;
         protected float caidaFactor = 0;
         protected float velocidad = -7;
+        protected float subir = 350;
         protected float daño = 0;
         public string nombre;
         #endregion
-        protected TgcBoundingAxisAlignBox boundingBox;
-
+     
         private const int MAXIMO_DAÑO_SOPORTADO = 25;
-        public TGCVector3 POSICION()
-        {
-            return zombie.Position;  
-        }
+
         public Zombie(TGCVector3 posicion, GameLogic logica)
         {
-            body = FactoryBody.crearBodyZombie(new TGCVector3(posicion.X, posicion.Y + 350, posicion.Z)); //(posicion);
+            body = FactoryBody.crearBodyZombie(new TGCVector3(posicion.X, posicion.Y + 350, posicion.Z)); 
             callback = new CollisionCallbackZombie(logica, this);
 
             #region configurarEfecto
@@ -66,39 +63,61 @@ namespace TGC.Group.Model.GameObjects.BulletObjects
 
             objetos.Add(globo);
             #endregion
-
-            //Vector3 pmin, pmax;
-            //body.GetAabb(out pmin, out pmax);
-            //TGCVector3 tgcpmin = new TGCVector3(pmin.X, pmin.Y, pmin.Z);
-            //TGCVector3 tgcpmax = new TGCVector3(pmax.X, pmax.Y, pmax.Z);
-            //boundingBox = new TgcBoundingAxisAlignBox(tgcpmin, tgcpmax);
-            //boundingBox.setRenderColor(Color.Red);
-            ////Console.WriteLine("ZOMBIE PMIN " + zombie.BoundingBox.PMin + ", PMAX " + zombie.BoundingBox.PMax);
-
-            //zombie.BoundingBox = boundingBox;
-            
-            //Console.WriteLine("BODY PMIN " + pmin + ", PMAX " + pmax);
-            // zombie.updateBoundingBox();
         }
 
         public override void Update()
         {
-            body.Translate(new Vector3(0, caidaFactor, velocidad));
-           // zombie.updateBoundingBox();
+           body.Translate(new Vector3(0, caidaFactor, -1 + velocidad));
+        }
+        
+        private int altura()
+        {
+            #region manejarAltura
+            
+            int x = (int)(zombie.Position.X / 255f);
+            int z = (int)(zombie.Position.Z / 255f);
+            int y = alturaEnPunto(x, z);
+
+            if (y != -1)
+            {
+                return y;
+            }
+            else
+            {
+                if (z < 0) z = 0;
+                if (z > 63) z = 63;
+                if (x < 0) x = 0;
+                if (x > 63) x = 63;
+                return (int)zombie.Position.Y;
+            }
+            #endregion
         }
 
+        private int alturaEnPunto(int x, int z)
+        {
+            return (int)(Terreno.alturaEnPunto(x + 32, z + 32) * 1.7f);
+        }
         public override void Render()
         {
-            zombie.Position = new TGCVector3(body.InterpolationWorldTransform.M41, body.InterpolationWorldTransform.M42, body.InterpolationWorldTransform.M43);
-            globo.Position = new TGCVector3(body.InterpolationWorldTransform.M41, body.InterpolationWorldTransform.M42 + 150, body.InterpolationWorldTransform.M43);
+            if ((body.InterpolationWorldTransform.M42 < 400) && (caidaFactor != -10))
+            {
+                subir+= 0.8f;
+                int y = altura();
+                zombie.Position = new TGCVector3(body.InterpolationWorldTransform.M41/*zombie.Position.X*/, y/*430*/, body.InterpolationWorldTransform.M43);
+                globo.Position = new TGCVector3(body.InterpolationWorldTransform.M41, body.InterpolationWorldTransform.M42 + subir /*+ 500*/, body.InterpolationWorldTransform.M43);
 
+            }
+            else
+            {
+                zombie.Position = new TGCVector3(zombie.Position.X, body.InterpolationWorldTransform.M42, body.InterpolationWorldTransform.M43);
+                globo.Position = new TGCVector3(body.InterpolationWorldTransform.M41, body.InterpolationWorldTransform.M42 + 150, body.InterpolationWorldTransform.M43);
+            }
             //zombie.Transform = new TGCMatrix(body.InterpolationWorldTransform);
             //globo.Transform = new TGCMatrix(body.InterpolationWorldTransform);
-            base.Render();
 
-           // zombie.BoundingBox.Render();
-            //boundingBox.Render();
-            
+            //zombie.Position = new TGCVector3(body.InterpolationWorldTransform.M41, body.InterpolationWorldTransform.M42, body.InterpolationWorldTransform.M43);
+            //globo.Position = new TGCVector3(body.InterpolationWorldTransform.M41, body.InterpolationWorldTransform.M42 + 150, body.InterpolationWorldTransform.M43);
+            base.Render();
         }
 
         #region respuestaAAtaqueDePlanta
@@ -111,6 +130,8 @@ namespace TGC.Group.Model.GameObjects.BulletObjects
             {
                 morir();
             }
+
+            GameSound.hablar(); 
         }
         public virtual bool enCaidaLibre()
         {
@@ -121,8 +142,8 @@ namespace TGC.Group.Model.GameObjects.BulletObjects
         {
             caidaFactor = -10;
             GameLogic.cantidadZombiesMuertos++;
+
             //SACAR LOS MUERTOS DE LA LISTA DE ZOMBIES DEL LOGIC
-            //Console.WriteLine("zombies muertos:" + GameLogic.cantidadZombiesMuertos);
         }
 
         public void teGolpearon(Disparo disparo)
@@ -140,19 +161,33 @@ namespace TGC.Group.Model.GameObjects.BulletObjects
         public void empezaAComer()
         {
             velocidad = 0;
+            GameSound.hablar();
         }
         public void empezaACaminar()
         {
             velocidad = -1;
+            body.ApplyImpulse(new TGCVector3(0, 0, velocidad).ToBsVector, new TGCVector3(0, 0, 0).ToBsVector);
         }
 
         public void llegaste()
         {
             velocidad = -1;
-            //aca el zombie tiene que dejar el globo y empezar a caminar
-          //  body.ApplyImpulse(new TGCVector3(0, 150, 0).ToBsVector, new TGCVector3(0, 20, 0).ToBsVector);
         }
         #endregion
 
+        #region cosasPocoImportantes
+        internal void avanza()
+        {
+            velocidad = -3;
+        }
+        public TGCVector3 POSICION()
+        {
+            return zombie.Position;
+        }
+        public TGCVector3 globoPosicion()
+        {
+            return globo.Position;
+        }
+        #endregion
     }
 }

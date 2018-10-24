@@ -24,9 +24,12 @@ namespace TGC.Group.Model.GameObjects.BulletObjects
         {
             if (cp.Distance < 0.0f)
             {
-                if (logica.floor() == colObj1Wrap.CollisionObject)
+                if (logica.esZombie((RigidBody)colObj1Wrap.CollisionObject))// esZombie() no tiene efecto colateral con esta firma
                 {
-                    //Console.WriteLine("Un sol colisiono con floor!!!");
+                    //Console.WriteLine("Un zombie colisiono con planta!!!");
+                }
+                else if (logica.floor() == colObj1Wrap.CollisionObject)
+                {
                     //si choqué con el piso me despido de este mundo 
                     logica.desactivar(bulletObject);
                 }

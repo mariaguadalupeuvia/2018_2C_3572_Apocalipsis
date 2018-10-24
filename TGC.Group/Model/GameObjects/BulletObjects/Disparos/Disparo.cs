@@ -10,6 +10,8 @@ using TGC.Core.Geometry;
 using TGC.Core.Mathematica;
 using TGC.Core.SceneLoader;
 using TGC.Core.Shaders;
+using TGC.Core.Sound;
+using TGC.Core.Example;
 using TGC.Core.Textures;
 
 namespace TGC.Group.Model.GameObjects.BulletObjects
@@ -18,6 +20,8 @@ namespace TGC.Group.Model.GameObjects.BulletObjects
     {
         #region variables
         protected TGCSphere esfera;
+
+
         #endregion
 
         public void init(string textura, TgcMesh planta)
@@ -36,6 +40,8 @@ namespace TGC.Group.Model.GameObjects.BulletObjects
             objetos.Add(esfera);
 
             #endregion
+
+            GameSound.disparar(); 
         }
 
         public override void Render()

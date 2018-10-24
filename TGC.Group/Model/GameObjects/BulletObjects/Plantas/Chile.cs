@@ -25,17 +25,18 @@ namespace TGC.Group.Model.GameObjects
             chile.Effect = efecto;
             chile.Technique = "Explosivo";
             #endregion
-            Explosivo disparo = new Explosivo(chile, logica, this);
-        }
-
-        public override void Dispose()
-        {
-            logica.removePlanta(this);
+            
+            Explosivo disparo = new Explosivo(new TGCVector3(posicion.X, posicion.Y - 40, posicion.Z + 20), logica, this);
         }
 
         public override void Render()
         {
             chile.Render();
+        }
+
+        public override void Dispose()
+        {
+            
         }
 
         public override void Update(TgcD3dInput Input)

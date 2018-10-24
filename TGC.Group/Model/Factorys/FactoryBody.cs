@@ -21,14 +21,14 @@ namespace TGC.Group.Model.GameObjects.BulletObjects
         {
             return crearBodyCubicoEstatico();// (escala, origen);
         }
-        public static RigidBody crearBodyParedFinal(TGCVector3 escala, TGCVector3 origen)
+        public static RigidBody crearBodyPared(TGCVector3 escala, TGCVector3 origen)
         {
             return crearBodyCubicoEstatico(escala, origen);
         }
         
         public static RigidBody crearBodyZombie(TGCVector3 origen)//este lo usan los zombies
         {
-            return crearBodyEsferico(origen, 200, 1);
+            return crearBodyCubico(1, new TGCVector3(60, 150, 50), origen);//crearBodyEsferico(origen, 50, 1);//200, 1);
         }
         public static RigidBody crearBodyExplosivo(TGCVector3 origen, float radio)//este lo usan las minas y los chiles
         {
@@ -70,11 +70,10 @@ namespace TGC.Group.Model.GameObjects.BulletObjects
         {
             #region CAJA
 
-            //Se crea una caja de tamaño 20 con rotaciones y origien en 10,100,10 y 1kg de masa.
-            var boxShape = new BoxShape(escala.ToBsVector);
-            var boxTransform = TGCMatrix.RotationYawPitchRoll(MathUtil.SIMD_HALF_PI, MathUtil.SIMD_QUARTER_PI, MathUtil.SIMD_2_PI).ToBsMatrix;
-            boxTransform.Origin = origen.ToBsVector; // new TGCVector3(0, 600, 0).ToBsVector;
-            DefaultMotionState boxMotionState = new DefaultMotionState(boxTransform);
+            var boxShape = new BoxShape(escala.X, escala.Y, escala.Z);
+            //var boxTransform = TGCMatrix.RotationYawPitchRoll(MathUtil.SIMD_HALF_PI, MathUtil.SIMD_QUARTER_PI, MathUtil.SIMD_2_PI).ToBsMatrix;
+            //boxTransform.Origin = origen.ToBsVector;
+            DefaultMotionState boxMotionState = new DefaultMotionState(Matrix.Translation(origen.X, origen.Y, origen.Z));// boxTransform);
             //Es importante calcular la inercia caso contrario el objeto no rotara.
             var boxLocalInertia = boxShape.CalculateLocalInertia(masa);
             var boxInfo = new RigidBodyConstructionInfo(masa, boxMotionState, boxShape, boxLocalInertia);
@@ -122,7 +121,20 @@ namespace TGC.Group.Model.GameObjects.BulletObjects
             body.ApplyImpulse(dir.ToBsVector, new TGCVector3(0, 20, 0).ToBsVector);//new TGCVector3(0, 15, 0).ToBsVector, new TGCVector3(0, 20, 0).ToBsVector);
             return body;
         }
+        public static RigidBody crearBodyConImpulsoDoble(TGCVector3 origen, float radio, float masa, TGCVector3 director, float angulo)//este es para los disparos
+        {
+            RigidBody body = crearBodyEsferico(origen, radio, masa);
+            // var dir = director.ToBsVector;
+            //director.Normalize();
+            TGCVector3 dir = new TGCVector3(angulo, 0, 45);
+            //dir *= 50;
+            //body.LinearVelocity = dir * 75;
+            //body.LinearFactor = TGCVector3.One.ToBsVector;
+            body.ApplyImpulse(dir.ToBsVector, new TGCVector3(0, 20, 0).ToBsVector);//new TGCVector3(0, 15, 0).ToBsVector, new TGCVector3(0, 20, 0).ToBsVector);
+            return body;
+        }
 
+        
         #endregion
     }
 }

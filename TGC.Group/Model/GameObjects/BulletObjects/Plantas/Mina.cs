@@ -24,9 +24,9 @@ namespace TGC.Group.Model.GameObjects
             mina.Position = new TGCVector3(posicion.X , posicion.Y - 35, posicion.Z - 50);
             mina.Effect = efecto;
             mina.Technique = "RenderScene";
-
             #endregion
-            Explosivo disparo = new Explosivo(mina, logica, this);
+
+            Explosivo disparo = new Explosivo(new TGCVector3(posicion.X, posicion.Y - 40, posicion.Z + 20), logica, this);
         }
 
         public override void Render()
@@ -34,14 +34,14 @@ namespace TGC.Group.Model.GameObjects
             mina.Render();
         }
 
+        public override void Dispose()
+        {
+           // mina.Dispose();
+        }
+
         public override void Update(TgcD3dInput Input)
         {
           
-        }
-
-        public override void Dispose()
-        {
-            logica.removePlanta(this);
         }
 
         public override void cambiarTecnicaShader(string tecnica)

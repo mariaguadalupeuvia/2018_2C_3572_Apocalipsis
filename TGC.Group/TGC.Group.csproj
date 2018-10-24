@@ -75,6 +75,7 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\..\..\..\..\Windows\Microsoft.NET\DirectX for Managed Code\1.0.2902.0\Microsoft.DirectX.DirectInput.dll</HintPath>
     </Reference>
+    <Reference Include="Microsoft.DirectX.DirectSound, Version=1.0.2902.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35" />
     <Reference Include="Microsoft.VisualC" />
     <Reference Include="System" />
     <Reference Include="System.Drawing" />
@@ -99,8 +100,14 @@
     <Compile Include="Model\EjemplosDePrueba\Apocalipsis.cs" />
     <Compile Include="Model\EjemplosDePrueba\Bullet.cs" />
     <Compile Include="Model\EstadosJuego\Menu.cs" />
+    <Compile Include="Model\EstadosJuego\Victoria.cs" />
     <Compile Include="Model\GameObjects\BulletObjects\CollisionCallbacks\CollisionCallbackFinal.cs" />
+    <Compile Include="Model\GameObjects\BulletObjects\CollisionCallbacks\CollisionCallbackWall.cs" />
+    <Compile Include="Model\GameObjects\BulletObjects\Disparos\SuperBala.cs" />
+    <Compile Include="Model\GameObjects\BulletObjects\Pared.cs" />
     <Compile Include="Model\GameObjects\BulletObjects\ParedFondo.cs" />
+    <Compile Include="Model\GameObjects\BulletObjects\Plantas\Nuez.cs" />
+    <Compile Include="Model\GameObjects\BulletObjects\Plantas\SuperCanion.cs" />
     <Compile Include="Model\GameObjects\SkyboxShader.cs" />
     <Compile Include="Model\EstadosJuego\Ayuda.cs" />
     <Compile Include="Model\EstadosJuego\Estado.cs" />
@@ -142,6 +149,7 @@
     <Compile Include="Model\GameObjects\Skybox.cs" />
     <Compile Include="Model\GameObjects\BulletObjects\Disparos\Sol.cs" />
     <Compile Include="Model\GameObjects\Terreno.cs" />
+    <Compile Include="Model\GameSound.cs" />
     <Compile Include="Model\Gui\CustomBitmap.cs" />
     <Compile Include="Model\Gui\CustomSprite.cs" />
     <Compile Include="Model\Gui\Drawer2D.cs" />

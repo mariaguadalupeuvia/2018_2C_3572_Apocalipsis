@@ -56,7 +56,7 @@ namespace TGC.Group.Model.EstadosJuego
         public void Update(TgcD3dInput Input)
         {
             contador++;
-            if (contador == 100)
+            if (contador == 5000)
             {
                 cambiarEstado(Input);
             }
@@ -64,6 +64,7 @@ namespace TGC.Group.Model.EstadosJuego
 
         public void cambiarEstado(TgcD3dInput Input)
         {
+            GameModel.time = 0; 
             Estado estado = new Inicial();
             estado.Init(Input);
 
