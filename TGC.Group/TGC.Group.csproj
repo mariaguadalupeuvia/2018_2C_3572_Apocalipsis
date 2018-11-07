@@ -99,7 +99,9 @@
     <Compile Include="Model\Camara\ThirdPersonCamera.cs" />
     <Compile Include="Model\EjemplosDePrueba\Apocalipsis.cs" />
     <Compile Include="Model\EjemplosDePrueba\Bullet.cs" />
+    <Compile Include="Model\EstadosJuego\Glowsy.cs" />
     <Compile Include="Model\EstadosJuego\Menu.cs" />
+    <Compile Include="Model\EstadosJuego\Opciones.cs" />
     <Compile Include="Model\EstadosJuego\Victoria.cs" />
     <Compile Include="Model\GameObjects\BulletObjects\CollisionCallbacks\CollisionCallbackFinal.cs" />
     <Compile Include="Model\GameObjects\BulletObjects\CollisionCallbacks\CollisionCallbackWall.cs" />
@@ -158,9 +160,12 @@
     <Compile Include="Model\GamePhysics.cs" />
     <Compile Include="Model\Gui\MenuItem.cs" />
     <Compile Include="Model\Gui\Menu.cs" />
+    <Compile Include="Model\IPostProcess.cs" />
+    <Compile Include="Model\LogicaSimplificada.cs" />
     <Compile Include="Model\Optimizacion\Octree.cs" />
     <Compile Include="Model\Optimizacion\OctreeBuilder.cs" />
     <Compile Include="Model\Optimizacion\OctreeNode.cs" />
+    <Compile Include="Model\PostProcess.cs" />
     <Compile Include="Model\Tablero.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

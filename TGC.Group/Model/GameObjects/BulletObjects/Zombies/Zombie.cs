@@ -20,7 +20,7 @@ using TGC.Core.Textures;
 
 namespace TGC.Group.Model.GameObjects.BulletObjects
 {
-    public class Zombie : BulletObject  
+    public class Zombie : BulletObject, IPostProcess
     {
         #region variables
         protected TgcMesh zombie;
@@ -54,7 +54,7 @@ namespace TGC.Group.Model.GameObjects.BulletObjects
             zombie.Technique = "RenderScene";
 
             objetos.Add(zombie);
-           
+
             globo = new TgcSceneLoader().loadSceneFromFile(GameModel.mediaDir + "modelos\\GLOBO-TgcScene.xml").Meshes[0];
             globo.Scale = new TGCVector3(40.5f, 40.5f, 40.5f);
             globo.Position = posicion;
@@ -62,8 +62,24 @@ namespace TGC.Group.Model.GameObjects.BulletObjects
             globo.Technique = "RenderZombie";
 
             objetos.Add(globo);
+
             #endregion
+
+            PostProcess.agregarPostProcessObject(this);
         }
+
+        #region gestionarTecnicasShader
+        public void cambiarTecnicaDefault()
+        {
+            globo.Technique = "RenderZombie";
+            zombie.Technique = "RenderScene"; 
+        }
+        public void cambiarTecnicaPostProceso()
+        {
+            globo.Technique = "RenderZombie";
+            zombie.Technique = "dark";
+        }
+        #endregion
 
         public override void Update()
         {

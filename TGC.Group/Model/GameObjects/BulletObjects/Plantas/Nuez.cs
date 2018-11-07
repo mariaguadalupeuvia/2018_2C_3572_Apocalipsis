@@ -39,7 +39,23 @@ namespace TGC.Group.Model.GameObjects.BulletObjects.Plantas
             #endregion
 
             nivelResistencia = 10000;
+            PostProcess.agregarPostProcessObject(this);
         }
+
+        #region gestionTecnicasShader
+        public override void cambiarTecnicaDefault()
+        {
+            nuez.Technique = "RenderScene";
+        }
+        public override void cambiarTecnicaPostProceso()
+        {
+            nuez.Technique = "dark";
+        }
+        public override void cambiarTecnicaShader(string tecnica)
+        {
+            nuez.Technique = tecnica;
+        }
+        #endregion
 
         public override void Update(TgcD3dInput Input)
         {
@@ -53,11 +69,6 @@ namespace TGC.Group.Model.GameObjects.BulletObjects.Plantas
         public override void Dispose()
         {
             nuez.Dispose();
-        }
-
-        public override void cambiarTecnicaShader(string tecnica)
-        {
-            nuez.Technique = tecnica;
         }
 
         public void disparar()

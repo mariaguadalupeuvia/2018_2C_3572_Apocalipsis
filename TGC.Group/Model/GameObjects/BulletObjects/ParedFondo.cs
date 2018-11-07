@@ -11,7 +11,7 @@ using TGC.Group.Model.GameObjects.BulletObjects.CollisionCallbacks;
 
 namespace TGC.Group.Model.GameObjects.BulletObjects
 {
-    public class ParedFondo : BulletObject
+    public class ParedFondo : BulletObject, IPostProcess 
     {
         protected TgcMesh tag;
         public ParedFondo(GameLogic logica, Play play)
@@ -31,11 +31,23 @@ namespace TGC.Group.Model.GameObjects.BulletObjects
             objetos.Add(tag);
 
             body = FactoryBody.crearBodyPared(new TGCVector3(4000, 5, 1), new TGCVector3(0f, 215f, -3300f));
-
             callback = new CollisionCallbackFinal(logica, play);
             logica.addBulletObject(this);
             #endregion
+
+            PostProcess.agregarPostProcessObject(this);
         }
+
+        #region gestionarTecnicasShader
+        public void cambiarTecnicaDefault()
+        {
+            tag.Technique = "RenderScene";
+        }
+        public void cambiarTecnicaPostProceso()
+        {
+            tag.Technique = "RenderScene";
+        }
+        #endregion
 
         public override void Update()
         {

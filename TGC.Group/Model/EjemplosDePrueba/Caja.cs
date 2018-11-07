@@ -41,6 +41,8 @@ namespace TGC.Group.Model.GameObjects.BulletObjects
             planta.Effect = efecto;
             planta.Technique = "RenderScene";
             objetos.Add(planta);
+            //glowObjects.Add(planta);
+            
             #endregion
 
             #region CAJA

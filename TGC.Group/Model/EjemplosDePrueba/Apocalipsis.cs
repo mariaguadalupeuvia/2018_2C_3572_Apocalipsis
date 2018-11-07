@@ -30,13 +30,13 @@ namespace TGC.Group.Model
             bomba.Technique = "RenderScene";
             bomba.Position = posicion;
             objetos.Add(bomba);
-
+         
             //semiesfera = new TgcSceneLoader().loadSceneFromFile(GameModel.mediaDir + "modelos\\Semiesfera-TgcScene.xml").Meshes[0];
             //semiesfera.Scale = new TGCVector3(200.5f, 200.5f, 200.5f);
             //semiesfera.Effect = efecto;
             //semiesfera.Technique = "Explosivo";
             //semiesfera.Position = new TGCVector3(posicion.X, 220, posicion.Z); ;
-          
+
             //crearBody(posicion);
         }
 

@@ -140,6 +140,49 @@ float4 ps_main(float3 Texcoord: TEXCOORD0, float3 N : TEXCOORD1, float3 Pos : TE
 
 	return RGBColor;
 }
+float4 ps_noche(float2 Texcoord : TEXCOORD0, float3 N : TEXCOORD1, float3 Pos : TEXCOORD2, float3 Pos2 : TEXCOORD3, float fogfactor : FOG) : COLOR0
+{
+    float4 RGBColor = fogColor;
+	//para calcular la iluminacion del pixel
+    float ld = 0; // luz difusa
+    float le = 0; // luz specular
+
+	//calcular los factores de fog y alpha blending que actuan en profundidad
+    fogfactor = saturate((5000.0f - Pos2.z) / (fogStart)); // (fogEnd - z) /(fogEnd - fogStart)
+    float blendfactor = saturate((5000.0f - Pos2.z) / (blendStart));
+
+	//Obtener el texel de textura
+    float4 fvBaseColor = tex2D(diffuseMap, Texcoord);
+    float4 fvBaseAlpha = tex2D(alphaSampler, Texcoord);
+
+	//cambio las coordenadas de textura
+    float2 newTexcoord = Texcoord;
+    float _zoom = 45.0f;
+    newTexcoord *= _zoom;
+    newTexcoord.x += step(1., step(newTexcoord.x, 1.0)) * 0.5;
+    newTexcoord = frac(newTexcoord);
+
+    float4 mainColor = tex2D(mainMap, newTexcoord);
+
+	// calcula la luz diffusa
+    float3 LD = normalize(fvLightPosition - float3(Pos.x, Pos.y, Pos.z));
+    ld += saturate(dot(N, LD)) * k_ld;
+
+	// calcula la reflexion specular
+    float3 D = normalize(float3(Pos.x, Pos.y, Pos.z) - fvEyePosition);
+    float ks = saturate(dot(reflect(LD, N), D));
+    ks = pow(ks, fSpecularPower);
+    le += ks * k_ls;
+
+    fvBaseAlpha = fvBaseAlpha - 0.4;
+    fvBaseColor = (fvBaseColor * (1.0 - fvBaseAlpha)) + (mainColor * fvBaseAlpha);
+    fvBaseColor = (fvBaseColor * fogfactor) + (fogColor * (1.0 - fogfactor));
+    RGBColor *= 0.1;
+    RGBColor.rgb = saturate(fvBaseColor * (saturate(k_la + ld)) + le);
+    RGBColor.a = blendfactor;
+
+    return RGBColor;
+}
 
 float4 ps_apocalipsis(float3 Texcoord: TEXCOORD0, float3 N : TEXCOORD1, float3 Pos : TEXCOORD2, float3 Pos2 : TEXCOORD3, float fogfactor : FOG) : COLOR0
 {
@@ -195,6 +238,62 @@ float4 ps_apocalipsis(float3 Texcoord: TEXCOORD0, float3 N : TEXCOORD1, float3 P
 		return RGBColor;
 }
 
+float4 ps_dark(float2 Texcoord : TEXCOORD0) : COLOR0
+{
+    float4 fvBaseColor = tex2D(diffuseMap, Texcoord);
+    return float4(0, 0, 0, 1);//fvBaseColor.a);
+}
+float4 ps_helado(float2 Texcoord : TEXCOORD0, float3 N : TEXCOORD1, float3 Pos : TEXCOORD2, float3 Pos2 : TEXCOORD3, float fogfactor : FOG) : COLOR0
+{
+    float4 RGBColor = fogColor;
+	//para calcular la iluminacion del pixel
+    float ld = 0; // luz difusa
+    float le = 0; // luz specular
+
+	//calcular los factores de fog y alpha blending que actuan en profundidad
+    fogfactor = saturate((5000.0f - Pos2.z) / (fogStart)); // (fogEnd - z) /(fogEnd - fogStart)
+    float blendfactor = saturate((5000.0f - Pos2.z) / (blendStart));
+
+	//Obtener el texel de textura
+    float4 fvBaseColor = tex2D(diffuseMap, Texcoord);
+    float4 fvBaseAlpha = tex2D(alphaSampler, Texcoord);
+
+	//cambio las coordenadas de textura
+    float2 newTexcoord = Texcoord;
+
+	//if (Pos2.z < 2000)//si el pixel estaba lejos en world space va sin detalles
+	//{ 
+		//repito la textura varias veces (depende de _zoom)
+    float _zoom = 45.0f;
+    newTexcoord *= _zoom;
+    newTexcoord.x += step(1., step(newTexcoord.x, 1.0)) * 0.5;
+    newTexcoord = frac(newTexcoord);
+	//}
+
+    float4 mainColor = tex2D(mainMap, newTexcoord);
+
+	// calcula la luz diffusa
+    float3 LD = normalize(fvLightPosition - float3(Pos.x, Pos.y, Pos.z));
+    ld += saturate(dot(N, LD)) * k_ld;
+
+	// calcula la reflexion specular
+    float3 D = normalize(float3(Pos.x, Pos.y, Pos.z) - fvEyePosition);
+    float ks = saturate(dot(reflect(LD, N), D));
+    ks = pow(ks, fSpecularPower);
+    le += ks * k_ls;
+
+    fvBaseAlpha = fvBaseAlpha - 0.4;
+    fvBaseColor = (fvBaseColor * (1.0 - fvBaseAlpha)) + (mainColor * fvBaseAlpha);
+    fvBaseColor = (fvBaseColor * fogfactor) + (fogColor * (1.0 - fogfactor));
+
+    RGBColor.rgb = saturate(fvBaseColor * (saturate(k_la + ld)) + le);
+    RGBColor *= 6;
+    RGBColor.b *= 16;
+    RGBColor.a = blendfactor;
+
+    return RGBColor;
+}
+
 technique RenderScene
 {
    pass Pass_0
@@ -205,6 +304,18 @@ technique RenderScene
 		  VertexShader = compile vs_3_0 vs_main();
 		  PixelShader = compile ps_3_0 ps_main(); 
    }
+}
+
+technique helado
+{
+    pass Pass_0
+    {
+        AlphaBlendEnable = TRUE;
+        DestBlend = INVSRCALPHA;
+        SrcBlend = SRCALPHA;
+        VertexShader = compile vs_3_0 vs_main();
+        PixelShader = compile ps_3_0 ps_helado();
+    }
 }
 
 technique apocalipsis
@@ -219,3 +330,26 @@ technique apocalipsis
 	}
 }
 
+technique noche
+{
+    pass Pass_0
+    {
+        AlphaBlendEnable = TRUE;
+        DestBlend = INVSRCALPHA;
+        SrcBlend = SRCALPHA;
+        VertexShader = compile vs_3_0 vs_main();
+        PixelShader = compile ps_3_0 ps_noche();
+    }
+}
+
+technique dark
+{
+   pass Pass_0
+   {
+          AlphaBlendEnable =TRUE;
+          DestBlend= INVSRCALPHA;
+          SrcBlend= SRCALPHA;
+		  VertexShader = compile vs_3_0 vs_main();
+		  PixelShader = compile ps_3_0 ps_dark(); 
+   }
+}

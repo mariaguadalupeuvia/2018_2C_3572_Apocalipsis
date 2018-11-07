@@ -27,7 +27,24 @@ namespace TGC.Group.Model.GameObjects
             #endregion
 
             Explosivo disparo = new Explosivo(new TGCVector3(posicion.X, posicion.Y - 40, posicion.Z + 20), logica, this);
+
+            PostProcess.agregarPostProcessObject(this);
         }
+
+        #region gestionTecnicasShader
+        public override void cambiarTecnicaDefault()
+        {
+            mina.Technique = "RenderScene";
+        }
+        public override void cambiarTecnicaPostProceso()
+        {
+            mina.Technique = "dark";
+        }
+        public override void cambiarTecnicaShader(string tecnica)
+        {
+            mina.Technique = tecnica;
+        }
+        #endregion
 
         public override void Render()
         {
@@ -42,11 +59,6 @@ namespace TGC.Group.Model.GameObjects
         public override void Update(TgcD3dInput Input)
         {
           
-        }
-
-        public override void cambiarTecnicaShader(string tecnica)
-        {
-            mina.Technique = tecnica;
         }
 
         public override int getCostoEnSoles()

@@ -11,7 +11,7 @@ using TGC.Core.Terrain;
 
 namespace TGC.Group.Model.GameObjects
 {
-    public class Terreno : GameObject
+    public class Terreno : GameObject, IPostProcess
     {
         public static TgcSimpleTerrain terrain = new TgcSimpleTerrain();
 
@@ -32,15 +32,34 @@ namespace TGC.Group.Model.GameObjects
             terrain.loadTexture(GameModel.mediaDir + "texturas\\terrain\\TerrainTexture1.jpg");
             terrain.loadHeightmap(GameModel.mediaDir + "texturas\\terrain\\Heightmap3.jpg", 255f, 1.6f, new TGCVector3(0, -100, 0));
             terrain.Effect = efecto;
-            terrain.Technique = "RenderScene"; //"apocalipsis";// 
-            
+            terrain.Technique = "RenderScene";
+            tecnica = "RenderScene";
+
             objetos.Add(terrain);
             #endregion
+
+            PostProcess.agregarPostProcessObject(this);
         }
 
+        #region gestionarTecnicasShader
+        public void cambiarTecnicaDefault()
+        {
+            terrain.Technique = tecnica;
+        }
+        public void cambiarTecnicaPostProceso()
+        {
+            terrain.Technique = "dark";
+        }
+        public void cambiarTecnica(string tec)
+        {
+            tecnica = tec;
+            terrain.Technique = tecnica;
+        }
+        #endregion
+
+        #region cosasPocoImportantes
         public override void Update()
         {
-           
         }
 
         public static int alturaEnPunto(int x, int z)
@@ -51,5 +70,6 @@ namespace TGC.Group.Model.GameObjects
             }
             return terrain.HeightmapData[x,z];
         }
+        #endregion
     }
 }

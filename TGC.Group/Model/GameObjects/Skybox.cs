@@ -21,16 +21,10 @@ namespace TGC.Group.Model.GameObjects
         public override void Init()
         {
             var d3dDevice = D3DDevice.Instance.Device;
-
-            //#region configurarEfecto
-            // //por ahora no uso para nada el efecto pero ya va a servir
-            //efecto = TgcShaders.loadEffect(GameModel.shadersDir + "shaderCielo.fx");
-            //#endregion
+            efecto = TgcShaders.loadEffect(GameModel.shadersDir + "shaderCielo.fx");
+            tecnica = "RenderScene";
 
             #region configurarObjeto
-
-            //skybox.efecto = efecto;
-            //skybox.tecnica = "RenderScene";
             skybox.Center = TGCVector3.Empty;
 
             skybox.Size = new TGCVector3(50000, 10000, 50000);
@@ -48,6 +42,8 @@ namespace TGC.Group.Model.GameObjects
 
             skybox.Init();
             objetos.Add(skybox);
+            
+
             #endregion
         }
 
@@ -60,5 +56,21 @@ namespace TGC.Group.Model.GameObjects
         {
             skybox.cambiarTechnique(technique);
         }
+
+        #region gestionarTecnicasShader
+        public void cambiarTecnicaDefault()
+        {
+            skybox.cambiarTechnique(tecnica);
+        }
+        public void cambiarTecnicaPostProceso()
+        {
+            skybox.cambiarTechnique("dark");
+        }
+        public void cambiarTecnica(string tec)
+        {
+            tecnica = tec;
+            skybox.cambiarTechnique(tecnica);
+        }
+        #endregion
     }
 }

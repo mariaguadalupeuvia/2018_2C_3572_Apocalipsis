@@ -46,6 +46,8 @@ namespace TGC.Group.Model.GameObjects.BulletObjects
             //vida.updateValues();
            
             objetos.Add(vida);
+            //glowObjects.Add(vida);
+           
             #endregion
         }
 

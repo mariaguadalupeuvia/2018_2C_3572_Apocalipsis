@@ -36,6 +36,8 @@ namespace TGC.Group.Model.GameObjects.BulletObjects.Zombies
             zombie.Technique = "RenderSceneCongelada";
             zombie.Scale = new TGCVector3(65, 68, 65);
             objetos.Add(corona);
+            //glowObjects.Add(corona);
+           
             #endregion
 
             MovementSpeed = 7;

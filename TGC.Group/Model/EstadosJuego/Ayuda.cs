@@ -24,10 +24,12 @@ namespace TGC.Group.Model.EstadosJuego
         #endregion
 
         static Timer time;
+        GameModel gameModel;
 
-        public Ayuda(Estado menu)
+        public Ayuda(Estado menu, GameModel gm)
         {
             this.menu = menu;
+            gameModel = gm;
         }
 
         public void cambiarEstado(TgcD3dInput Input)
@@ -112,6 +114,5 @@ namespace TGC.Group.Model.EstadosJuego
 
             #endregion
         }
-
     }
 }

@@ -44,7 +44,14 @@ namespace TGC.Group.Model
            // piano.play(true);
             #endregion
         }
-
+        public void stop()
+        {
+            musica.stop();
+        }
+        public void play()
+        {
+            musica.play(true);
+        }
         public static void disparar()
         {
             disparo.play(); 

@@ -38,7 +38,7 @@ namespace TGC.Group.Model.GameObjects
             //canion.RotateY(90);
             canion.Effect = efecto;
             canion.Technique = "RenderScene";
-
+ 
             tallo = new TgcSceneLoader().loadSceneFromFile(GameModel.mediaDir + "modelos\\PlantaFinal-TgcScene.xml").Meshes[0];
             tallo.Scale = new TGCVector3(factorEscalado * 0.75f, factorEscalado * 0.75f, factorEscalado * 0.75f);
             tallo.Position = new TGCVector3(posicion.X, posicion.Y - 50, posicion.Z);
@@ -46,11 +46,31 @@ namespace TGC.Group.Model.GameObjects
             tallo.Technique = "RenderScene";
 
             #endregion
+
+            PostProcess.agregarPostProcessObject(this);
         }
+
+        #region gestionTecnicasShader
+        public override void cambiarTecnicaDefault()
+        {
+            canion.Technique = "RenderScene";
+            tallo.Technique = "RenderScene";
+        }
+        public override void cambiarTecnicaPostProceso()
+        {
+            canion.Technique = "dark";
+            tallo.Technique = "dark";
+        }
+        public override void cambiarTecnicaShader(string tecnica)
+        {
+            canion.Technique = tecnica;
+            tallo.Technique = tecnica;
+        }
+        #endregion
 
         public override void Update(TgcD3dInput Input)
         {
-            //#region chequearInput
+            #region chequearInput
             //if (Input.keyDown(Key.UpArrow))
             //{
             //    axisRotation -= AXIS_ROTATION_SPEED * GameModel.time;
@@ -72,7 +92,7 @@ namespace TGC.Group.Model.GameObjects
             //{
             //    disparar();
             //}
-            //#endregion
+            #endregion
 
             //canion.RotateX(axisRotation);
             //canion.RotateY(ayisRotation);
@@ -100,11 +120,7 @@ namespace TGC.Group.Model.GameObjects
             tallo.Dispose();
         }
 
-        public override void cambiarTecnicaShader(string tecnica)
-        {
-            canion.Technique = tecnica;
-            tallo.Technique = tecnica;
-        }
+
 
         public void disparar()
         {

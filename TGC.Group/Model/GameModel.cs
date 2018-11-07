@@ -52,9 +52,59 @@ namespace TGC.Group.Model
         public static string mediaDir;
         public static string shadersDir;
         public static TgcFrustum frustum;
+
+        List<GameObject> gameObjects;
+        Skybox cielo;
+        Terreno terreno = new Terreno();
+        Agua agua = new Agua(); 
+        PostProcess postProcess = new PostProcess();
+        public bool postProcessActivo = false;
+        public bool postProcesar = false;
+        HighResolutionTimer timer= new HighResolutionTimer();
+        GameSound sonido;
         #endregion
 
-        HighResolutionTimer timer= new HighResolutionTimer();
+        #region opciones
+        public void normal()
+        {
+            agua.cambiarTecnica("RenderScene");
+            terreno.cambiarTecnica("RenderScene");
+            cielo.cambiarTecnica("RenderScene");
+            postProcessActivo = false;
+            postProcesar = false;
+        }
+        public void picante()
+        {
+            agua.cambiarTecnica("apocalipsis");
+            terreno.cambiarTecnica("apocalipsis");
+            cielo.cambiarTecnica("apocalipsis");
+            postProcessActivo = false;
+            postProcesar = false;
+        }
+        public void congelar()
+        {
+            agua.cambiarTecnica("helado");
+            terreno.cambiarTecnica("helado");
+            cielo.cambiarTecnica("helado");
+            postProcessActivo = false;
+            postProcesar = false;
+        }
+        public void glow()
+        {
+            agua.cambiarTecnica("noche");
+            terreno.cambiarTecnica("noche");
+            cielo.cambiarTecnica("noche");
+            //postProcessActivo = true;
+            postProcesar = true;
+        }
+        public void musica(bool estado)
+        {
+            if (estado)
+                sonido.play();
+            else
+                sonido.stop();  
+        }
+        #endregion
 
         public override void Init()
         {
@@ -74,21 +124,31 @@ namespace TGC.Group.Model
                 (float)d3dDevice.CreationParameters.FocusWindow.Width / d3dDevice.CreationParameters.FocusWindow.Height, 1f, 50000f);
             #endregion
 
-            estadoDelJuego = new Inicial();
+            postProcess.Init(this, d3dDevice);
+            estadoDelJuego = new Inicial(postProcess, this);
             estadoDelJuego.Init(Input);
-            GameSound sonido = new GameSound(deviceSound);
+            sonido = new GameSound(deviceSound);
+
+            cielo = new Skybox();
+            gameObjects = new List<GameObject>() { cielo, terreno, new Escenario() };
+            gameObjects.ForEach(g => g.Init());
+            agua.Init();
 
             camaraAerea = new CamaraPersonal(new TGCVector3(1214, 1050, 2526), Input);
-           // camaraAerea = new CamaraPersonal(new TGCVector3(171, 453, 577), Input);
+            //camaraAerea = new CamaraPersonal(new TGCVector3(171, 453, 577), Input);
             Camara = camaraAerea;
         }
-        
+        public void clearTextures()
+        {
+            ClearTextures();
+        }
+
         public override void Update()
         {
             PreUpdate();
-            // timer.FramesPerSecond;
+            //timer.FramesPerSecond;
 
-            time +=0.0003f;//0.003f;
+            time += 0.003f; //0.0003f;//0.003f;
 
             if (time > 500) time = 0;
             frustum = Frustum;
@@ -112,19 +172,42 @@ namespace TGC.Group.Model
             }
             #endregion
 
+            gameObjects.ForEach(g => g.Update());
+            agua.Update();
+            //postProcess.Update(TGCVector3.Vector3ToFloat3Array(Camara.Position)));
+            //escenario.setEyePosition(TGCVector3.Vector3ToFloat3Array(Camara.Position)); 
             PostUpdate();
+        }
+
+        public void renderPostProcess()
+        {
+            gameObjects.ForEach(g => g.Render());
+            agua.Render();
         }
 
         public override void Render()
         {
             PreRender();
-            estadoDelJuego.Render();
+            if (postProcessActivo)
+            {
+                estadoDelJuego.Render();
+            }
+            else
+            {
+                gameObjects.ForEach(g => g.Render());
+                estadoDelJuego.Render();
+                agua.Render();
+            }
+
             PostRender();
         }
 
         public override void Dispose()
         {
             estadoDelJuego.Dispose();
+            postProcess.Dispose();
+            gameObjects.ForEach(g => g.Dispose());
+            agua.Dispose();
         }
     }
 }

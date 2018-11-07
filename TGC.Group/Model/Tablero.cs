@@ -19,7 +19,7 @@ using TGC.Group.Model.GameObjects.BulletObjects.CollisionCallbacks;
 
 namespace TGC.Group.Model
 {
-    public class Tablero : BulletObject
+    public class Tablero : BulletObject, IPostProcess 
     {
         #region variables
         List<Plataforma> plataformas = new List<Plataforma>();
@@ -68,6 +68,8 @@ namespace TGC.Group.Model
             contenedor.Technique = "RenderSceneProgresivo";
 
             objetos.Add(contenedor);
+            //glowObjects.Add(contenedor);
+            
             #endregion
 
             //este body seria del tablero o isla principal
@@ -75,7 +77,21 @@ namespace TGC.Group.Model
             callback = new CollisionCallbackIsla(logica);
             logica.addBulletObject(this);
 
+            PostProcess.agregarPostProcessObject(this);
         }
+
+        #region gestionarTecnicasShader
+        public void cambiarTecnicaDefault()
+        {
+            contenedor.Technique = "RenderSceneProgresivo";
+            plataformas.ForEach(p => p.Technique = "RenderScene");
+        }
+        public void cambiarTecnicaPostProceso()
+        {
+            contenedor.Technique = "RenderSceneProgresivo";
+            plataformas.ForEach(p => p.Technique = "RenderScene");
+        }
+        #endregion
 
         public void Update(TgcD3dInput Input)
         {

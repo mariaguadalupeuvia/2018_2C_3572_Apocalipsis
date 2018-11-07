@@ -28,25 +28,25 @@ namespace TGC.Group.Model.GameObjects.BulletObjects
 
         public Isla(GameLogic logica)
         {
-            #region configurarEfecto
-            Microsoft.DirectX.Direct3D.Effect efecto = TgcShaders.loadEffect(GameModel.shadersDir + "shaderPlanta.fx");
-            #endregion
+            //#region configurarEfecto
+            //Microsoft.DirectX.Direct3D.Effect efecto = TgcShaders.loadEffect(GameModel.shadersDir + "shaderPlanta.fx");
+            //#endregion
 
-            #region configurarObjeto
-            isla = new TgcSceneLoader().loadSceneFromFile(GameModel.mediaDir + "modelos\\Isla-TgcScene.xml").Meshes[0];
-            isla.Scale = new TGCVector3(1000.5f, 300.5f, 1000.5f);
-            isla.Effect = efecto;
-            isla.Technique = "RenderScene";
-            isla.Position = new TGCVector3(0, 340f, 0);
-            isla.RotateZ(3.1f);
+            //#region configurarObjeto
+            //isla = new TgcSceneLoader().loadSceneFromFile(GameModel.mediaDir + "modelos\\Isla-TgcScene.xml").Meshes[0];
+            //isla.Scale = new TGCVector3(1000.5f, 300.5f, 1000.5f);
+            //isla.Effect = efecto;
+            //isla.Technique = "RenderScene";
+            //isla.Position = new TGCVector3(0, 340f, 0);
+            //isla.RotateZ(3.1f);
 
-            objetos.Add(isla);
+            //objetos.Add(isla);
 
-            body = FactoryBody.crearBodyIsla();
+            //body = FactoryBody.crearBodyIsla();
            
-            callback = new CollisionCallbackIsla(logica);
-            logica.addBulletObject(this);
-            #endregion
+            //callback = new CollisionCallbackIsla(logica);
+            //logica.addBulletObject(this);
+            //#endregion
         }
 
         public override void Update()

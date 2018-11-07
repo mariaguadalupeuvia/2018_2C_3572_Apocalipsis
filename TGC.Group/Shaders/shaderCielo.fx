@@ -52,7 +52,7 @@ VS_OUTPUT vs_main( VS_INPUT Input )
 // ------------------------------------------------------------------
 
 //Pixel Shader 
-float4 ps_main( float3 Texcoord: TEXCOORD0) : COLOR0
+float4 ps_main( float2 Texcoord: TEXCOORD0) : COLOR0
 {      
     float4 fvBaseColor = tex2D( diffuseMap, Texcoord);
 	//fvBaseColor.g = fvBaseColor.g  +cos(time) / 8;
@@ -63,17 +63,17 @@ float4 ps_main( float3 Texcoord: TEXCOORD0) : COLOR0
 }
 
 //Pixel Shader 
-float4 ps_tarde( float3 Texcoord: TEXCOORD0) : COLOR0
+float4 ps_tarde( float2 Texcoord: TEXCOORD0) : COLOR0
 {      
     float4 fvBaseColor = tex2D( diffuseMap, Texcoord);
-	fvBaseColor.r = saturate(fvBaseColor.r *2.0);
-	fvBaseColor.g = saturate(fvBaseColor.g *1.2);
-	fvBaseColor.b = saturate(fvBaseColor.b /2);
+	//fvBaseColor.r = saturate(fvBaseColor.r *2.0);
+	fvBaseColor.g = saturate(fvBaseColor.g *2.2);
+    fvBaseColor.b = saturate(fvBaseColor.b * 3); // 2);
     fvBaseColor.rgb = saturate(fvBaseColor);
 
     return fvBaseColor;
 }
-float4 ps_Apocalipsis(float3 Texcoord: TEXCOORD0) : COLOR0
+float4 ps_Apocalipsis(float2 Texcoord: TEXCOORD0) : COLOR0
 {
 	float4 fvBaseColor = tex2D(diffuseMap, Texcoord);
 	float4 rgbColor = fvBaseColor;
@@ -90,6 +90,19 @@ float4 ps_Apocalipsis(float3 Texcoord: TEXCOORD0) : COLOR0
 	return fvBaseColor;
 }
 
+
+float4 ps_dark(float2 Texcoord : TEXCOORD0) : COLOR0
+{
+    float4 fvBaseColor = tex2D(diffuseMap, Texcoord);
+    return float4(0, 0, 0, 1);//fvBaseColor.a);
+}
+
+float4 ps_noche(float2 Texcoord : TEXCOORD0) : COLOR0
+{
+    float4 fvBaseColor = tex2D(diffuseMap, Texcoord);
+    fvBaseColor *= 0.2;
+    return float4(fvBaseColor.x, fvBaseColor.y, fvBaseColor.z, 1); //fvBaseColor.a);
+}
 // ------------------------------------------------------------------
 technique RenderScene
 {
@@ -103,7 +116,7 @@ technique RenderScene
    }
 }
 
-technique tarde
+technique helado
 {
    pass Pass_0
    {
@@ -127,5 +140,25 @@ technique apocalipsis
 	}
 }
 
-
-
+technique dark
+{
+   pass Pass_0
+   {
+          AlphaBlendEnable =TRUE;
+          DestBlend= INVSRCALPHA;
+          SrcBlend= SRCALPHA;
+		  VertexShader = compile vs_3_0 vs_main();
+		  PixelShader = compile ps_3_0 ps_dark(); 
+   }
+}
+technique noche
+{
+    pass Pass_0
+    {
+        AlphaBlendEnable = TRUE;
+        DestBlend = INVSRCALPHA;
+        SrcBlend = SRCALPHA;
+        VertexShader = compile vs_3_0 vs_main();
+        PixelShader = compile ps_3_0 ps_noche();
+    }
+}

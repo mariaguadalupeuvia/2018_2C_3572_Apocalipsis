@@ -11,7 +11,7 @@ using TGC.Group.Model.GameObjects.BulletObjects.CollisionCallbacks;
 
 namespace TGC.Group.Model.GameObjects.BulletObjects
 {
-    public class Pared : BulletObject
+    public class Pared : BulletObject, IPostProcess 
     {
         protected TgcMesh tag;
         float rotador = 0;
@@ -37,7 +37,20 @@ namespace TGC.Group.Model.GameObjects.BulletObjects
             callback = new CollisionCallbackWall(logica);
             logica.addBulletObject(this);
             #endregion
+
+            PostProcess.agregarPostProcessObject(this);
         }
+
+        #region gestionarTecnicasShader
+        public void cambiarTecnicaDefault()
+        {
+            tag.Technique = "RenderScene";
+        }
+        public void cambiarTecnicaPostProceso()
+        {
+            tag.Technique = "RenderScene";
+        }
+        #endregion
 
         public override void Update()
         {

@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.DirectX.Direct3D;
 using TGC.Core.SceneLoader;
+using TGC.Group.Model.GameObjects;
 
 namespace TGC.Group.Model
 {
@@ -12,6 +13,7 @@ namespace TGC.Group.Model
     {
         protected Effect efecto;
         protected List<IRenderObject> objetos = new List<IRenderObject>();
+        protected string tecnica;
 
         public abstract void Init();
         public abstract void Update();
@@ -25,5 +27,7 @@ namespace TGC.Group.Model
         {
             objetos.ForEach(m => m.Dispose());
         }
+
+
     }
 }

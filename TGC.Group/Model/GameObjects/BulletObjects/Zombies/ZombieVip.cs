@@ -23,6 +23,7 @@ namespace TGC.Group.Model.GameObjects.BulletObjects
             sombrero.Technique = "RenderScene";
 
             objetos.Add(sombrero);
+           
             #endregion
         }
 

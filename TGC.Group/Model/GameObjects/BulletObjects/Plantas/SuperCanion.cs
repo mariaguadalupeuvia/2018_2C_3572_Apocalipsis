@@ -55,7 +55,30 @@ namespace TGC.Group.Model.GameObjects.BulletObjects.Plantas
             tallo.Technique = "RenderScene";
 
             #endregion
+
+            PostProcess.agregarPostProcessObject(this);
         }
+
+        #region gestionTecnicasShader
+        public override void cambiarTecnicaDefault()
+        {
+            canion1.Technique = "RenderScene";
+            canion2.Technique = "RenderScene";
+            tallo.Technique = "RenderScene";
+        }
+        public override void cambiarTecnicaPostProceso()
+        {
+            canion1.Technique = "dark";
+            canion2.Technique = "dark";
+            tallo.Technique = "dark";
+        }
+        public override void cambiarTecnicaShader(string tecnica)
+        {
+            canion1.Technique = tecnica;
+            canion2.Technique = tecnica;
+            tallo.Technique = tecnica;
+        }
+        #endregion
 
         public override void Update(TgcD3dInput Input)
         {
@@ -79,13 +102,6 @@ namespace TGC.Group.Model.GameObjects.BulletObjects.Plantas
             canion1.Dispose();
             canion2.Dispose();
             tallo.Dispose();
-        }
-
-        public override void cambiarTecnicaShader(string tecnica)
-        {
-            canion1.Technique = tecnica;
-            canion2.Technique = tecnica;
-            tallo.Technique = tecnica;
         }
 
         public void disparar()

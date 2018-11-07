@@ -16,12 +16,10 @@ using TGC.Core.Textures;
 
 namespace TGC.Group.Model.GameObjects.BulletObjects
 {
-    public abstract class Disparo : BulletObject
+    public abstract class Disparo : BulletObject, IPostProcess
     {
         #region variables
         protected TGCSphere esfera;
-
-
         #endregion
 
         public void init(string textura, TgcMesh planta)
@@ -32,17 +30,31 @@ namespace TGC.Group.Model.GameObjects.BulletObjects
 
             var texture = TgcTexture.createTexture(D3DDevice.Instance.Device, GameModel.mediaDir + "modelos\\Textures\\" + textura + ".jpg");
             esfera = new TGCSphere(1, texture.Clone(), TGCVector3.Empty);
+            efecto = TgcShaders.loadEffect(GameModel.shadersDir + "shaderPlanta.fx");
+            esfera.Effect = efecto;
+            esfera.Technique = "RenderScene";
             esfera.Scale = new TGCVector3(30.5f, 30.5f, 30.5f);
             esfera.Position = planta.Position;
             esfera.Rotation = planta.Rotation;
             esfera.updateValues();
 
             objetos.Add(esfera);
-
             #endregion
 
-            GameSound.disparar(); 
+            GameSound.disparar();
+            PostProcess.agregarPostProcessObject(this);
         }
+
+        #region gestionarTecnicasShader
+        public void cambiarTecnicaDefault()
+        {
+            esfera.Technique = "RenderScene";
+        }
+        public void cambiarTecnicaPostProceso()
+        {
+            esfera.Technique = "RenderScene";
+        }
+        #endregion
 
         public override void Render()
         {
@@ -50,6 +62,7 @@ namespace TGC.Group.Model.GameObjects.BulletObjects
             esfera.Transform = TGCMatrix.Scaling(10, 10, 10) * new TGCMatrix(body.InterpolationWorldTransform);
             esfera.Render();
         }
+
 
         public abstract void dañarZombie(Zombie zombie);
 

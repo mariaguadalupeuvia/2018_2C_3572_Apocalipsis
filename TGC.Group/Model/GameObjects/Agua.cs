@@ -11,7 +11,7 @@ using TGC.Core.Terrain;
 
 namespace TGC.Group.Model.GameObjects
 {
-    public class Agua : GameObject
+    public class Agua : GameObject, IPostProcess 
     {
         TgcSimpleTerrain agua = new TgcSimpleTerrain();
 
@@ -23,17 +23,38 @@ namespace TGC.Group.Model.GameObjects
             efecto = TgcShaders.loadEffect(GameModel.shadersDir + "shaderAgua.fx");
             Texture alphaMap = TextureLoader.FromFile(d3dDevice, GameModel.mediaDir + "texturas\\terrain\\Heightmap3_1.jpg");
             efecto.SetValue("texAlphaMap", alphaMap);
+            Texture normalMap = TextureLoader.FromFile(d3dDevice, GameModel.mediaDir + "texturas\\terrain\\bump.jpg");
+            efecto.SetValue("NormalMap", normalMap);
             #endregion
 
             #region configurarObjeto
             agua.loadTexture(GameModel.mediaDir + "texturas\\terrain\\agua1.jpg");
-            agua.loadHeightmap(GameModel.mediaDir + "texturas\\terrain\\Heightmap3.jpg", 255f,  1.5f, new TGCVector3(0, -95, 0));
-            agua.Effect = efecto;
-            agua.Technique = "RenderScene";// "apocalipsis";// "RenderScene";
+            agua.loadHeightmap(GameModel.mediaDir + "texturas\\terrain\\negro.jpg", 255f, 1.5f, new TGCVector3(0, -95, 0));
 
+            agua.Effect = efecto;
+            agua.Technique = "RenderScene";
+            tecnica = "RenderScene";
             objetos.Add(agua);
             #endregion
+
+            PostProcess.agregarPostProcessObject(this);
         }
+
+        #region gestionarTecnicasShader
+        public void cambiarTecnicaDefault()
+        {
+            agua.Technique = tecnica;
+        }
+        public void cambiarTecnicaPostProceso()
+        {
+            agua.Technique = "dark";
+        }
+        public void cambiarTecnica(string tec)
+        {
+            tecnica = tec;
+            agua.Technique = tecnica;
+        }
+        #endregion
 
         public override void Update()
         {

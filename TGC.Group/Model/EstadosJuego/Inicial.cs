@@ -7,6 +7,7 @@ using TGC.Core.Direct3D;
 using TGC.Core.Input;
 using TGC.Core.Mathematica;
 using TGC.Core.Text;
+using TGC.Group.Model.GameObjects.BulletObjects;
 using TGC.Group.Model.Gui;
 
 namespace TGC.Group.Model.EstadosJuego
@@ -17,8 +18,22 @@ namespace TGC.Group.Model.EstadosJuego
         private List<CustomSprite> sprites = new List<CustomSprite>();
         private Drawer2D drawer2D;
         CustomSprite barra2 = new CustomSprite();
-        
+        List<Zombie> zombies = new List<Zombie>();
+        GameModel gameModel; 
         private float tiempo = 0;
+        private PostProcess postProcess;
+       
+        public GameLogic logica = new LogicaSimplificada();
+
+        public Inicial()
+        {
+
+        }
+        public Inicial(PostProcess postProcess, GameModel gm)
+        {
+            this.postProcess = postProcess;
+            this.gameModel = gm;
+        }
         #endregion
 
         public void Init(TgcD3dInput input)
@@ -26,6 +41,8 @@ namespace TGC.Group.Model.EstadosJuego
             var d3dDevice = D3DDevice.Instance.Device;
             drawer2D = new Drawer2D();
 
+            logica.Init(input);
+           // zombies = logica.crearHordasZombies();
             #region configurarSprites
             CustomSprite apocalipsis = new CustomSprite();
             apocalipsis.Bitmap = new CustomBitmap(GameModel.mediaDir + "\\sprites\\apocalipsisYa.png", D3DDevice.Instance.Device);
@@ -43,6 +60,7 @@ namespace TGC.Group.Model.EstadosJuego
 
         public void Render()
         {
+            logica.Render();
             drawer2D.BeginDrawSprite();
             sprites.ForEach(s => drawer2D.DrawSprite(s));
             drawer2D.EndDrawSprite();
@@ -51,6 +69,7 @@ namespace TGC.Group.Model.EstadosJuego
         public void Dispose()
         {
             sprites.ForEach(s => s.Dispose());
+            logica.Dispose();
         }
 
         public void Update(TgcD3dInput Input)
@@ -63,12 +82,14 @@ namespace TGC.Group.Model.EstadosJuego
             else
             {
                 cambiarEstado(Input);
-            } 
+            }
+
+            logica.Update(Input);
         }
 
         public void cambiarEstado(TgcD3dInput Input)
         {
-            Estado estado = new Menu();
+            Estado estado = new Menu(postProcess, gameModel);
             estado.Init(Input);
 
             GameModel.estadoDelJuego = estado;

@@ -8,10 +8,11 @@ using TGC.Core.Input;
 using Microsoft.DirectX.DirectInput;
 using TGC.Group.Model.Optimizacion;
 using TGC.Core.BoundingVolumes;
+using TGC.Core.Direct3D;
 
 namespace TGC.Group.Model
 {
-    class Escenario : GameObject //no esta funcionando el octree
+    class Escenario : GameObject 
     {
         #region variables
         private List<TgcMesh> meshes = new List<TgcMesh>();
@@ -19,13 +20,19 @@ namespace TGC.Group.Model
         TGCVector3 pmin = new TGCVector3(0, -100, 0);
         TGCVector3 pmax = new TGCVector3(0, -100, 0);
         #endregion
+        TgcMesh tubo;
+        CubeTexture cubemap;
+
+        public void setEyePosition(float[] eyePosition)
+        {
+            efecto.SetValue("fvEyePosition", eyePosition);
+        }
 
         public override void Init()
         {
             #region variables
-            //TgcMesh tubo;
+            
             TgcMesh flecha;
-            //TgcMesh isla;
             TgcMesh tumba;
 
             TgcMesh helicoptero;
@@ -35,7 +42,12 @@ namespace TGC.Group.Model
             TgcScene muelle1;
             #endregion
 
+
+            var d3dDevice = D3DDevice.Instance.Device;
             efecto = TgcShaders.loadEffect(GameModel.shadersDir + "shaderPlanta.fx");
+            
+            cubemap = TextureLoader.FromCubeFile(d3dDevice, GameModel.mediaDir + "texturas\\skybox\\cube2018.dds");
+
             var loader = new TgcSceneLoader();
 
             #region muelles
@@ -77,15 +89,6 @@ namespace TGC.Group.Model
             #endregion
 
             #region otros
-            //isla = new TgcSceneLoader().loadSceneFromFile(GameModel.mediaDir + "modelos\\Isla-TgcScene.xml").Meshes[0];
-            //isla.Scale = new TGCVector3(300.5f, 300.5f, 300.5f);
-            //isla.Effect = efecto;
-            //isla.Technique = "RenderScene";
-            //isla.Position = new TGCVector3(400, 200f, 6500f);
-            //isla.RotateZ(3);
-            //obtenerPminYPmax(isla.BoundingBox.PMin, isla.BoundingBox.PMax);
-            //meshes.Add(isla);
-
             tumba = new TgcSceneLoader().loadSceneFromFile(GameModel.mediaDir + "modelos\\Tumbas-TgcScene.xml").Meshes[0];
             tumba.Scale = new TGCVector3(52.5f, 52.5f, 52.5f);
             tumba.Effect = efecto;
@@ -130,14 +133,6 @@ namespace TGC.Group.Model
             obtenerPminYPmax(tumba.BoundingBox.PMin, tumba.BoundingBox.PMax);
             meshes.Add(tumba);
 
-            //tubo = new TgcSceneLoader().loadSceneFromFile(GameModel.mediaDir + "modelos\\TUBO_MARIO-TgcScene.xml").Meshes[0];
-            //tubo.Scale = new TGCVector3(35.5f, 35.5f, 35.5f);
-            //tubo.Position = new TGCVector3(1500f, 150f, 1500f);
-            //tubo.Effect = efecto;
-            //tubo.Technique = "RenderScene";
-            //obtenerPminYPmax(tubo.BoundingBox.PMin, tubo.BoundingBox.PMax);
-            //meshes.Add(tubo);
-
             flecha = new TgcSceneLoader().loadSceneFromFile(GameModel.mediaDir + "modelos\\Flecha-TgcScene.xml").Meshes[0];
             flecha.Scale = new TGCVector3(320.5f, 320.5f, 320.5f);
             flecha.Position = new TGCVector3(0, 450f, 4800f);
@@ -156,18 +151,26 @@ namespace TGC.Group.Model
             helicoptero.Technique = "RenderScene";
             obtenerPminYPmax(helicoptero.BoundingBox.PMin, helicoptero.BoundingBox.PMax);
             meshes.Add(helicoptero);
-
             #endregion
 
-            //Crear Octree
+
+            //efecto.SetValue("texCubeMap", cubemap);
+            //tubo = new TgcSceneLoader().loadSceneFromFile(GameModel.mediaDir + "modelos\\TUBO_MARIO-TgcScene.xml").Meshes[0];
+            //tubo.Scale = new TGCVector3(35.5f, 35.5f, 35.5f);
+            //tubo.Position = new TGCVector3(1500f, 350f, 1500f);
+            //tubo.Effect = efecto;
+            //tubo.Technique = "cube";
+            //obtenerPminYPmax(tubo.BoundingBox.PMin, tubo.BoundingBox.PMax);
+            //meshes.Add(tubo);
+
+            #region  crearOctree
             octree.create(meshes, new TgcBoundingAxisAlignBox(pmin, pmax));
             octree.createDebugOctreeMeshes();
+            #endregion
         }
 
         public override void Update()
         {
-            //efecto.SetValue("_Time", GameModel.time);
-            //efecto.SetValue("alturaEnY", GameLogic.cantidadZombiesMuertos * 10);
         }
 
         public override void Render()
@@ -180,6 +183,7 @@ namespace TGC.Group.Model
             meshes.ForEach(m => m.Dispose());
         }
 
+        #region cosasPocoImportantes
         private void obtenerPminYPmax(TGCVector3 meshPmin, TGCVector3 meshPmax)
         {
             if ((pmin.X < meshPmin.X) && (pmin.Y < meshPmin.Y) && (pmin.Z < meshPmin.Z))
@@ -191,5 +195,6 @@ namespace TGC.Group.Model
                 pmax = meshPmax;
             }
         }
+        #endregion
     }
 }

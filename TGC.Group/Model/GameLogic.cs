@@ -210,10 +210,39 @@ namespace TGC.Group.Model
 
             tipoZombie++;
             if (tipoZombie > 2) tipoZombie = 0;
-
-
         }
 
+        public List<Zombie> crearHordasZombies()
+        {
+            int i;
+            float[] posiciones = { -1200, -1000 - 800, -500, -400, -200, 0, 200, 350, 700, 900, 1020, 1300, 1600 };
+            for (i = 0; i < 100; i++)
+            {
+                Zombie zombie;
+                switch (tipoZombie)
+                {
+                    case 0:
+                        zombie = new Zombie(new TGCVector3(posiciones[random.Next(13)], 900f, 5040f), this);
+                        zombies.Add(zombie);
+                        physicWorld.addBulletObject(zombie);
+                        break;
+                    case 1:
+                        zombie = new ZombieXD(new TGCVector3(posiciones[random.Next(13)], 900f, 5040f), this);
+                        zombies.Add(zombie);
+                        physicWorld.addBulletObject(zombie);
+                        break;
+                    case 2:
+                        zombie = new ZombieVip(new TGCVector3(posiciones[random.Next(13)], 900f, 5040f), this);
+                        zombies.Add(zombie);
+                        physicWorld.addBulletObject(zombie);
+                        break;
+                }
+
+                tipoZombie++;
+                if (tipoZombie > 2) tipoZombie = 0;
+            }
+            return zombies;
+        }
         #endregion
 
         #region gestionColisiones

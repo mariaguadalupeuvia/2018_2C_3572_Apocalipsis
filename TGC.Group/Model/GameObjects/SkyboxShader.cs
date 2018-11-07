@@ -15,11 +15,11 @@ using TGC.Core.Textures;
 
 namespace TGC.Group.Model.GameObjects
 {
-    public class SkyboxShader : IRenderObject 
+    public class SkyboxShader : IRenderObject , IPostProcess 
     {
-        #region variables
+        #region variablesYDemas
         public Effect efecto;
-        public string tecnica;
+        public string tecnica { get; set; }
         private float time = 0.1f;
         private TGCVector3 center;
         public float SkyEpsilon { get; set; }
@@ -62,53 +62,22 @@ namespace TGC.Group.Model.GameObjects
 
         public SkyboxShader()
         {
+            #region inicializarCosas
             Faces = new TgcMesh[6];
             FaceTextures = new string[6];
             SkyEpsilon = 25f;
             Color = Color.White;
             Center = TGCVector3.Empty;
             Size = new TGCVector3(1000, 1000, 1000);
+            #endregion
+
             efecto = TgcShaders.loadEffect(GameModel.shadersDir + "shaderCielo.fx");
+            tecnica = "RenderScene";// "noche";// "RenderScene";
         }
 
-        public void Update()
-        {
-            //efecto.SetValue("_Time", GameModel.time);
-        }
-
-        public void Render()
-        {
-            foreach (var face in Faces)
-            {
-                face.Transform = TGCMatrix.Identity * Traslation;
-                face.Render();
-            }
-        }
-
-        public void Dispose()
-        {
-            foreach (var face in Faces)
-            {
-                face.Dispose();
-            }
-        }
-
-        /// <summary>
-        ///     Configurar la textura de una cara del SkyBox.
-        ///     Para aplicar los cambios se debe llamar InitSkyBox.
-        /// </summary>
-        /// <param name="face">Cara del SkyBox</param>
-        /// <param name="texturePath">Path de la textura</param>
-        public void setFaceTexture(SkyFaces face, string texturePath)
-        {
-            FaceTextures[(int)face] = texturePath;
-        }
-
-        /// <summary>
-        ///     Tomar los valores configurados y crear el SkyBox. Solo invocar en tiempo de INIT!!!
-        /// </summary>
         public void Init()
         {
+            #region codigoFeo
             //Crear cada cara
             for (var i = 0; i < Faces.Length; i++)
             {
@@ -146,11 +115,75 @@ namespace TGC.Group.Model.GameObjects
                 faceMesh.DiffuseMaps = new[] { texture };
 
                 faceMesh.Effect = efecto;
-                faceMesh.Technique = "RenderScene";// "apocalipsis";
+                faceMesh.Technique = tecnica;// "RenderScene";// "apocalipsis";
 
                 Faces[i] = faceMesh;
             }
+            #endregion
+
+            PostProcess.agregarPostProcessObject(this);
         }
+
+        public void Update()
+        {
+            //efecto.SetValue("_Time", GameModel.time);
+        }
+
+        public void Render()
+        {
+            foreach (var face in Faces)
+            {
+                face.Transform = TGCMatrix.Identity * Traslation;
+                face.Render();
+            }
+        }
+
+        public void Dispose()
+        {
+            foreach (var face in Faces)
+            {
+                face.Dispose();
+            }
+        }
+
+        #region gestionarTecnicasShader
+
+        public void cambiarTecnicaDefault()
+        {
+            cambiarTechnique(tecnica);
+        }
+        public void cambiarTecnicaPostProceso()
+        {
+            cambiarTechnique("dark");
+        }
+
+        public void cambiarTechnique(string technique)
+        {
+            tecnica = technique;
+            efecto.Technique = technique;
+            for (int i = 0; i < 6; i++)
+            {
+                Faces[i].Technique = technique;
+            }
+        }
+        #endregion
+
+        #region codigoFeo
+        /// <summary>
+        ///     Configurar la textura de una cara del SkyBox.
+        ///     Para aplicar los cambios se debe llamar InitSkyBox.
+        /// </summary>
+        /// <param name="face">Cara del SkyBox</param>
+        /// <param name="texturePath">Path de la textura</param>
+        public void setFaceTexture(SkyFaces face, string texturePath)
+        {
+            FaceTextures[(int)face] = texturePath;
+        }
+
+        /// <summary>
+        ///     Tomar los valores configurados y crear el SkyBox. Solo invocar en tiempo de INIT!!!
+        /// </summary>
+
 
         #region cargarVertices
         private void cargarVertices(SkyFaces face, GraphicsStream data, int color)
@@ -515,14 +548,7 @@ namespace TGC.Group.Model.GameObjects
             ibArray[i++] = 2;
             ibArray[i++] = 3;
         }
+#endregion 
 
-        public void cambiarTechnique(string technique)
-        {
-            efecto.Technique = technique;
-            for (int i = 0; i < 6; i++)
-            {
-                Faces[i].Technique = technique;
-            }
-        }
     }
 }

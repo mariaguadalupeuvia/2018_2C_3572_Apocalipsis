@@ -16,14 +16,8 @@ namespace TGC.Group.Model.EstadosJuego
         #region variables
         private List<CustomSprite> sprites = new List<CustomSprite>();
         private Drawer2D drawer2D;
-        List<GameObject> gameObjects;
         int contador = 0;
         #endregion
-
-        public Victoria(List<GameObject> objetos)
-        {
-            gameObjects = objetos;
-        }
 
         public void Init(TgcD3dInput input)
         {
@@ -41,7 +35,6 @@ namespace TGC.Group.Model.EstadosJuego
 
         public void Render()
         {
-            gameObjects.ForEach(g => g.Render());
             drawer2D.BeginDrawSprite();
             sprites.ForEach(s => drawer2D.DrawSprite(s));
             drawer2D.EndDrawSprite();
@@ -49,7 +42,6 @@ namespace TGC.Group.Model.EstadosJuego
 
         public void Dispose()
         {
-            gameObjects.ForEach(g => g.Dispose());
             sprites.ForEach(s => s.Dispose());
         }
 

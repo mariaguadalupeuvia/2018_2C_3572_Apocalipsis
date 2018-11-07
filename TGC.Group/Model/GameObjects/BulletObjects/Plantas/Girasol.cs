@@ -57,7 +57,28 @@ namespace TGC.Group.Model.GameObjects
             time.AutoReset = true;
             time.Enabled = true;
             #endregion
+
+            PostProcess.agregarPostProcessObject(this);
         }
+
+        #region gestionTecnicasShader
+        public override void cambiarTecnicaDefault()
+        {
+            girasol.Technique = "RenderScene";
+            tallo.Technique = "RenderScene";
+        }
+        public override void cambiarTecnicaPostProceso()
+        {
+            girasol.Technique = "dark";
+            tallo.Technique = "dark";
+        }
+        public override void cambiarTecnicaShader(string tecnica)
+        {
+            girasol.Technique = tecnica;
+            tallo.Technique = tecnica;
+        }
+        #endregion
+
         static void OnTimedEvent(Object source, ElapsedEventArgs e)
         {
             tiempoCumplido = true;
@@ -81,12 +102,6 @@ namespace TGC.Group.Model.GameObjects
         {
             girasol.Dispose();
             tallo.Dispose();
-        }
-
-        public override void cambiarTecnicaShader(string tecnica)
-        {
-            girasol.Technique = tecnica;
-            tallo.Technique = tecnica;
         }
 
         public void disparar()

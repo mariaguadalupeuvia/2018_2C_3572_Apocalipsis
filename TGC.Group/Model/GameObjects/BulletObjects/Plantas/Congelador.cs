@@ -41,7 +41,27 @@ namespace TGC.Group.Model.GameObjects
             tallo.Effect = efecto;
             tallo.Technique = "RenderScene";
             #endregion
+
+            PostProcess.agregarPostProcessObject(this);
         }
+
+        #region gestionTecnicasShader
+        public override void cambiarTecnicaDefault()
+        {
+            congelador.Technique = "RenderSceneCongelada";
+            tallo.Technique = "RenderScene";
+        }
+        public override void cambiarTecnicaPostProceso()
+        {
+            congelador.Technique = "dark";
+            tallo.Technique = "dark";
+        }
+        public override void cambiarTecnicaShader(string tecnica)
+        {
+            congelador.Technique = tecnica;
+            tallo.Technique = tecnica;
+        }
+        #endregion
 
         public override void Render()
         {
@@ -51,7 +71,7 @@ namespace TGC.Group.Model.GameObjects
 
         public override void Update(TgcD3dInput Input)
         {
-            //#region chequearInput
+            #region chequearInput
             //if (Input.keyDown(Key.UpArrow))
             //{
             //    axisRotation -= AXIS_ROTATION_SPEED * GameModel.time;
@@ -73,7 +93,7 @@ namespace TGC.Group.Model.GameObjects
             //{
             //    disparar();
             //}
-            //#endregion
+            #endregion
 
             //congelador.RotateX(axisRotation);
             //congelador.RotateY(ayisRotation);
@@ -94,11 +114,6 @@ namespace TGC.Group.Model.GameObjects
             tallo.Dispose();
         }
 
-        public override void cambiarTecnicaShader(string tecnica)
-        {
-            congelador.Technique = tecnica;
-            tallo.Technique = tecnica;
-        }
         public void disparar()
         {
             BalaCongelante disparo = new BalaCongelante(congelador, logica);

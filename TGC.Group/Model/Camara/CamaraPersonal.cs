@@ -33,8 +33,8 @@ namespace TGC.Group.Model
             this.RotationSpeed = 0.1f;
             this.MovementSpeed = 500f;
             this.JumpSpeed = 500f;
-           // this.directionView = new TGCVector3(0, 0, -1); 
-            this.directionView = new TGCVector3(0.8f, -0.8f, -1); 
+            this.directionView = new TGCVector3(0, 0, -1); 
+           // this.directionView = new TGCVector3(0.8f, -0.8f, -1); 
             this.leftrightRot = FastMath.PI_HALF;
             this.updownRot = -FastMath.PI / 10.0f;
             this.cameraRotation = TGCMatrix.RotationX(updownRot) * TGCMatrix.RotationY(leftrightRot);///*TGCMatrix.RotationX(updownRot) **/ TGCMatrix.RotationY(leftrightRot);
@@ -50,6 +50,7 @@ namespace TGC.Group.Model
         {
             var moveVector = TGCVector3.Empty;
 
+            #region manejarInput
             //Forward
             if (Input.keyDown(Key.W))
             {
@@ -70,16 +71,7 @@ namespace TGC.Group.Model
             {
                 moveVector += new TGCVector3(1, 0, 0) * MovementSpeed;
             }
-            ////Jump
-            //if (Input.keyDown(Key.Space))
-            //{
-            //    moveVector += TGCVector3.Up * JumpSpeed;
-            //}
-            ////Crouch
-            //if (Input.keyDown(Key.LeftControl))
-            //{
-            //    moveVector += TGCVector3.Down * JumpSpeed;
-            //}
+            #endregion
 
             return moveVector;
         }
@@ -94,8 +86,8 @@ namespace TGC.Group.Model
             {
                 leftrightRot -= -Input.XposRelative * RotationSpeed;
                 updownRot -= Input.YposRelative * RotationSpeed;
-                //cameraRotation = TGCMatrix.RotationX(updownRot) * TGCMatrix.RotationY(leftrightRot);
-                cameraRotation = TGCMatrix.RotationY(leftrightRot);
+                cameraRotation = TGCMatrix.RotationX(updownRot) * TGCMatrix.RotationY(leftrightRot);
+               // cameraRotation = TGCMatrix.RotationY(leftrightRot);
             }
 
             var cameraRotatedPositionEye = TGCVector3.TransformNormal(moveVector * elapsedTime, cameraRotation);

@@ -15,7 +15,7 @@ using BulletSharp;
 
 namespace TGC.Group.Model.GameObjects
 {
-    public abstract class Planta : BulletObject 
+    public abstract class Planta : BulletObject, IPostProcess
     {
         #region variables
         protected int nivelResistencia = 1000;
@@ -34,12 +34,11 @@ namespace TGC.Group.Model.GameObjects
             #endregion
         }
 
-        public abstract void cambiarTecnicaShader(string tecnica);
-
         public abstract void Update(TgcD3dInput Input);
         public abstract void Render();
         public abstract void Dispose();
         public abstract int getCostoEnSoles();
+        public abstract void cambiarTecnicaShader(string tecnica);
 
         internal void teComen(Zombie zombie)
         {
@@ -57,5 +56,8 @@ namespace TGC.Group.Model.GameObjects
             logica.desactivar(this);
             plataforma.ocupado = false;
         }
+
+        public abstract void cambiarTecnicaDefault();
+        public abstract void cambiarTecnicaPostProceso();
     }
 }

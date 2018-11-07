@@ -9,6 +9,21 @@ float4x4 matWorldView; //Matriz World * View
 float4x4 matWorldViewProj; //Matriz World * View * Projection
 float4x4 matInverseTransposeWorld; //Matriz Transpose(Invert(World))
 
+//________________________________________________________________________________________________________
+//________________TEXTURAS________________________________________________________________________________
+//Textura utilizada para EnvironmentMap
+texture texCubeMap;
+samplerCUBE cubeMap = sampler_state
+{
+	Texture = (texCubeMap);
+	ADDRESSU = WRAP;
+	ADDRESSV = WRAP;
+	MINFILTER = LINEAR;
+	MAGFILTER = LINEAR;
+	MIPFILTER = LINEAR;
+};
+
+
 texture texDiffuseMap;
 sampler2D diffuseMap = sampler_state
 {
@@ -28,6 +43,9 @@ sampler2D bumpSampler = sampler_state {
 	AddressU = Wrap;
 	AddressV = Wrap;
 };
+
+//________________________________________________________________________________________________________
+//________________VARIABLES_______________________________________________________________________________
 
 float BumpConstant = 1;
 
@@ -69,6 +87,9 @@ float delta = 150.0;
 float scaleFactor = 0.2;
 float colorVida = 0;
 
+//_________________________________________________________________________________________________________________________
+//______________STRUCTS____________________________________________________________________________________________________
+
 //Input del Vertex Shader
 struct VS_INPUT
 {
@@ -97,6 +118,9 @@ struct VS_OUTPUT
 	float3 Tangent : TEXCOORD6;
 	float3 Binormal : TEXCOORD7;
 };
+
+//_________________________________________________________________________________________________________________________
+//______________VERTEX SHADER______________________________________________________________________________________________
 
 VS_OUTPUT vs_main(VS_INPUT Input)
 {
@@ -165,6 +189,48 @@ VS_OUTPUT vs_explosivo(VS_INPUT Input)
 	return(Output);
 }
 
+//_________________________________________________________________________________________________________________________
+//______________PIXELS SHADER______________________________________________________________________________________________
+float4 ps_cube(float2 Texcoord : TEXCOORD0, float3 N : TEXCOORD1, float3 Pos : TEXCOORD2, float3 Pos2 : TEXCOORD3, float3 WorldPosition : TEXCOORD4, float3 WorldNormal : TEXCOORD5, float3 Tangent : TEXCOORD6, float3 Binormal : TEXCOORD7, float fogfactor : FOG) : COLOR0
+{
+   //Obtener el texel de textura
+	float4 fvBaseColor = tex2D(diffuseMap, Texcoord);
+
+	float ld = 0;		// luz difusa
+	float le = 0;		// luz specular
+
+	//calcula la luz diffusa
+	float3 LD = normalize(fvLightPosition - float3(Pos.x,Pos.y,Pos.z));
+	ld += saturate(dot(N, LD)) * k_ld;
+
+	//calcula la reflexion specular
+	float3 D = normalize(float3(Pos.x,Pos.y,Pos.z) - fvEyePosition);
+	float ks = saturate(dot(reflect(LD,N), D));
+	ks = pow(ks,fSpecularPower);
+	le += ks * k_ls;
+
+	//calcular los factores de fog y alpha blending que actuan en profundidad
+	fogfactor = saturate((5000.0f - Pos2.z) / (fogStart)); 
+	float blendfactor = saturate((5000.0f - Pos2.z) / (blendStart));
+    fvBaseColor = (fvBaseColor * fogfactor) + (fogColor * (1.0 - fogfactor));
+
+
+    //Normalizar vectores
+    float3 Nn = normalize(WorldNormal);
+	//Obtener texel de CubeMap
+    float3 Vn = normalize(fvEyePosition - WorldPosition);
+    float3 R = reflect(Vn, Nn);
+
+    float3 reflectionColor = texCUBE(cubeMap, R).rgb;
+    float4 MezclaTex = float4((fvBaseColor.xyz * (1 - reflection)) + (reflectionColor * reflection), 1.0f);
+    
+    float4 RGBColor = 0;
+    RGBColor.rgb = saturate(MezclaTex * (saturate(k_la + ld)) + le);
+    RGBColor.a = 1;
+       
+    return RGBColor;
+}
+
 float4 ps_main(float3 Texcoord: TEXCOORD0, float3 N : TEXCOORD1, float3 Pos : TEXCOORD2, float3 Pos2 : TEXCOORD3, float3 WorldPosition : TEXCOORD4, float3 WorldNormal : TEXCOORD5, float3 Tangent : TEXCOORD6, float3 Binormal : TEXCOORD7, float fogfactor : FOG) : COLOR0
 {
    //Obtener el texel de textura
@@ -193,6 +259,48 @@ float4 ps_main(float3 Texcoord: TEXCOORD0, float3 N : TEXCOORD1, float3 Pos : TE
 	RGBColor.a = blendfactor;
 
 	return RGBColor;
+}
+
+float4 ps_calado(float3 Texcoord : TEXCOORD0, float3 N : TEXCOORD1, float3 Pos : TEXCOORD2, float3 Pos2 : TEXCOORD3, float3 WorldPosition : TEXCOORD4, float3 WorldNormal : TEXCOORD5, float3 Tangent : TEXCOORD6, float3 Binormal : TEXCOORD7, float fogfactor : FOG) : COLOR0
+{
+    //Texcoord.y = Texcoord.y + _Time / 4;
+   //Obtener el texel de textura
+    float4 fvBaseColor;
+
+    if ((_Time % 2) == 0)
+    {
+        fvBaseColor = tex2D(bumpSampler, Texcoord);
+       
+    }
+    else
+    {
+        fvBaseColor = tex2D(diffuseMap, Texcoord);
+    }
+
+    float ld = 0; // luz difusa
+    float le = 0; // luz specular
+
+	//calcula la luz diffusa
+    float3 LD = normalize(fvLightPosition - float3(Pos.x, Pos.y, Pos.z));
+    ld += saturate(dot(N, LD)) * k_ld;
+
+	//calcula la reflexion specular
+    float3 D = normalize(float3(Pos.x, Pos.y, Pos.z) - fvEyePosition);
+    float ks = saturate(dot(reflect(LD, N), D));
+    ks = pow(ks, fSpecularPower);
+    le += ks * k_ls;
+
+	//calcular los factores de fog y alpha blending que actuan en profundidad
+    fogfactor = saturate((5000.0f - Pos2.z) / (fogStart)); // (fogEnd - z) /(fogEnd - fogStart)
+    float blendfactor = saturate((5000.0f - Pos2.z) / (blendStart));
+
+    float4 RGBColor = 0;
+    fvBaseColor = (fvBaseColor * fogfactor) + (fogColor * (1.0 - fogfactor));
+    RGBColor.rgb = saturate(fvBaseColor * (saturate(k_la + ld)));//+le);
+    RGBColor.rgb *= 2;
+    RGBColor.a = (RGBColor.r + RGBColor.g + RGBColor.b) / 3; //blendfactor;
+
+    return RGBColor;
 }
 
 float4 ps_progresivo(float3 Texcoord: TEXCOORD0, float3 N : TEXCOORD1, float3 Pos : TEXCOORD2, float3 Pos2 : TEXCOORD3, float3 WorldPosition : TEXCOORD4, float3 WorldNormal : TEXCOORD5, float3 Tangent : TEXCOORD6, float3 Binormal : TEXCOORD7, float fogfactor : FOG) : COLOR0
@@ -335,6 +443,20 @@ float4 ps_zombie(float3 Texcoord: TEXCOORD0, float3 N : TEXCOORD1, float3 Pos : 
 	 return RGBColor;
 }
 
+float4 ps_dark(float3 Texcoord : TEXCOORD0) : COLOR0
+{
+    float4 fvBaseColor = tex2D(diffuseMap, Texcoord);
+    return float4(0, 0, 0, 1);//fvBaseColor.a);
+}
+float4 ps_glow(float3 Texcoord : TEXCOORD0) : COLOR0
+{
+    float4 fvBaseColor = tex2D(diffuseMap, Texcoord);
+    return float4(0, 0, 0, 1);//fvBaseColor.a);
+}
+
+//____________________________________________________________________________________________________________________________________________________________________
+//______________TECNICAS______________________________________________________________________________________________________________________________________________
+
 technique RenderScene
 {
 	pass Pass_0
@@ -399,6 +521,20 @@ technique Explosivo
 	}
 }
 
+technique calado
+{
+    pass Pass_0
+    {
+        AlphaBlendEnable = TRUE;
+        DestBlend = INVSRCALPHA;
+        SrcBlend = SRCALPHA;
+		//CullMode = Ccw;//Cw;//None;
+		//ZEnable = false;
+        VertexShader = compile vs_3_0 vs_explosivo();
+        PixelShader = compile ps_3_0 ps_calado();
+    }
+}
+
 technique RenderZombie
 {
 	pass Pass_0
@@ -409,4 +545,28 @@ technique RenderZombie
 		VertexShader = compile vs_3_0 vs_main();
 		PixelShader = compile ps_3_0 ps_zombie();
 	}
+}
+
+technique dark
+{
+   pass Pass_0
+   {
+          AlphaBlendEnable =TRUE;
+          DestBlend= INVSRCALPHA;
+          SrcBlend= SRCALPHA;
+		  VertexShader = compile vs_3_0 vs_main();
+		  PixelShader = compile ps_3_0 ps_dark(); 
+   }
+}
+
+technique cube
+{
+   pass Pass_0
+   {
+          AlphaBlendEnable =TRUE;
+          DestBlend= INVSRCALPHA;
+          SrcBlend= SRCALPHA;
+		  VertexShader = compile vs_3_0 vs_main();
+		  PixelShader = compile ps_3_0 ps_cube(); 
+   }
 }

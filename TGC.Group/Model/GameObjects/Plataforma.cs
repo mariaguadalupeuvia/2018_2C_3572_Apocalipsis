@@ -15,7 +15,7 @@ using System.Drawing;
 
 namespace TGC.Group.Model.GameObjects
 {
-    public class Plataforma : TgcMesh
+    public class Plataforma : TgcMesh, IPostProcess 
     {
         #region variables
         public TgcMesh mesh { get; set; }
@@ -42,7 +42,19 @@ namespace TGC.Group.Model.GameObjects
             #endregion
 
             ocupado = false;
+            PostProcess.agregarPostProcessObject(this);
         }
+
+        #region gestionTecnicasShader
+        public void cambiarTecnicaDefault()
+        {
+            mesh.Technique = "RenderScene";
+        }
+        public void cambiarTecnicaPostProceso()
+        {
+            mesh.Technique = "RenderScene";
+        }
+        #endregion
 
         public void Render()
         {
@@ -53,6 +65,11 @@ namespace TGC.Group.Model.GameObjects
         public void Dispose()
         {
             mesh.Dispose();
+        }
+
+        public void renderGlow()
+        {
+            mesh.Render();
         }
     }
 }

@@ -37,7 +37,6 @@ namespace TGC.Group.Model
 
         public override void Update()
         {
-           // Console.WriteLine("Update no implementado");
         }
 
         public virtual bool enCaidaLibre()
