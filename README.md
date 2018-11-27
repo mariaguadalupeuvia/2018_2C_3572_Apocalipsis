@@ -14,16 +14,16 @@ Proyecto plantilla para los trabajos prácticos de la asignatura electiva [Técn
 * [TGC.Core](https://www.nuget.org/packages/TGC.Core/) (se baja automáticamente al hacer build por primera vez)
 
 ## Integrantes ##
-TGC, Tgcito  |  Apellido, Nombre
+TGC, Tgcito  |  Uviña, Maria Guadalupe
 ------------ | -------------
-<img src="https://github.com/tgc-utn/tgc-utn.github.io/blob/master/images/robotgc.png" height="500"> | <img src="https://github.com/tgc-utn/tgc-utn.github.io/blob/master/images/trofeotp.png" height="500">
+<img src="https://github.com/tgc-utn/tgc-utn.github.io/blob/master/images/robotgc.png" height="500"> | <img src="https://github.com/mariaguadalupeuvia/2018_2C_3572_Apocalipsis/blob/master/TGC.Group/Media/DOCUMENTACION/mariaGuadalupeUvi%C3%B1a.jpg" height="500">
 
 ## ScreenShot ##
-![screenshot1](https://github.com/tgc-utn/tgc-group/blob/master/TGC.Group/Media/cajaMadera4.jpg)
-![screenshot2](https://github.com/tgc-utn/tgc-group/blob/master/TGC.Group/Media/cajaMadera4.jpg)
-![screenshot3](https://github.com/tgc-utn/tgc-group/blob/master/TGC.Group/Media/cajaMadera4.jpg)
-![screenshot4](https://github.com/tgc-utn/tgc-group/blob/master/TGC.Group/Media/cajaMadera4.jpg)
-![screenshot5](https://github.com/tgc-utn/tgc-group/blob/master/TGC.Group/Media/cajaMadera4.jpg)
+![screenshot1](https://github.com/mariaguadalupeuvia/2018_2C_3572_Apocalipsis/blob/master/TGC.Group/Media/DOCUMENTACION/captura5.jpg)
+![screenshot2](https://github.com/mariaguadalupeuvia/2018_2C_3572_Apocalipsis/blob/master/TGC.Group/Media/DOCUMENTACION/captura4.jpg)
+![screenshot3](https://github.com/mariaguadalupeuvia/2018_2C_3572_Apocalipsis/blob/master/TGC.Group/Media/DOCUMENTACION/captura1.jpg)
+![screenshot4](https://github.com/mariaguadalupeuvia/2018_2C_3572_Apocalipsis/blob/master/TGC.Group/Media/DOCUMENTACION/captura2.jpg)
+![screenshot5](https://github.com/mariaguadalupeuvia/2018_2C_3572_Apocalipsis/blob/master/TGC.Group/Media/DOCUMENTACION/captura3.jpg)
 
 ## Game Play ##
 [![Watch the video](https://img.youtube.com/vi/qESIu8ozanU/0.jpg)](https://www.youtube.com/playlist?list=PLRM4L32DjvnazuMl8wZlbpEYL5Qh63ulG)
