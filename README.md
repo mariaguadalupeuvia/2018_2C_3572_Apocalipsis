@@ -26,4 +26,4 @@ TGC, Tgcito  |  Uviña, Maria Guadalupe
 ![screenshot5](https://github.com/mariaguadalupeuvia/2018_2C_3572_Apocalipsis/blob/master/TGC.Group/Media/DOCUMENTACION/captura3.jpg)
 
 ## Game Play ##
-[![Watch the video](https://img.youtube.com/vi/qESIu8ozanU/0.jpg)](https://www.youtube.com/playlist?list=PLRM4L32DjvnazuMl8wZlbpEYL5Qh63ulG)
+[![Watch the video](https://github.com/mariaguadalupeuvia/2018_2C_3572_Apocalipsis/blob/master/TGC.Group/Media/DOCUMENTACION/captura4.jpg)](https://www.youtube.com/watch?v=iYOxIQIWTvE&feature=youtu.be)
