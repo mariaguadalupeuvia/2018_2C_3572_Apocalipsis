@@ -9,6 +9,10 @@ float4x4 matWorldView; //Matriz World * View
 float4x4 matWorldViewProj; //Matriz World * View * Projection
 float4x4 matInverseTransposeWorld; //Matriz Transpose(Invert(World))
 
+
+//________________________________________________________________________________________________________
+//________________TEXTURAS________________________________________________________________________________
+
 texture texDiffuseMap;
 sampler2D diffuseMap = sampler_state
 {
@@ -20,7 +24,30 @@ sampler2D diffuseMap = sampler_state
 	MIPFILTER = LINEAR;
 };
 
+texture g_txShadow;
+sampler2D g_samShadow =
+sampler_state
+{
+    Texture = <g_txShadow>;
+    MinFilter = Point;
+    MagFilter = Point;
+    MipFilter = Point;
+    AddressU = Clamp;
+    AddressV = Clamp;
+};
+//________________________________________________________________________________________________________
+//________________VARIABLES_______________________________________________________________________________
+
 float time = 1.0;
+
+#define EPSILON 0.05f
+float4x4 g_mViewLightProj;
+float4x4 g_mProjLight;
+float3 g_vLightPos; // posicion de la luz (en World Space) = pto que representa patch emisor Bj
+float3 g_vLightDir; // Direcion de la luz (en World Space) = normal al patch Bj
+
+//_________________________________________________________________________________________________________________________
+//______________STRUCTS____________________________________________________________________________________________________
 
 //Input del Vertex Shader
 struct VS_INPUT 
@@ -38,7 +65,8 @@ struct VS_OUTPUT
    float2 Texcoord : TEXCOORD0;
 };
 
-// ------------------------------------------------------------------
+//_________________________________________________________________________________________________________________________
+//______________VERTEX SHADER______________________________________________________________________________________________
 
 // vertex shader  
 VS_OUTPUT vs_main( VS_INPUT Input )
@@ -49,26 +77,23 @@ VS_OUTPUT vs_main( VS_INPUT Input )
 	return( Output );  
 }
 
-// ------------------------------------------------------------------
+//_________________________________________________________________________________________________________________________
+//______________PIXELS SHADER______________________________________________________________________________________________
 
 //Pixel Shader 
-float4 ps_main( float2 Texcoord: TEXCOORD0) : COLOR0
+float4 ps_main(float2 Texcoord : TEXCOORD0) : COLOR0
 {      
     float4 fvBaseColor = tex2D( diffuseMap, Texcoord);
-	//fvBaseColor.g = fvBaseColor.g  +cos(time) / 8;
-	//fvBaseColor.b = fvBaseColor.b + cos(time) / 16;
-
     fvBaseColor.rgb = saturate(fvBaseColor);
     return fvBaseColor;
 }
 
 //Pixel Shader 
-float4 ps_tarde( float2 Texcoord: TEXCOORD0) : COLOR0
+float4 ps_tarde(float2 Texcoord : TEXCOORD0) : COLOR0
 {      
     float4 fvBaseColor = tex2D( diffuseMap, Texcoord);
-	//fvBaseColor.r = saturate(fvBaseColor.r *2.0);
 	fvBaseColor.g = saturate(fvBaseColor.g *2.2);
-    fvBaseColor.b = saturate(fvBaseColor.b * 3); // 2);
+    fvBaseColor.b = saturate(fvBaseColor.b * 3); 
     fvBaseColor.rgb = saturate(fvBaseColor);
 
     return fvBaseColor;
@@ -82,28 +107,27 @@ float4 ps_Apocalipsis(float2 Texcoord: TEXCOORD0) : COLOR0
 	fvBaseColor.g = rgbColor.g;
 	fvBaseColor.b = rgbColor.r;
 
-	//fvBaseColor.r = saturate(fvBaseColor.r * 4.0);
-	//fvBaseColor.g = saturate(fvBaseColor.g * 0.3);
-	//fvBaseColor.b = saturate(fvBaseColor.b * 0.1);
 	fvBaseColor.rgb = saturate(fvBaseColor);
 
 	return fvBaseColor;
 }
 
-
 float4 ps_dark(float2 Texcoord : TEXCOORD0) : COLOR0
 {
     float4 fvBaseColor = tex2D(diffuseMap, Texcoord);
-    return float4(0, 0, 0, 1);//fvBaseColor.a);
+    return float4(0, 0, 0, 1);
 }
 
 float4 ps_noche(float2 Texcoord : TEXCOORD0) : COLOR0
 {
     float4 fvBaseColor = tex2D(diffuseMap, Texcoord);
     fvBaseColor *= 0.2;
-    return float4(fvBaseColor.x, fvBaseColor.y, fvBaseColor.z, 1); //fvBaseColor.a);
+    return float4(fvBaseColor.x, fvBaseColor.y, fvBaseColor.z, 1); 
 }
-// ------------------------------------------------------------------
+
+//____________________________________________________________________________________________________________________________________________________________________
+//______________TECNICAS______________________________________________________________________________________________________________________________________________
+
 technique RenderScene
 {
    pass Pass_0
@@ -114,6 +138,18 @@ technique RenderScene
 		VertexShader = compile vs_2_0 vs_main();
 		PixelShader = compile ps_2_0 ps_main();
    }
+}
+
+technique RenderShadow
+{
+    pass Pass_0
+    {
+        AlphaBlendEnable = TRUE;
+        DestBlend = INVSRCALPHA;
+        SrcBlend = SRCALPHA;
+        VertexShader = compile vs_2_0 vs_main();
+        PixelShader = compile ps_2_0 ps_main();
+    }
 }
 
 technique helado

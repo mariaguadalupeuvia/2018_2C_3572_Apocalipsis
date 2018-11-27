@@ -23,14 +23,7 @@ namespace TGC.Group.Model.GameObjects.BulletObjects.CollisionCallbacks
         {
             if (cp.Distance < 0.0f)
             {
-                //if (logica.floor() == colObj1Wrap.CollisionObject)
-                //{
-                //    //Console.WriteLine("Un sol colisiono con floor!!!");
-                //    //si choqué con el piso me despido de este mundo 
-                //    logica.desactivar(bulletObject);
-                //}
                 logica.esZombie((RigidBody)colObj1Wrap.CollisionObject, true);// esZombie() tiene efecto colateral con esta firma, simplemente muere
-
             }
             return 0;
         }

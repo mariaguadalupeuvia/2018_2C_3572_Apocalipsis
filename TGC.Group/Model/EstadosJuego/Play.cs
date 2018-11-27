@@ -37,7 +37,7 @@ namespace TGC.Group.Model.EstadosJuego
             logica.Init(Input);
             gui.Init();
 
-            zombieRey = new ZombieRey(new TGCVector3(100, 50, 100/*700, 50, 6000*/), logica);
+            zombieRey = new ZombieRey(new TGCVector3(100, 50, 100), logica);
             logica.addBulletObject(zombieRey);
             pared = new ParedFondo(logica, this);
             #endregion
@@ -50,6 +50,8 @@ namespace TGC.Group.Model.EstadosJuego
 
         public void gameOver()
         {
+            if (GameModel.modoGod) return;
+
             Estado estado = new GameOver();
             estado.Init(new TgcD3dInput());
             GameModel.enPlay = false;
@@ -91,7 +93,7 @@ namespace TGC.Group.Model.EstadosJuego
             zombieRey.Update(Input);
             logica.Update(Input);
 
-            if(GameLogic.cantidadZombiesMuertos > 25)
+            if((GameLogic.cantidadZombiesMuertos > 25) && (!GameModel.modoGod))
             {
                 victoria();
             }

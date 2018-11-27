@@ -20,18 +20,19 @@ namespace TGC.Group.Model
         #region variables
         public static int cantidadEnergia = 50;
         public static int cantidadZombiesMuertos = 0;
-        private GamePhysics physicWorld = new GamePhysics(); // este va a tener los objetos colisionables
-        private Tablero tablero;
-        TGCVector3 posicionSeleccionada;
         int tiempoDeHorda = 0;
-        Random random = new Random();
         int tipoZombie = 0;
-        
+
+        private GamePhysics physicWorld = new GamePhysics(); // este va a tener los objetos colisionables
         List<Planta> plantas = new List<Planta>();
         List<Planta> plantasIlegales = new List<Planta>();
-        private static  List<Zombie> zombies = new List<Zombie>();
-        float[] posiciones = { -1200, -500, 200, 900, 1600 };//1600, 1600, 1600, 1600, 1600 };//
-
+        private static List<Zombie> zombies = new List<Zombie>();
+        List<Explosion> explosiones = new List<Explosion>();
+        private Tablero tablero;
+        TGCVector3 posicionSeleccionada;
+        
+        Random random = new Random();
+        float[] posiciones = { -1200, -500, 200, 900, 1600 };
         static Timer time;
         static bool tiempoCumplido = false;
         #endregion
@@ -39,11 +40,30 @@ namespace TGC.Group.Model
         private const int MAXIMA_CANTIDAD_DE_ZOMBIES = 50;
         private static int INTERVALO = 45000;
 
+        public void agregarExplosion(TGCVector3 posicion)
+        {
+            Explosion exp = new Explosion();
+            exp.Init(posicion); 
+            explosiones.Add(exp);
+        }
+
+        public void agregarExplosionChile(TGCVector3 posicion)
+        {
+            Explosion exp = new FuegoPicante();
+            exp.Init(posicion);
+            explosiones.Add(exp);
+        }
+
         public void Init(TgcD3dInput Input)
         {
             physicWorld.Init();
             tablero = new Tablero(this);
             tablero.Init(Input);
+
+            if (GameModel.modoGod)
+            {
+                cantidadEnergia = 30000;
+            }
 
             #region manejarTiempo
             time = new Timer(INTERVALO);
@@ -59,20 +79,19 @@ namespace TGC.Group.Model
             INTERVALO -=2;
         }
 
-        public void Update(TgcD3dInput Input)
+        private void manejarCreacionZombies()
         {
-            physicWorld.Update();
-
             #region manejarCreacionDeZombies
             if (zombies.Count < MAXIMA_CANTIDAD_DE_ZOMBIES)
             {
                 if (tiempoCumplido)
                 {
                     tiempoCumplido = false;
-                    
+
                     crearZombies();
                     tiempoDeHorda++;
                     quitarPlantasIlegales();
+                    chequearExplosionesActivas();
                     if (tiempoDeHorda > 10)
                     {
                         crearHorda();
@@ -81,6 +100,29 @@ namespace TGC.Group.Model
                 }
             }
             #endregion
+        }
+
+        public void Update(TgcD3dInput Input)
+        {
+            physicWorld.Update();
+
+            if(!GameModel.modoGod)
+            {
+                manejarCreacionZombies();
+            }
+            else
+            {
+                if (Input.keyDown(Key.Z))
+                {
+                    crearZombies();
+                    quitarPlantasIlegales();
+                    chequearExplosionesActivas();
+                }
+                if (Input.keyDown(Key.X))
+                {
+                    bombardear();
+                }
+            }
 
             plantas.ForEach(P => P.Update(Input));
 
@@ -99,34 +141,35 @@ namespace TGC.Group.Model
             #endregion
 
             #region chequearInput
-            if (Input.keyDown(Key.NumPad1))
+            if (Input.keyDown(Key.NumPad1) || Input.keyDown(Key.D1)) 
             {
                 addPlanta(FactoryPlanta.crearCanion(posicionSeleccionada, this, tablero.plataformaSeleccionada));
             }
-            if (Input.keyDown(Key.NumPad2))
+            if (Input.keyDown(Key.NumPad2) || Input.keyDown(Key.D2))
             {
                 addPlanta(FactoryPlanta.crearGirasol(posicionSeleccionada, this, tablero.plataformaSeleccionada));
             }
-            if (Input.keyDown(Key.NumPad3))
+            if (Input.keyDown(Key.NumPad3) || Input.keyDown(Key.D3))
             {
                 addPlanta(FactoryPlanta.crearCongelador(posicionSeleccionada, this, tablero.plataformaSeleccionada));
             }
-            if (Input.keyDown(Key.NumPad4))
+            if (Input.keyDown(Key.NumPad4) || Input.keyDown(Key.D4))
             {
                 addPlanta(FactoryPlanta.crearMina(posicionSeleccionada, this, tablero.plataformaSeleccionada));
             }
-            if (Input.keyDown(Key.NumPad5))
+            if (Input.keyDown(Key.NumPad5) || Input.keyDown(Key.D5))
             {
                 addPlanta(FactoryPlanta.crearChile(posicionSeleccionada, this, tablero.plataformaSeleccionada));
             }
-            if (Input.keyDown(Key.NumPad6))
+            if (Input.keyDown(Key.NumPad6) || Input.keyDown(Key.D6))
             {
                 addPlanta(FactoryPlanta.crearNuez(posicionSeleccionada, this, tablero.plataformaSeleccionada));
             }
-            if (Input.keyDown(Key.NumPad7))
+            if (Input.keyDown(Key.NumPad7) || Input.keyDown(Key.D7))
             {
                 addPlanta(FactoryPlanta.crearSuperCanion(posicionSeleccionada, this, tablero.plataformaSeleccionada));
             }
+
             #endregion
         }
 
@@ -136,8 +179,24 @@ namespace TGC.Group.Model
             tablero.Render();
             plantas.ForEach(P => P.Render());
             plantasIlegales.ForEach(P => P.Render());
+
+            explosiones.ForEach(e => e.Render());
         }
 
+        void chequearExplosionesActivas()
+        {
+            List<Explosion> explosionesAux = new List<Explosion>();
+            explosiones.ForEach(e => explosionesAux.Add(e));
+
+            foreach (Explosion e in explosionesAux)
+            {
+                if (!e.activo)
+                {
+                    explosiones.Remove(e);
+                    e.Dispose(); 
+                }
+            }
+        }
         public void Dispose()
         {
             plantas.ForEach(P => P.Dispose());
@@ -168,15 +227,16 @@ namespace TGC.Group.Model
             }
         }
 
-        private void bombardear()//ver donde esta fallando
+        private void bombardear()
         {
-            //physicWorld.addBulletObject(new Apocalipsis(new TGCVector3(0, 5200f, 0)));
-            //physicWorld.addBulletObject(new Apocalipsis(new TGCVector3(100, 5300f, 50)));
-            //physicWorld.addBulletObject(new Apocalipsis(new TGCVector3(20, 5600f, 200)));
-            //physicWorld.addBulletObject(new Apocalipsis(new TGCVector3(5, 5800f, 20)));
-            //physicWorld.addBulletObject(new Apocalipsis(new TGCVector3(10, 6200f, 300)));
-            //physicWorld.addBulletObject(new Apocalipsis(new TGCVector3(600, 5000f, 100)));
+            Bomba a = new Bomba(new TGCVector3(0, 5200f, -1000), this);
+            Bomba b = new Bomba(new TGCVector3(1000, 5300f, 450), this);
+            Bomba c = new Bomba(new TGCVector3(-200, 5600f, -700), this);
+            Bomba d = new Bomba(new TGCVector3(5, 5800f, 20), this);
+            Bomba e = new Bomba(new TGCVector3(-1210, 6200f, -2000), this);
+            Bomba f = new Bomba(new TGCVector3(-600, 5000f, 1100), this);
         }
+
         private void crearHorda()
         {
             int i;
@@ -186,7 +246,7 @@ namespace TGC.Group.Model
             }
         }
 
-        private void crearZombies()
+        public void crearZombies()
         {
             Zombie zombie;
             switch (tipoZombie)

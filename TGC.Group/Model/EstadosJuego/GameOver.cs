@@ -16,7 +16,6 @@ namespace TGC.Group.Model.EstadosJuego
         #region variables
         private List<CustomSprite> sprites = new List<CustomSprite>();
         private Drawer2D drawer2D;
-        //List<GameObject> gameObjects;
         int contador = 0;
         #endregion
 
@@ -36,7 +35,6 @@ namespace TGC.Group.Model.EstadosJuego
 
         public void Render()
         {
-           
             drawer2D.BeginDrawSprite();
             sprites.ForEach(s => drawer2D.DrawSprite(s));
             drawer2D.EndDrawSprite();

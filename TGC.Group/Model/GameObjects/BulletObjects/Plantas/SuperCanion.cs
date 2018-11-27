@@ -78,6 +78,12 @@ namespace TGC.Group.Model.GameObjects.BulletObjects.Plantas
             canion2.Technique = tecnica;
             tallo.Technique = tecnica;
         }
+        public override void cambiarTecnicaShadow(Texture shadowTex)
+        {
+            canion1.Technique = "RenderShadow";
+            canion2.Technique = "RenderShadow";
+            efecto.SetValue("g_txShadow", shadowTex);
+        }
         #endregion
 
         public override void Update(TgcD3dInput Input)

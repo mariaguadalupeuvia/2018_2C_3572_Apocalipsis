@@ -66,6 +66,12 @@ namespace TGC.Group.Model.GameObjects
             canion.Technique = tecnica;
             tallo.Technique = tecnica;
         }
+        public override void cambiarTecnicaShadow(Texture shadowTex)
+        {
+            canion.Technique = "RenderShadow";
+            tallo.Technique = "RenderShadow";
+            efecto.SetValue("g_txShadow", shadowTex);
+        }
         #endregion
 
         public override void Update(TgcD3dInput Input)
@@ -94,12 +100,6 @@ namespace TGC.Group.Model.GameObjects
             //}
             #endregion
 
-            //canion.RotateX(axisRotation);
-            //canion.RotateY(ayisRotation);
-
-            //axisRotation = 0;
-            //ayisRotation = 0;
-
             espera++;
             if (espera == 300)
             {
@@ -120,13 +120,10 @@ namespace TGC.Group.Model.GameObjects
             tallo.Dispose();
         }
 
-
-
         public void disparar()
         {
             Bala disparo = new Bala(canion, logica);
             disparo.init("Canionero", canion); //el parametro es el nombre de la textura para el mesh 
-           // Console.WriteLine("canion rotation: " + canion.Rotation);
         }
 
         public override int getCostoEnSoles()

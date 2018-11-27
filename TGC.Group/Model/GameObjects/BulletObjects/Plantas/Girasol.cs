@@ -77,6 +77,12 @@ namespace TGC.Group.Model.GameObjects
             girasol.Technique = tecnica;
             tallo.Technique = tecnica;
         }
+        public override void cambiarTecnicaShadow(Texture shadowTex)
+        {
+            girasol.Technique = "RenderShadow";
+            tallo.Technique = "RenderShadow";
+            efecto.SetValue("g_txShadow", shadowTex);
+        }
         #endregion
 
         static void OnTimedEvent(Object source, ElapsedEventArgs e)

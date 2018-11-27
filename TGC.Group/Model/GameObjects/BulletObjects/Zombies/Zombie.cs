@@ -128,12 +128,15 @@ namespace TGC.Group.Model.GameObjects.BulletObjects
                 zombie.Position = new TGCVector3(zombie.Position.X, body.InterpolationWorldTransform.M42, body.InterpolationWorldTransform.M43);
                 globo.Position = new TGCVector3(body.InterpolationWorldTransform.M41, body.InterpolationWorldTransform.M42 + 150, body.InterpolationWorldTransform.M43);
             }
-            //zombie.Transform = new TGCMatrix(body.InterpolationWorldTransform);
-            //globo.Transform = new TGCMatrix(body.InterpolationWorldTransform);
-
-            //zombie.Position = new TGCVector3(body.InterpolationWorldTransform.M41, body.InterpolationWorldTransform.M42, body.InterpolationWorldTransform.M43);
-            //globo.Position = new TGCVector3(body.InterpolationWorldTransform.M41, body.InterpolationWorldTransform.M42 + 150, body.InterpolationWorldTransform.M43);
             base.Render();
+        }
+
+        public void efectoSombra(TGCVector3 lightDir, TGCVector3 lightPos, TGCMatrix lightView, TGCMatrix projMatrix)
+        {
+            efecto.SetValue("g_vLightPos", new Microsoft.DirectX.Vector4(lightPos.X, lightPos.Y, lightPos.Z, 1));
+            efecto.SetValue("g_vLightDir", new Microsoft.DirectX.Vector4(lightDir.X, lightDir.Y, lightDir.Z, 1));
+            efecto.SetValue("g_mProjLight", projMatrix.ToMatrix());
+            efecto.SetValue("g_mViewLightProj", (lightView * projMatrix).ToMatrix());
         }
 
         #region respuestaAAtaqueDePlanta
@@ -205,5 +208,12 @@ namespace TGC.Group.Model.GameObjects.BulletObjects
             return globo.Position;
         }
         #endregion
+
+        public void cambiarTecnicaShadow(Texture shadowTex)
+        {
+            globo.Technique = "RenderShadow";
+            zombie.Technique = "RenderShadow";
+            efecto.SetValue("g_txShadow", shadowTex);
+        }
     }
 }

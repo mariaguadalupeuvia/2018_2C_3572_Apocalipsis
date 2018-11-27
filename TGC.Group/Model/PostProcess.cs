@@ -25,25 +25,25 @@ namespace TGC.Group.Model
         internal Play estado;
         #endregion
 
+        #region variablesShadowMap
+        private readonly int SHADOWMAP_SIZE = 1024;
+        private readonly float far_plane = 50000f;
+        private readonly float near_plane = 1f;
+
+        private TGCVector3 lightDir; // direccion de la luz 
+        private TGCVector3 lightPos; // posicion de la luz 
+        private TGCMatrix lightView; // matriz de view del light
+        private TGCMatrix projMatrix; // Projection matrix for shadow map
+        private Surface stencilBuff; // Depth-stencil buffer for rendering to shadow map
+
+        private Texture shadowTex; // Texture to which the shadow map is rendered
+        #endregion
+
         static List<IPostProcess> postProcessObjects = new List<IPostProcess>();
 
         public static void agregarPostProcessObject(IPostProcess objeto)
         {
             postProcessObjects.Add(objeto);
-        }
-
-         void renderGlow()
-        {
-            postProcessObjects.ForEach(ppo => ppo.cambiarTecnicaPostProceso());
-            postProcessObjects.ForEach(ppo => ppo.Render());
-        }
-
-        void renderNormal()
-        {
-            postProcessObjects.ForEach(ppo => ppo.cambiarTecnicaDefault());
-            gameModel.renderPostProcess();
-            estado.renderPostProcess();//hace el render de los objetos de la escena
-           
         }
 
         //public void Update(float[] eyePosition)
@@ -105,6 +105,22 @@ namespace TGC.Group.Model
                 CustomVertex.PositionTextured.Format, Pool.Default);
             vertexBuffer.SetData(vertices, 0, LockFlags.None);
             #endregion
+
+            #region shadowMap
+            shadowTex = new Texture(D3DDevice.Instance.Device, SHADOWMAP_SIZE, SHADOWMAP_SIZE, 1, Usage.RenderTarget, Format.R32F, Pool.Default);
+            stencilBuff = D3DDevice.Instance.Device.CreateDepthStencilSurface(SHADOWMAP_SIZE, SHADOWMAP_SIZE, DepthFormat.D24S8, MultiSampleType.None, 0, true);
+
+            var aspectRatio = D3DDevice.Instance.AspectRatio;
+            projMatrix = TGCMatrix.PerspectiveFovLH(Geometry.DegreeToRadian(80), aspectRatio, 50, 5000);
+            D3DDevice.Instance.Device.Transform.Projection = TGCMatrix.PerspectiveFovLH(Geometry.DegreeToRadian(45.0f), aspectRatio, near_plane, far_plane).ToMatrix();
+            #endregion
+
+            #region light
+            lightPos = new TGCVector3(760, 520, 60);
+            lightDir = TGCVector3.Empty - lightPos;
+            lightDir.Normalize();
+            lightView = TGCMatrix.LookAtLH(lightPos, lightPos + lightDir, new TGCVector3(0, 0, 1));
+            #endregion
         }
 
         private void pasada(string technique, string map, Texture renderTarget, int indice)
@@ -127,13 +143,16 @@ namespace TGC.Group.Model
 
         public void Render()
         {
+            gameModel.clearTextures();
+
             if (!gameModel.postProcessActivo)
             {
+                D3DDevice.Instance.Device.Clear(ClearFlags.Target | ClearFlags.ZBuffer, Color.Black, 1.0f, 0);
+                RenderShadowMap();
+                D3DDevice.Instance.Device.Clear(ClearFlags.Target | ClearFlags.ZBuffer, Color.Black, 1.0f, 0);
                 renderNormal();
                 return;
             }
-
-            gameModel.clearTextures();
 
             #region renderTarget
             effect.Technique = "DefaultTechnique";
@@ -171,6 +190,46 @@ namespace TGC.Group.Model
 
         }
 
+        public void RenderShadowMap()
+        {
+            // Primero genero el shadow map, para ello dibujo desde el pto de vista de luz
+            // a una textura, con el VS y PS que generan un mapa de profundidades.
+            var pOldRT = D3DDevice.Instance.Device.GetRenderTarget(0);
+            var pShadowSurf = shadowTex.GetSurfaceLevel(0);
+            D3DDevice.Instance.Device.SetRenderTarget(0, pShadowSurf);
+            var pOldDS = D3DDevice.Instance.Device.DepthStencilSurface;
+            D3DDevice.Instance.Device.DepthStencilSurface = stencilBuff;
+            D3DDevice.Instance.Device.Clear(ClearFlags.Target | ClearFlags.ZBuffer, Color.Black, 1.0f, 0);
+
+            // Hago el render de la escena pp dicha
+            //efecto.SetValue("g_txShadow", shadowTex);
+            renderShadow(shadowTex);
+
+            // restuaro el render target y el stencil
+            D3DDevice.Instance.Device.DepthStencilSurface = pOldDS;
+            D3DDevice.Instance.Device.SetRenderTarget(0, pOldRT);
+        }
+
+        void renderGlow()
+        {
+            postProcessObjects.ForEach(ppo => ppo.cambiarTecnicaPostProceso());
+            postProcessObjects.ForEach(ppo => ppo.Render());
+        }
+
+        void renderNormal()
+        {
+            postProcessObjects.ForEach(ppo => ppo.cambiarTecnicaDefault());
+            gameModel.renderPostProcess();
+            estado.renderPostProcess();//hace el render de los objetos de la escena
+
+        }
+        void renderShadow(Texture shadowTex)
+        {
+            postProcessObjects.ForEach(ppo => ppo.cambiarTecnicaShadow(shadowTex));
+            gameModel.renderPostProcess();
+            estado.renderPostProcess();//hace el render de los objetos de la escena
+        }
+
         public void Dispose()
         {
             effect.Dispose();
@@ -179,6 +238,9 @@ namespace TGC.Group.Model
             renderTarget4.Dispose();
             vertexBuffer.Dispose();
             depthStencil.Dispose();
+
+            shadowTex.Dispose();
+            stencilBuff.Dispose();
         }
     }
 }

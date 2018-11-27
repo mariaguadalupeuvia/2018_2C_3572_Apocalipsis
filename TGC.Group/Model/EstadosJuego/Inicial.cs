@@ -42,7 +42,6 @@ namespace TGC.Group.Model.EstadosJuego
             drawer2D = new Drawer2D();
 
             logica.Init(input);
-           // zombies = logica.crearHordasZombies();
             #region configurarSprites
             CustomSprite apocalipsis = new CustomSprite();
             apocalipsis.Bitmap = new CustomBitmap(GameModel.mediaDir + "\\sprites\\apocalipsisYa.png", D3DDevice.Instance.Device);

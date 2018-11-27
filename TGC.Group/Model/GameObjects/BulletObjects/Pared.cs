@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Microsoft.DirectX;
+using Microsoft.DirectX.Direct3D;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -15,11 +17,12 @@ namespace TGC.Group.Model.GameObjects.BulletObjects
     {
         protected TgcMesh tag;
         float rotador = 0;
+        Effect efecto;
 
         public Pared(GameLogic logica, float x)
         {
             #region configurarEfecto
-            Microsoft.DirectX.Direct3D.Effect efecto = TgcShaders.loadEffect(GameModel.shadersDir + "shaderPlanta.fx");
+            efecto = TgcShaders.loadEffect(GameModel.shadersDir + "shaderPlanta.fx");
             #endregion
 
             #region configurarObjeto
@@ -50,6 +53,18 @@ namespace TGC.Group.Model.GameObjects.BulletObjects
         {
             tag.Technique = "RenderScene";
         }
+        public void cambiarTecnicaShadow(Texture shadowTex)
+        {
+            tag.Technique = "RenderShadow";
+            efecto.SetValue("g_txShadow", shadowTex);
+        }
+        public void efectoSombra(TGCVector3 lightDir, TGCVector3 lightPos, TGCMatrix lightView, TGCMatrix projMatrix)
+        {
+            efecto.SetValue("g_vLightPos", new Vector4(lightPos.X, lightPos.Y, lightPos.Z, 1));
+            efecto.SetValue("g_vLightDir", new Vector4(lightDir.X, lightDir.Y, lightDir.Z, 1));
+            efecto.SetValue("g_mProjLight", projMatrix.ToMatrix());
+            efecto.SetValue("g_mViewLightProj", (lightView * projMatrix).ToMatrix());
+        }
         #endregion
 
         public override void Update()
@@ -62,5 +77,6 @@ namespace TGC.Group.Model.GameObjects.BulletObjects
         {
             tag.Render();
         }
+
     }
 }

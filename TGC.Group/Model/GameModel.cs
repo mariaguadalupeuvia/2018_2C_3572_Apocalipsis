@@ -18,6 +18,9 @@ using TGC.Core.Text;
 using TGC.Group.Model.GameObjects.BulletObjects.Zombies;
 using TGC.Group.Model.EstadosJuego;
 using TGC.Core;
+using System.IO;
+using System.Collections;
+using System.Globalization;
 
 namespace TGC.Group.Model
 {
@@ -46,7 +49,7 @@ namespace TGC.Group.Model
         #region variables
         public static Estado estadoDelJuego;
         public static bool enPlay = false;
-        TgcCamera camaraAerea;
+        public static bool modoGod = false;
 
         public static float time = 0.0f;
         public static string mediaDir;
@@ -57,11 +60,16 @@ namespace TGC.Group.Model
         Skybox cielo;
         Terreno terreno = new Terreno();
         Agua agua = new Agua(); 
+
         PostProcess postProcess = new PostProcess();
         public bool postProcessActivo = false;
         public bool postProcesar = false;
+
         HighResolutionTimer timer= new HighResolutionTimer();
         GameSound sonido;
+        TgcCamera camaraAerea;
+
+        Helicoptero heli = new Helicoptero();
         #endregion
 
         #region opciones
@@ -72,6 +80,7 @@ namespace TGC.Group.Model
             cielo.cambiarTecnica("RenderScene");
             postProcessActivo = false;
             postProcesar = false;
+            modoGod = false;
         }
         public void picante()
         {
@@ -80,6 +89,7 @@ namespace TGC.Group.Model
             cielo.cambiarTecnica("apocalipsis");
             postProcessActivo = false;
             postProcesar = false;
+            modoGod = false;
         }
         public void congelar()
         {
@@ -88,15 +98,26 @@ namespace TGC.Group.Model
             cielo.cambiarTecnica("helado");
             postProcessActivo = false;
             postProcesar = false;
+            modoGod = false;
         }
         public void glow()
         {
             agua.cambiarTecnica("noche");
             terreno.cambiarTecnica("noche");
             cielo.cambiarTecnica("noche");
-            //postProcessActivo = true;
             postProcesar = true;
+            modoGod = false;
         }
+        public void god()
+        {
+            agua.cambiarTecnica("RenderScene");
+            terreno.cambiarTecnica("RenderScene");
+            cielo.cambiarTecnica("RenderScene");
+            postProcessActivo = false;
+            postProcesar = false;
+            modoGod = true;
+        }
+
         public void musica(bool estado)
         {
             if (estado)
@@ -137,7 +158,10 @@ namespace TGC.Group.Model
             camaraAerea = new CamaraPersonal(new TGCVector3(1214, 1050, 2526), Input);
             //camaraAerea = new CamaraPersonal(new TGCVector3(171, 453, 577), Input);
             Camara = camaraAerea;
+
+            heli.Init();
         }
+        
         public void clearTextures()
         {
             ClearTextures();
@@ -146,9 +170,8 @@ namespace TGC.Group.Model
         public override void Update()
         {
             PreUpdate();
-            //timer.FramesPerSecond;
 
-            time += 0.003f; //0.0003f;//0.003f;
+            time += 0.003f;
 
             if (time > 500) time = 0;
             frustum = Frustum;
@@ -176,6 +199,34 @@ namespace TGC.Group.Model
             agua.Update();
             //postProcess.Update(TGCVector3.Vector3ToFloat3Array(Camara.Position)));
             //escenario.setEyePosition(TGCVector3.Vector3ToFloat3Array(Camara.Position)); 
+
+            #region chequearInput
+            if (Input.keyDown(Key.P))
+            {
+                agua.cambiarTecnica("helado");
+                terreno.cambiarTecnica("helado");
+                cielo.cambiarTecnica("helado");
+            }
+            if (Input.keyDown(Key.O))
+            {
+                agua.cambiarTecnica("RenderScene");
+                terreno.cambiarTecnica("RenderScene");
+                cielo.cambiarTecnica("RenderScene");
+            }
+            if (Input.keyDown(Key.I))
+            {
+                
+            }
+            if (Input.keyDown(Key.U))
+            {
+                agua.cambiarTecnica("apocalipsis");
+                terreno.cambiarTecnica("apocalipsis");
+                cielo.cambiarTecnica("apocalipsis");
+            }
+
+            #endregion
+            heli.update(Input);
+
             PostUpdate();
         }
 
@@ -198,7 +249,7 @@ namespace TGC.Group.Model
                 estadoDelJuego.Render();
                 agua.Render();
             }
-
+            heli.Render();
             PostRender();
         }
 
@@ -208,6 +259,7 @@ namespace TGC.Group.Model
             postProcess.Dispose();
             gameObjects.ForEach(g => g.Dispose());
             agua.Dispose();
+            heli.Dispose(); 
         }
     }
 }

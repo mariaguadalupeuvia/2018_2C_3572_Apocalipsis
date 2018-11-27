@@ -27,9 +27,8 @@ namespace TGC.Group.Model.EstadosJuego
         bool tipoEscena = true;
         int escenaSel = 0;
         static bool cambiar = true;
-        #endregion
-
         static Timer time;
+        #endregion
 
         public Opciones(Estado menu, GameModel gm)
         {
@@ -53,7 +52,6 @@ namespace TGC.Group.Model.EstadosJuego
             opciones.Bitmap = new CustomBitmap(GameModel.mediaDir + "\\sprites\\opciones.png", D3DDevice.Instance.Device);
             var textureSize = opciones.Bitmap.Size;
             opciones.Position = new TGCVector2(FastMath.Max((D3DDevice.Instance.Width - textureSize.Width) * 0.5f, 0), FastMath.Max((D3DDevice.Instance.Height - textureSize.Height) * 0.5f, 0));
-            //sprites.Add(opciones);
 
             CustomSprite normal = new CustomSprite();
             normal.Bitmap = new CustomBitmap(GameModel.mediaDir + "\\sprites\\0_normal.png", D3DDevice.Instance.Device);
@@ -71,6 +69,11 @@ namespace TGC.Group.Model.EstadosJuego
             glow.Bitmap = new CustomBitmap(GameModel.mediaDir + "\\sprites\\0_noche.png", D3DDevice.Instance.Device);
             glow.Position = opciones.Position;
             escenas.Add(glow);
+
+            CustomSprite god = new CustomSprite();
+            god.Bitmap = new CustomBitmap(GameModel.mediaDir + "\\sprites\\0_god.png", D3DDevice.Instance.Device);
+            god.Position = opciones.Position;
+            escenas.Add(god);
 
             CustomSprite on1 = new CustomSprite();
             on1.Bitmap = new CustomBitmap(GameModel.mediaDir + "\\sprites\\1_on.png", D3DDevice.Instance.Device);
@@ -127,7 +130,7 @@ namespace TGC.Group.Model.EstadosJuego
                     if (tipoEscena)
                     {
                         escenaSel--;
-                        if (escenaSel < 0) escenaSel = 3;
+                        if (escenaSel < 0) escenaSel = 4;
                     }
                     else
                     {
@@ -141,7 +144,7 @@ namespace TGC.Group.Model.EstadosJuego
                     if (tipoEscena)
                     {
                         escenaSel++;
-                        if (escenaSel > 3) escenaSel = 0;
+                        if (escenaSel > 4) escenaSel = 0;
 
                     }
                     else
@@ -183,6 +186,9 @@ namespace TGC.Group.Model.EstadosJuego
                     break;
                 case 3:
                     gameModel.glow();
+                    break;
+                case 4:
+                    gameModel.god();
                     break;
             }
             gameModel.musica(musicaSel);  

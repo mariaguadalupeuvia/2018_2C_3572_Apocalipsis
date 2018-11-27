@@ -25,10 +25,8 @@ namespace TGC.Group.Model.GameObjects.BulletObjects
                 cono.Technique = "RenderScene";
 
                 objetos.Add(cono);
-            //glowObjects.Add(cono);
-           
-            #endregion
-        }
+                #endregion
+            }
 
             public override void Render()
             {

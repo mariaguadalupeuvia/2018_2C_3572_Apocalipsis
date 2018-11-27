@@ -16,6 +16,7 @@ using TGC.Core.Direct3D;
 using BulletSharp;
 using TGC.Group.Model.GameObjects.BulletObjects;
 using TGC.Group.Model.GameObjects.BulletObjects.CollisionCallbacks;
+using Microsoft.DirectX;
 
 namespace TGC.Group.Model
 {
@@ -165,5 +166,20 @@ namespace TGC.Group.Model
             }
         }
         #endregion
+
+        public void efectoSombra(TGCVector3 lightDir, TGCVector3 lightPos, TGCMatrix lightView, TGCMatrix projMatrix)
+        {
+            efecto.SetValue("g_vLightPos", new Vector4(lightPos.X, lightPos.Y, lightPos.Z, 1));
+            efecto.SetValue("g_vLightDir", new Vector4(lightDir.X, lightDir.Y, lightDir.Z, 1));
+            efecto.SetValue("g_mProjLight", projMatrix.ToMatrix());
+            efecto.SetValue("g_mViewLightProj", (lightView * projMatrix).ToMatrix());
+        }
+
+        public void cambiarTecnicaShadow(Texture shadowTex)
+        {
+            contenedor.Technique = "RenderShadow";
+            plataformas.ForEach(p => p.Technique = "RenderShadow");
+            efecto.SetValue("g_txShadow", shadowTex);
+        }
     }
 }

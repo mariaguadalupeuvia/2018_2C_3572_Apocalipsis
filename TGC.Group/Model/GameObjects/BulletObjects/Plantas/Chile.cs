@@ -1,4 +1,5 @@
-﻿using Microsoft.DirectX.Direct3D;
+﻿using Microsoft.DirectX;
+using Microsoft.DirectX.Direct3D;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,12 +15,12 @@ namespace TGC.Group.Model.GameObjects
     public class Chile : Planta
     {
         private TgcMesh chile;
-        TgcMesh semiesfera;
+        TgcMesh haloFuego;
 
         public Chile(TGCVector3 posicion, GameLogic logica, Plataforma plataforma)
         {
             base.Init(logica, plataforma);
-
+           
             #region configurarObjeto
             float factorEscalado = 16.0f;
             chile = new TgcSceneLoader().loadSceneFromFile(GameModel.mediaDir + "modelos\\Chile-TgcScene.xml").Meshes[0];
@@ -27,17 +28,13 @@ namespace TGC.Group.Model.GameObjects
             chile.Position =  new TGCVector3(posicion.X , posicion.Y - 40, posicion.Z + 20);
             chile.Effect = efecto;
             chile.Technique = "Explosivo";
+
+            haloFuego = new TgcSceneLoader().loadSceneFromFile(GameModel.mediaDir + "modelos\\semiesfera-TgcScene.xml").Meshes[0];
+            haloFuego.Scale = new TGCVector3(100.5f, 100.5f, 100.5f);
+            haloFuego.Effect = efecto;
+            haloFuego.Technique = "calado";
+            haloFuego.Position = new TGCVector3(posicion.X, 260, posicion.Z);
             #endregion
-
-            //var d3dDevice = D3DDevice.Instance.Device;
-            //Texture fuego = TextureLoader.FromFile(d3dDevice, GameModel.mediaDir + "modelos\\Textures\\fuego0.jpg");
-            //efecto.SetValue("NormalMap", fuego);
-
-            semiesfera = new TgcSceneLoader().loadSceneFromFile(GameModel.mediaDir + "modelos\\Semiesfera-TgcScene.xml").Meshes[0];
-            semiesfera.Scale = new TGCVector3(100.5f, 100.5f, 100.5f);
-            semiesfera.Effect = efecto;
-            semiesfera.Technique = "calado";
-            semiesfera.Position = new TGCVector3(posicion.X, 260, posicion.Z);
 
             Explosivo disparo = new Explosivo(new TGCVector3(posicion.X, posicion.Y - 40, posicion.Z + 20), logica, this);
             PostProcess.agregarPostProcessObject(this);
@@ -56,23 +53,28 @@ namespace TGC.Group.Model.GameObjects
         {
             chile.Technique = tecnica;
         }
+        public override void cambiarTecnicaShadow(Texture shadowTex)
+        {
+            chile.Technique = "RenderShadow";
+            efecto.SetValue("g_txShadow", shadowTex);
+        }
         #endregion
 
         public override void Render()
         {
             chile.Render();
-            semiesfera.Render();
+            haloFuego.Render();
         }
 
         public override void Dispose()
         {
-            
+            logica.agregarExplosionChile(chile.Position);
         }
 
         public override void Update(TgcD3dInput Input)
         {
             efecto.SetValue("_Time", GameModel.time);
-            semiesfera.RotateY(GameModel.time);
+            haloFuego.RotateY(GameModel.time);
         }
 
         public override int getCostoEnSoles()

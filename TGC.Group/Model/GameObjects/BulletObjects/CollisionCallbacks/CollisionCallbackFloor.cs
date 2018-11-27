@@ -32,6 +32,7 @@ namespace TGC.Group.Model.GameObjects.BulletObjects
                 {
                     //si choqué con el piso me despido de este mundo 
                     logica.desactivar(bulletObject);
+                    
                 }
             }
             return 0;

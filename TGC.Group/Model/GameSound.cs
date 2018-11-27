@@ -13,6 +13,8 @@ namespace TGC.Group.Model
         #region variables
         private static TgcStaticSound disparo;
         private static TgcStaticSound explosion;
+        private static TgcStaticSound explosion1;
+        private static TgcStaticSound helicoptero;
         private static TgcStaticSound zombie;
         private TgcStaticSound musica;
         private TgcStaticSound piano;
@@ -25,13 +27,21 @@ namespace TGC.Group.Model
             string filePath = GameModel.mediaDir + "sonidos\\plop.wav";
             disparo.loadSound(filePath, directSound);
 
-            explosion = new TgcStaticSound();
             filePath = GameModel.mediaDir + "sonidos\\explosion.wav";
+            explosion = new TgcStaticSound();
             explosion.loadSound(filePath, directSound);
+
+            filePath = GameModel.mediaDir + "sonidos\\explosion2.wav";
+            explosion1 = new TgcStaticSound();
+            explosion1.loadSound(filePath, directSound);
 
             zombie = new TgcStaticSound();
             filePath = GameModel.mediaDir + "sonidos\\zombie2.wav";
             zombie.loadSound(filePath, directSound);
+
+            helicoptero = new TgcStaticSound();
+            filePath = GameModel.mediaDir + "sonidos\\helicoptero.wav";
+            helicoptero.loadSound(filePath, directSound);
 
             musica = new TgcStaticSound();
             filePath = GameModel.mediaDir + "sonidos\\musica.wav";
@@ -59,10 +69,19 @@ namespace TGC.Group.Model
         public static void explotar()
         {
             explosion.play();
+            
         }
         public static void hablar()
         {
             zombie.play();
+        }
+        public static void volar()
+        {
+            helicoptero.play(true);
+        }
+        public static void detener()
+        {
+            helicoptero.stop();
         }
     }
 }

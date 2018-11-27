@@ -55,6 +55,11 @@ namespace TGC.Group.Model.GameObjects.BulletObjects.Plantas
         {
             nuez.Technique = tecnica;
         }
+        public override void cambiarTecnicaShadow(Texture shadowTex)
+        {
+            nuez.Technique = "RenderShadow";
+            efecto.SetValue("g_txShadow", shadowTex);
+        }
         #endregion
 
         public override void Update(TgcD3dInput Input)

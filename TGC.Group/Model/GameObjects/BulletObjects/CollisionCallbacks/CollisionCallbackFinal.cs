@@ -27,7 +27,6 @@ namespace TGC.Group.Model.GameObjects.BulletObjects.CollisionCallbacks
             {
                 if (logica.esApocalipsisZombie((RigidBody)colObj1Wrap.CollisionObject))// esApocalipsisZombie() tiene efecto cuando es true
                 {
-                    //Console.WriteLine("Un zombie llego al final de la isla");
                     play.gameOver(); 
                 }
             }

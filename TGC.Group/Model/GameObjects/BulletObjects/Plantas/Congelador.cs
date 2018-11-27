@@ -1,4 +1,5 @@
-﻿using Microsoft.DirectX.DirectInput;
+﻿using Microsoft.DirectX.Direct3D;
+using Microsoft.DirectX.DirectInput;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -61,6 +62,12 @@ namespace TGC.Group.Model.GameObjects
             congelador.Technique = tecnica;
             tallo.Technique = tecnica;
         }
+        public override void cambiarTecnicaShadow(Texture shadowTex)
+        {
+            congelador.Technique = "RenderShadow";
+            tallo.Technique = "RenderShadow";
+            efecto.SetValue("g_txShadow", shadowTex);
+        }
         #endregion
 
         public override void Render()
@@ -95,11 +102,6 @@ namespace TGC.Group.Model.GameObjects
             //}
             #endregion
 
-            //congelador.RotateX(axisRotation);
-            //congelador.RotateY(ayisRotation);
-
-            //axisRotation = 0;
-            //ayisRotation = 0;
             espera++;
             if (espera == 300)
             {

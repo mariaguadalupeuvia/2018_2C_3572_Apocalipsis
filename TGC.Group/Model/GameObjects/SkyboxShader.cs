@@ -72,7 +72,7 @@ namespace TGC.Group.Model.GameObjects
             #endregion
 
             efecto = TgcShaders.loadEffect(GameModel.shadersDir + "shaderCielo.fx");
-            tecnica = "RenderScene";// "noche";// "RenderScene";
+            tecnica = "RenderScene";
         }
 
         public void Init()
@@ -548,7 +548,20 @@ namespace TGC.Group.Model.GameObjects
             ibArray[i++] = 2;
             ibArray[i++] = 3;
         }
-#endregion 
+        #endregion
 
+        public void efectoSombra(TGCVector3 lightDir, TGCVector3 lightPos, TGCMatrix lightView, TGCMatrix projMatrix)
+        {
+            efecto.SetValue("g_vLightPos", new Vector4(lightPos.X, lightPos.Y, lightPos.Z, 1));
+            efecto.SetValue("g_vLightDir", new Vector4(lightDir.X, lightDir.Y, lightDir.Z, 1));
+            efecto.SetValue("g_mProjLight", projMatrix.ToMatrix());
+            efecto.SetValue("g_mViewLightProj", (lightView * projMatrix).ToMatrix());
+        }
+
+        public void cambiarTecnicaShadow(Texture shadowTex)
+        {
+            cambiarTechnique(tecnica); 
+            efecto.SetValue("g_txShadow", shadowTex);
+        }
     }
 }

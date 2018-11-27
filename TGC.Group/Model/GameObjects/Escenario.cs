@@ -9,6 +9,7 @@ using Microsoft.DirectX.DirectInput;
 using TGC.Group.Model.Optimizacion;
 using TGC.Core.BoundingVolumes;
 using TGC.Core.Direct3D;
+using TGC.Group.Model.GameObjects;
 
 namespace TGC.Group.Model
 {
@@ -19,9 +20,12 @@ namespace TGC.Group.Model
         private Octree octree = new Octree();
         TGCVector3 pmin = new TGCVector3(0, -100, 0);
         TGCVector3 pmax = new TGCVector3(0, -100, 0);
+        //TgcMesh helice;
         #endregion
+
         TgcMesh tubo;
         CubeTexture cubemap;
+        
 
         public void setEyePosition(float[] eyePosition)
         {
@@ -31,17 +35,13 @@ namespace TGC.Group.Model
         public override void Init()
         {
             #region variables
-            
             TgcMesh flecha;
             TgcMesh tumba;
 
-            TgcMesh helicoptero;
-   
             TgcScene roquedal;
             TgcScene roquedal2;
             TgcScene muelle1;
             #endregion
-
 
             var d3dDevice = D3DDevice.Instance.Device;
             efecto = TgcShaders.loadEffect(GameModel.shadersDir + "shaderPlanta.fx");
@@ -142,17 +142,7 @@ namespace TGC.Group.Model
             flecha.Technique = "RenderScene";
             obtenerPminYPmax(flecha.BoundingBox.PMin, flecha.BoundingBox.PMax);
             meshes.Add(flecha);
-
-            helicoptero = new TgcSceneLoader().loadSceneFromFile(GameModel.mediaDir + "modelos\\HelicopteroMilitar3-TgcScene.xml").Meshes[0];
-            helicoptero.Scale = new TGCVector3(10.5f, 10.5f, 10.5f);
-            helicoptero.Position = new TGCVector3(5200f, 200f, 500f);
-            helicoptero.RotateY(90);
-            helicoptero.Effect = efecto;
-            helicoptero.Technique = "RenderScene";
-            obtenerPminYPmax(helicoptero.BoundingBox.PMin, helicoptero.BoundingBox.PMax);
-            meshes.Add(helicoptero);
             #endregion
-
 
             //efecto.SetValue("texCubeMap", cubemap);
             //tubo = new TgcSceneLoader().loadSceneFromFile(GameModel.mediaDir + "modelos\\TUBO_MARIO-TgcScene.xml").Meshes[0];
@@ -167,20 +157,24 @@ namespace TGC.Group.Model
             octree.create(meshes, new TgcBoundingAxisAlignBox(pmin, pmax));
             octree.createDebugOctreeMeshes();
             #endregion
+
         }
 
         public override void Update()
         {
+
         }
 
         public override void Render()
         {
            octree.render(GameModel.frustum, false);//el true o false es para renderear o no el tree
+           
         }
 
         public override void Dispose()
         {
             meshes.ForEach(m => m.Dispose());
+             
         }
 
         #region cosasPocoImportantes

@@ -13,6 +13,7 @@ using TGC.Core.Shaders;
 using TGC.Core.Sound;
 using TGC.Core.Example;
 using TGC.Core.Textures;
+using Microsoft.DirectX.Direct3D;
 
 namespace TGC.Group.Model.GameObjects.BulletObjects
 {
@@ -63,8 +64,20 @@ namespace TGC.Group.Model.GameObjects.BulletObjects
             esfera.Render();
         }
 
-
         public abstract void dañarZombie(Zombie zombie);
 
+        public void efectoSombra(TGCVector3 lightDir, TGCVector3 lightPos, TGCMatrix lightView, TGCMatrix projMatrix)
+        {
+            efecto.SetValue("g_vLightPos", new Microsoft.DirectX.Vector4(lightPos.X, lightPos.Y, lightPos.Z, 1));
+            efecto.SetValue("g_vLightDir", new Microsoft.DirectX.Vector4(lightDir.X, lightDir.Y, lightDir.Z, 1));
+            efecto.SetValue("g_mProjLight", projMatrix.ToMatrix());
+            efecto.SetValue("g_mViewLightProj", (lightView * projMatrix).ToMatrix());
+        }
+
+        public void cambiarTecnicaShadow(Texture shadowTex)
+        {
+            esfera.Technique = "RenderShadow";
+            efecto.SetValue("g_txShadow", shadowTex);
+        }
     }
 }

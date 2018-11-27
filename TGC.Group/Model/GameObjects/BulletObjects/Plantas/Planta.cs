@@ -12,6 +12,7 @@ using Microsoft.DirectX.DirectInput;
 using TGC.Core.Input;
 using TGC.Group.Model.GameObjects.BulletObjects;
 using BulletSharp;
+using Microsoft.DirectX;
 
 namespace TGC.Group.Model.GameObjects
 {
@@ -29,6 +30,7 @@ namespace TGC.Group.Model.GameObjects
         {
             this.logica = logica;
             plataforma = plataformaSeleccionada;
+
             #region configurarEfecto
             efecto = TgcShaders.loadEffect(GameModel.shadersDir + "shaderPlanta.fx");
             #endregion
@@ -59,5 +61,15 @@ namespace TGC.Group.Model.GameObjects
 
         public abstract void cambiarTecnicaDefault();
         public abstract void cambiarTecnicaPostProceso();
+        public abstract void cambiarTecnicaShadow(Texture shadowTex);
+
+        public void efectoSombra(TGCVector3 lightDir, TGCVector3 lightPos, TGCMatrix lightView, TGCMatrix projMatrix)
+        {
+            efecto.SetValue("g_vLightPos", new Vector4(lightPos.X, lightPos.Y, lightPos.Z, 1));
+            efecto.SetValue("g_vLightDir", new Vector4(lightDir.X, lightDir.Y, lightDir.Z, 1));
+            efecto.SetValue("g_mProjLight", projMatrix.ToMatrix());
+            efecto.SetValue("g_mViewLightProj", (lightView * projMatrix).ToMatrix());
+        }
+
     }
 }

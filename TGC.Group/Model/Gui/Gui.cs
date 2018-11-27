@@ -18,6 +18,7 @@ namespace TGC.Group.Model.Gui
         private Drawer2D drawer2D;
         private TgcText2D soles = new TgcText2D();
         private TgcText2D zombies = new TgcText2D();
+        CustomSprite GOD = new CustomSprite();
         #endregion
 
         public void Init()
@@ -33,18 +34,11 @@ namespace TGC.Group.Model.Gui
             sprite.Position = new TGCVector2(FastMath.Max(D3DDevice.Instance.Width  - textureSize.Width / 0.75f, 0), 0);
             sprites.Add(sprite);
 
-            //CustomSprite ayuda = new CustomSprite();
-            //ayuda.Bitmap = new CustomBitmap(GameModel.mediaDir + "\\sprites\\ayuda2.png", D3DDevice.Instance.Device);
-            //textureSize = ayuda.Bitmap.Size;
-            //ayuda.Position = new TGCVector2(FastMath.Max(D3DDevice.Instance.Width - textureSize.Width, 0), FastMath.Max(D3DDevice.Instance.Height - textureSize.Height, 0));
-            //sprites.Add(ayuda);
-
             CustomSprite plantas = new CustomSprite();
             plantas.Bitmap = new CustomBitmap(GameModel.mediaDir + "\\sprites\\PLANTAS.png", D3DDevice.Instance.Device);
             textureSize = plantas.Bitmap.Size;
             plantas.Position = new TGCVector2(0, FastMath.Max(D3DDevice.Instance.Height - textureSize.Height , 0));
             sprites.Add(plantas);
-
 
             CustomSprite girasol = new CustomSprite();
             girasol.Bitmap = new CustomBitmap(GameModel.mediaDir + "\\sprites\\girasol.png", D3DDevice.Instance.Device);
@@ -55,6 +49,9 @@ namespace TGC.Group.Model.Gui
             zombie.Bitmap = new CustomBitmap(GameModel.mediaDir + "\\sprites\\zombie.png", D3DDevice.Instance.Device);
             zombie.Position = new TGCVector2(30, 100);
             sprites.Add(zombie);
+
+            GOD.Bitmap = new CustomBitmap(GameModel.mediaDir + "\\sprites\\GOD.png", D3DDevice.Instance.Device);
+            GOD.Position = new TGCVector2(FastMath.Max(D3DDevice.Instance.Width - 60, 0), 0);
             #endregion
 
             #region texto
@@ -82,6 +79,7 @@ namespace TGC.Group.Model.Gui
         {
             drawer2D.BeginDrawSprite();
             sprites.ForEach(s => drawer2D.DrawSprite(s));
+            if (GameModel.modoGod) drawer2D.DrawSprite(GOD);
             drawer2D.EndDrawSprite();
             soles.Text = "" + GameLogic.cantidadEnergia;
             soles.render();

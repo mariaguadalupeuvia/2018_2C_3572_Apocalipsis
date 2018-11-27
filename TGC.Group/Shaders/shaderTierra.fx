@@ -8,6 +8,22 @@ float4x4 matWorldView; //Matriz World * View
 float4x4 matWorldViewProj; //Matriz World * View * Projection
 float4x4 matInverseTransposeWorld; //Matriz Transpose(Invert(World))
 
+
+//________________________________________________________________________________________________________
+//________________TEXTURAS________________________________________________________________________________
+
+texture g_txShadow;
+sampler2D g_samShadow =
+sampler_state
+{
+    Texture = <g_txShadow>;
+    MinFilter = Point;
+    MagFilter = Point;
+    MipFilter = Point;
+    AddressU = Clamp;
+    AddressV = Clamp;
+};
+
 texture texDiffuseMap;
 sampler2D diffuseMap = sampler_state
 {
@@ -31,13 +47,17 @@ sampler2D mainMap = sampler_state
 };
 
 texture alphaMap;
-sampler2D alphaSampler = sampler_state {
+sampler2D alphaSampler = sampler_state 
+{
 	Texture = (alphaMap);
 	MinFilter = Linear;
 	MagFilter = Linear;
 	AddressU = Wrap;
 	AddressV = Wrap;
 };
+
+//________________________________________________________________________________________________________
+//________________VARIABLES_______________________________________________________________________________
 
 //variables para la iluminacion
 float3 fvLightPosition = float3(500.00, 2000.00, 3000.00);
@@ -51,6 +71,14 @@ float4 fogColor = float4(0.11f, 0.245f, 0.29f, 0.6f);
 float fogStart = 3000;
 float blendStart = 2000;
 
+#define EPSILON 0.05f
+float4x4 g_mViewLightProj;
+float4x4 g_mProjLight;
+float3 g_vLightPos; // posicion de la luz (en World Space) = pto que representa patch emisor Bj
+float3 g_vLightDir; // Direcion de la luz (en World Space) = normal al patch Bj
+
+//_________________________________________________________________________________________________________________________
+//______________STRUCTS____________________________________________________________________________________________________
 //Input del Vertex Shader
 struct VS_INPUT
 {
@@ -69,7 +97,11 @@ struct VS_OUTPUT
 	float3 Pos :      TEXCOORD2;		// Posicion real 3d
 	float3 Pos2 :     TEXCOORD3;		// Posicion en 2d
 	float fogfactor : FOG;
+    float4 PosLight : TEXCOORD4;
 };
+
+//_________________________________________________________________________________________________________________________
+//______________VERTEX SHADER______________________________________________________________________________________________
 
 VS_OUTPUT vs_main(VS_INPUT Input)
 {
@@ -89,10 +121,35 @@ VS_OUTPUT vs_main(VS_INPUT Input)
 	Output.Texcoord = Input.Texcoord;
 	Output.Norm = normalize(mul(Input.Normal, matWorld));
 
+    Output.PosLight = mul(Output.Pos, g_mViewLightProj);
 	return(Output);
 }
 
-float4 ps_main(float3 Texcoord: TEXCOORD0, float3 N : TEXCOORD1, float3 Pos : TEXCOORD2, float3 Pos2 : TEXCOORD3, float fogfactor : FOG) : COLOR0
+//_________________________________________________________________________________________________________________________
+//______________PIXELS SHADER______________________________________________________________________________________________
+float factorSombra(float3 Pos, float4 PosLight)
+{
+    float3 Light = normalize(float3(Pos - g_vLightPos));
+    float cono = dot(Light, g_vLightDir);
+    float4 K = 0.0;
+    if (cono > 0.7)
+    {
+		// coordenada de textura CT
+        float2 CT = 0.5 * PosLight.xy / PosLight.w + float2(0.5, 0.5);
+        CT.y = 1.0f - CT.y;
+
+		// sin ningun aa. conviene con smap size >= 512
+        float I = (tex2D(g_samShadow, CT) + EPSILON < PosLight.z / PosLight.w) ? 0.0f : 1.0f;
+
+        if (cono < 0.8)
+            I *= 1 - (0.8 - cono) * 10;
+
+        K = I;
+    }
+    return K;
+}
+
+float4 ps_main(float3 Texcoord : TEXCOORD0, float3 N : TEXCOORD1, float3 Pos : TEXCOORD2, float3 Pos2 : TEXCOORD3, float fogfactor : FOG,  float4 PosLight : TEXCOORD4) : COLOR0
 {
 	float4 RGBColor = fogColor;
 	//para calcular la iluminacion del pixel
@@ -138,9 +195,11 @@ float4 ps_main(float3 Texcoord: TEXCOORD0, float3 N : TEXCOORD1, float3 Pos : TE
 	RGBColor.rgb = saturate(fvBaseColor * (saturate(k_la + ld)) + le);
 	RGBColor.a = blendfactor;
 
+    float K = factorSombra(Pos, PosLight);
+    RGBColor.rgb *= 0.5 + 0.5 * K;
 	return RGBColor;
 }
-float4 ps_noche(float2 Texcoord : TEXCOORD0, float3 N : TEXCOORD1, float3 Pos : TEXCOORD2, float3 Pos2 : TEXCOORD3, float fogfactor : FOG) : COLOR0
+float4 ps_noche(float2 Texcoord : TEXCOORD0, float3 N : TEXCOORD1, float3 Pos : TEXCOORD2, float3 Pos2 : TEXCOORD3, float fogfactor : FOG, float4 PosLight : TEXCOORD4) : COLOR0
 {
     float4 RGBColor = fogColor;
 	//para calcular la iluminacion del pixel
@@ -181,10 +240,12 @@ float4 ps_noche(float2 Texcoord : TEXCOORD0, float3 N : TEXCOORD1, float3 Pos : 
     RGBColor.rgb = saturate(fvBaseColor * (saturate(k_la + ld)) + le);
     RGBColor.a = blendfactor;
 
+    float K = factorSombra(Pos, PosLight);
+    RGBColor.rgb *= 0.5 + 0.5 * K;
     return RGBColor;
 }
 
-float4 ps_apocalipsis(float3 Texcoord: TEXCOORD0, float3 N : TEXCOORD1, float3 Pos : TEXCOORD2, float3 Pos2 : TEXCOORD3, float fogfactor : FOG) : COLOR0
+float4 ps_apocalipsis(float3 Texcoord : TEXCOORD0, float3 N : TEXCOORD1, float3 Pos : TEXCOORD2, float3 Pos2 : TEXCOORD3, float fogfactor : FOG, float4 PosLight : TEXCOORD4) : COLOR0
 {
 	float4 RGBColor = fogColor;
 	//para calcular la iluminacion del pixel
@@ -235,6 +296,9 @@ float4 ps_apocalipsis(float3 Texcoord: TEXCOORD0, float3 N : TEXCOORD1, float3 P
 		RGBColor.rgb = saturate(RGBColor * (saturate(k_la + ld)) + le);
 		RGBColor.a = blendfactor;
 
+        float K = factorSombra(Pos, PosLight);
+        RGBColor.rgb *= 0.5 + 0.5 * K;
+
 		return RGBColor;
 }
 
@@ -243,7 +307,7 @@ float4 ps_dark(float2 Texcoord : TEXCOORD0) : COLOR0
     float4 fvBaseColor = tex2D(diffuseMap, Texcoord);
     return float4(0, 0, 0, 1);//fvBaseColor.a);
 }
-float4 ps_helado(float2 Texcoord : TEXCOORD0, float3 N : TEXCOORD1, float3 Pos : TEXCOORD2, float3 Pos2 : TEXCOORD3, float fogfactor : FOG) : COLOR0
+float4 ps_helado(float2 Texcoord : TEXCOORD0, float3 N : TEXCOORD1, float3 Pos : TEXCOORD2, float3 Pos2 : TEXCOORD3, float fogfactor : FOG, float4 PosLight : TEXCOORD4) : COLOR0
 {
     float4 RGBColor = fogColor;
 	//para calcular la iluminacion del pixel
@@ -291,8 +355,13 @@ float4 ps_helado(float2 Texcoord : TEXCOORD0, float3 N : TEXCOORD1, float3 Pos :
     RGBColor.b *= 16;
     RGBColor.a = blendfactor;
 
+    float K = factorSombra(Pos, PosLight);
+    RGBColor.rgb *= 0.5 + 0.5 * K;
     return RGBColor;
 }
+
+//____________________________________________________________________________________________________________________________________________________________________
+//______________TECNICAS______________________________________________________________________________________________________________________________________________
 
 technique RenderScene
 {
@@ -352,4 +421,34 @@ technique dark
 		  VertexShader = compile vs_3_0 vs_main();
 		  PixelShader = compile ps_3_0 ps_dark(); 
    }
+}
+
+//------------------------------------------------------------------------------------------------------------------------------------------
+//para shadow map
+//------------------------------------------------------------------------------------------------------------------------------------------
+void VertShadow(float4 Pos : POSITION, float3 Normal : NORMAL, out float4 oPos : POSITION, out float2 Depth : TEXCOORD0)
+{
+	// transformacion estandard
+    oPos = mul(Pos, matWorld); // uso el del mesh
+    oPos = mul(oPos, g_mViewLightProj); // pero visto desde la pos. de la luz
+
+	// devuelvo: profundidad = z/w
+    Depth.xy = oPos.zw;
+}
+
+//-----------------------------------------------------------------------------
+// Pixel Shader para el shadow map, dibuja la "profundidad"
+//-----------------------------------------------------------------------------
+void PixShadow(float2 Depth : TEXCOORD0, out float4 Color : COLOR)
+{
+    Color = Depth.x / Depth.y;
+}
+
+technique RenderShadow
+{
+    pass p0
+    {
+        VertexShader = compile vs_3_0 VertShadow();
+        PixelShader = compile ps_3_0 PixShadow();
+    }
 }

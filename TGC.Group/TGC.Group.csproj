@@ -97,9 +97,7 @@
       <DependentUpon>Game.settings</DependentUpon>
     </Compile>
     <Compile Include="Model\Camara\ThirdPersonCamera.cs" />
-    <Compile Include="Model\EjemplosDePrueba\Apocalipsis.cs" />
-    <Compile Include="Model\EjemplosDePrueba\Bullet.cs" />
-    <Compile Include="Model\EstadosJuego\Glowsy.cs" />
+    <Compile Include="Model\GameObjects\BulletObjects\Bomba.cs" />
     <Compile Include="Model\EstadosJuego\Menu.cs" />
     <Compile Include="Model\EstadosJuego\Opciones.cs" />
     <Compile Include="Model\EstadosJuego\Victoria.cs" />
@@ -110,6 +108,9 @@
     <Compile Include="Model\GameObjects\BulletObjects\ParedFondo.cs" />
     <Compile Include="Model\GameObjects\BulletObjects\Plantas\Nuez.cs" />
     <Compile Include="Model\GameObjects\BulletObjects\Plantas\SuperCanion.cs" />
+    <Compile Include="Model\GameObjects\Explosion.cs" />
+    <Compile Include="Model\GameObjects\FuegoPicante.cs" />
+    <Compile Include="Model\GameObjects\Helicoptero.cs" />
     <Compile Include="Model\GameObjects\SkyboxShader.cs" />
     <Compile Include="Model\EstadosJuego\Ayuda.cs" />
     <Compile Include="Model\EstadosJuego\Estado.cs" />
@@ -119,7 +120,6 @@
     <Compile Include="Model\GameObjects\BulletObjects\BulletObject.cs" />
     <Compile Include="Model\Camara\CamaraPersonal.cs" />
     <Compile Include="Model\GameObjects\BulletObjects\CollisionCallbacks\CollisionCallbackIsla.cs" />
-    <Compile Include="Model\GameObjects\BulletObjects\Isla.cs" />
     <Compile Include="Model\GameObjects\BulletObjects\Zombies\ZombieRey.cs" />
     <Compile Include="Model\GameObjects\Escenario.cs" />
     <Compile Include="Model\Factorys\FactoryPlanta.cs" />
@@ -129,15 +129,12 @@
     <Compile Include="Model\GameObjects\Agua.cs" />
     <Compile Include="Model\GameObjects\BulletObjects\Disparos\Bala.cs" />
     <Compile Include="Model\GameObjects\BulletObjects\Disparos\BalaCongelante.cs" />
-    <Compile Include="Model\EjemplosDePrueba\Caja.cs" />
-    <Compile Include="Model\EjemplosDePrueba\CollisionCallback.cs" />
     <Compile Include="Model\GameObjects\BulletObjects\CollisionCallbacks\CollisionCallbackFloor.cs" />
     <Compile Include="Model\GameObjects\BulletObjects\CollisionCallbacks\CollisionCallbackDisparo.cs" />
     <Compile Include="Model\GameObjects\BulletObjects\CollisionCallbacks\CollisionCallbackZombie.cs" />
     <Compile Include="Model\GameObjects\BulletObjects\Disparos\Disparo.cs" />
     <Compile Include="Model\GameObjects\BulletObjects\Disparos\Explosivo.cs" />
     <Compile Include="Model\Factorys\FactoryBody.cs" />
-    <Compile Include="Model\EjemplosDePrueba\Vida.cs" />
     <Compile Include="Model\GameObjects\BulletObjects\Zombies\Zombie.cs" />
     <Compile Include="Model\GameObjects\BulletObjects\Zombies\ZombieVip.cs" />
     <Compile Include="Model\GameObjects\BulletObjects\Zombies\ZombieXD.cs" />
@@ -156,10 +153,7 @@
     <Compile Include="Model\Gui\CustomSprite.cs" />
     <Compile Include="Model\Gui\Drawer2D.cs" />
     <Compile Include="Model\Gui\Gui.cs" />
-    <Compile Include="Model\EjemplosDePrueba\MyContactResultCallback.cs" />
     <Compile Include="Model\GamePhysics.cs" />
-    <Compile Include="Model\Gui\MenuItem.cs" />
-    <Compile Include="Model\Gui\Menu.cs" />
     <Compile Include="Model\IPostProcess.cs" />
     <Compile Include="Model\LogicaSimplificada.cs" />
     <Compile Include="Model\Optimizacion\Octree.cs" />

@@ -1,4 +1,6 @@
-﻿using System;
+﻿using BulletSharp.Math;
+using Microsoft.DirectX.Direct3D;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -14,10 +16,12 @@ namespace TGC.Group.Model.GameObjects.BulletObjects
     public class ParedFondo : BulletObject, IPostProcess 
     {
         protected TgcMesh tag;
+        Effect efecto;
+
         public ParedFondo(GameLogic logica, Play play)
         {
             #region configurarEfecto
-            Microsoft.DirectX.Direct3D.Effect efecto = TgcShaders.loadEffect(GameModel.shadersDir + "shaderPlanta.fx");
+            efecto = TgcShaders.loadEffect(GameModel.shadersDir + "shaderPlanta.fx");
             #endregion
 
             #region configurarObjeto
@@ -57,6 +61,20 @@ namespace TGC.Group.Model.GameObjects.BulletObjects
         public override void Render()
         {
             tag.Render();
+        }
+
+        public void efectoSombra(TGCVector3 lightDir, TGCVector3 lightPos, TGCMatrix lightView, TGCMatrix projMatrix)
+        {
+            efecto.SetValue("g_vLightPos", new Microsoft.DirectX.Vector4(lightPos.X, lightPos.Y, lightPos.Z, 1));
+            efecto.SetValue("g_vLightDir", new Microsoft.DirectX.Vector4(lightDir.X, lightDir.Y, lightDir.Z, 1));
+            efecto.SetValue("g_mProjLight", projMatrix.ToMatrix());
+            efecto.SetValue("g_mViewLightProj", (lightView * projMatrix).ToMatrix());
+        }
+
+        public void cambiarTecnicaShadow(Texture shadowTex)
+        {
+            tag.Technique = "RenderShadow";
+            efecto.SetValue("g_txShadow", shadowTex);
         }
     }
 }

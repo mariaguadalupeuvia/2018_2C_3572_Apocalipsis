@@ -42,7 +42,6 @@ namespace TGC.Group.Model.GameObjects
 
             skybox.Init();
             objetos.Add(skybox);
-            
 
             #endregion
         }
